@@ -47,7 +47,9 @@ from azure.servicemanagement import (AffinityGroups,
                                      )
 from azure.servicemanagement.servicemanagementclient import _ServiceManagementClient
 
+
 class ServiceManagementService(_ServiceManagementClient):
+
     def __init__(self, subscription_id=None, cert_file=None, host=MANAGEMENT_HOST):
         return super(ServiceManagementService, self).__init__(subscription_id, cert_file, host)
 
@@ -77,8 +79,9 @@ class ServiceManagementService(_ServiceManagementClient):
         service_name: Name of the storage service account.
         '''
         _validate_not_none('service_name', service_name)
-        return self._perform_get(self._get_storage_service_path(service_name) + '/keys',
-                                 StorageService)
+        return self._perform_get(
+            self._get_storage_service_path(service_name) + '/keys',
+            StorageService)
 
     def regenerate_storage_account_keys(self, service_name, key_type):
         '''
@@ -92,9 +95,12 @@ class ServiceManagementService(_ServiceManagementClient):
         '''
         _validate_not_none('service_name', service_name)
         _validate_not_none('key_type', key_type)
-        return self._perform_post(self._get_storage_service_path(service_name) + '/keys?action=regenerate',
-                                  _XmlSerializer.regenerate_keys_to_xml(key_type),
-                                  StorageService)
+        return self._perform_post(
+            self._get_storage_service_path(
+                service_name) + '/keys?action=regenerate',
+            _XmlSerializer.regenerate_keys_to_xml(
+                key_type),
+            StorageService)
 
     def create_storage_account(self, service_name, description, label, affinity_group=None, location=None, geo_replication_enabled=True, extended_properties=None):
         '''
@@ -138,11 +144,14 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('description', description)
         _validate_not_none('label', label)
         if affinity_group is None and location is None:
-            raise WindowsAzureError('location or affinity_group must be specified')
+            raise WindowsAzureError(
+                'location or affinity_group must be specified')
         if affinity_group is not None and location is not None:
-            raise WindowsAzureError('Only one of location or affinity_group needs to be specified')
+            raise WindowsAzureError(
+                'Only one of location or affinity_group needs to be specified')
         return self._perform_post(self._get_storage_service_path(),
-                                  _XmlSerializer.create_storage_service_input_to_xml(service_name, description, label, affinity_group, location, geo_replication_enabled, extended_properties),
+                                  _XmlSerializer.create_storage_service_input_to_xml(
+                                      service_name, description, label, affinity_group, location, geo_replication_enabled, extended_properties),
                                   async=True)
 
     def update_storage_account(self, service_name, description=None, label=None, geo_replication_enabled=None, extended_properties=None):
@@ -186,7 +195,6 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         return self._perform_delete(self._get_storage_service_path(service_name))
 
-
     def check_storage_account_name_availability(self, service_name):
         '''
         Checks to see if the specified storage account name is available, or 
@@ -195,8 +203,11 @@ class ServiceManagementService(_ServiceManagementClient):
         service_name: Name of the storage service account.
         '''
         _validate_not_none('service_name', service_name)
-        return self._perform_get(self._get_storage_service_path() + '/operations/isavailable/' + _str(service_name) + '',
-                                 AvailabilityResponse)
+        return self._perform_get(
+            self._get_storage_service_path() +
+            '/operations/isavailable/' +
+            _str(service_name) + '',
+            AvailabilityResponse)
 
     #--Operations for hosted services ------------------------------------
     def list_hosted_services(self):
@@ -221,8 +232,11 @@ class ServiceManagementService(_ServiceManagementClient):
         '''
         _validate_not_none('service_name', service_name)
         _validate_not_none('embed_detail', embed_detail)
-        return self._perform_get(self._get_hosted_service_path(service_name) + '?embed-detail=' + _str(embed_detail).lower(),
-                                 HostedService)
+        return self._perform_get(
+            self._get_hosted_service_path(service_name) +
+            '?embed-detail=' +
+            _str(embed_detail).lower(),
+            HostedService)
 
     def create_hosted_service(self, service_name, label, description=None, location=None, affinity_group=None, extended_properties=None):
         '''
@@ -259,9 +273,11 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('label', label)
         if affinity_group is None and location is None:
-            raise WindowsAzureError('location or affinity_group must be specified')
+            raise WindowsAzureError(
+                'location or affinity_group must be specified')
         if affinity_group is not None and location is not None:
-            raise WindowsAzureError('Only one of location or affinity_group needs to be specified')
+            raise WindowsAzureError(
+                'Only one of location or affinity_group needs to be specified')
         return self._perform_post(self._get_hosted_service_path(),
                                   _XmlSerializer.create_hosted_service_to_xml(service_name, label, description, location, affinity_group, extended_properties))
 
@@ -314,8 +330,10 @@ class ServiceManagementService(_ServiceManagementClient):
         '''
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_slot', deployment_slot)
-        return self._perform_get(self._get_deployment_path_using_slot(service_name, deployment_slot),
-                                 Deployment)
+        return self._perform_get(
+            self._get_deployment_path_using_slot(
+                service_name, deployment_slot),
+            Deployment)
 
     def get_deployment_by_name(self, service_name, deployment_name):
         '''
@@ -327,8 +345,10 @@ class ServiceManagementService(_ServiceManagementClient):
         '''
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
-        return self._perform_get(self._get_deployment_path_using_name(service_name, deployment_name),
-                                 Deployment)
+        return self._perform_get(
+            self._get_deployment_path_using_name(
+                service_name, deployment_name),
+            Deployment)
 
     def create_deployment(self, service_name, deployment_slot, name, package_url, label, configuration, start_deployment=False, treat_warnings_as_error=False, extended_properties=None):
         '''
@@ -380,9 +400,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('package_url', package_url)
         _validate_not_none('label', label)
         _validate_not_none('configuration', configuration)
-        return self._perform_post(self._get_deployment_path_using_slot(service_name, deployment_slot),
-                                  _XmlSerializer.create_deployment_to_xml(name, package_url, label, configuration, start_deployment, treat_warnings_as_error, extended_properties),
-                                  async=True)
+        return self._perform_post(
+            self._get_deployment_path_using_slot(
+                service_name, deployment_slot),
+            _XmlSerializer.create_deployment_to_xml(
+                name, package_url, label, configuration, start_deployment, treat_warnings_as_error, extended_properties),
+            async=True)
 
     def delete_deployment(self, service_name, deployment_name):
         '''
@@ -393,8 +416,10 @@ class ServiceManagementService(_ServiceManagementClient):
         '''
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
-        return self._perform_delete(self._get_deployment_path_using_name(service_name, deployment_name),
-                                    async=True)
+        return self._perform_delete(
+            self._get_deployment_path_using_name(
+                service_name, deployment_name),
+            async=True)
 
     def swap_deployment(self, service_name, production, source_deployment):
         '''
@@ -412,7 +437,8 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('production', production)
         _validate_not_none('source_deployment', source_deployment)
         return self._perform_post(self._get_hosted_service_path(service_name),
-                                  _XmlSerializer.swap_deployment_to_xml(production, source_deployment),
+                                  _XmlSerializer.swap_deployment_to_xml(
+                                      production, source_deployment),
                                   async=True)
 
     def change_deployment_configuration(self, service_name, deployment_name, configuration, treat_warnings_as_error=False, mode='Auto', extended_properties=None):
@@ -443,9 +469,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('configuration', configuration)
-        return self._perform_post(self._get_deployment_path_using_name(service_name, deployment_name) + '/?comp=config',
-                                  _XmlSerializer.change_deployment_to_xml(configuration, treat_warnings_as_error, mode, extended_properties),
-                                  async=True)
+        return self._perform_post(
+            self._get_deployment_path_using_name(
+                service_name, deployment_name) + '/?comp=config',
+            _XmlSerializer.change_deployment_to_xml(
+                configuration, treat_warnings_as_error, mode, extended_properties),
+            async=True)
 
     def update_deployment_status(self, service_name, deployment_name, status):
         '''
@@ -460,9 +489,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('status', status)
-        return self._perform_post(self._get_deployment_path_using_name(service_name, deployment_name) + '/?comp=status',
-                                  _XmlSerializer.update_deployment_status_to_xml(status),
-                                  async=True)
+        return self._perform_post(
+            self._get_deployment_path_using_name(
+                service_name, deployment_name) + '/?comp=status',
+            _XmlSerializer.update_deployment_status_to_xml(
+                status),
+            async=True)
 
     def upgrade_deployment(self, service_name, deployment_name, mode, package_url, configuration, label, force, role_to_upgrade=None, extended_properties=None):
         '''
@@ -508,9 +540,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('configuration', configuration)
         _validate_not_none('label', label)
         _validate_not_none('force', force)
-        return self._perform_post(self._get_deployment_path_using_name(service_name, deployment_name) + '/?comp=upgrade',
-                                  _XmlSerializer.upgrade_deployment_to_xml(mode, package_url, configuration, label, role_to_upgrade, force, extended_properties),
-                                  async=True)
+        return self._perform_post(
+            self._get_deployment_path_using_name(
+                service_name, deployment_name) + '/?comp=upgrade',
+            _XmlSerializer.upgrade_deployment_to_xml(
+                mode, package_url, configuration, label, role_to_upgrade, force, extended_properties),
+            async=True)
 
     def walk_upgrade_domain(self, service_name, deployment_name, upgrade_domain):
         '''
@@ -527,9 +562,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('upgrade_domain', upgrade_domain)
-        return self._perform_post(self._get_deployment_path_using_name(service_name, deployment_name) + '/?comp=walkupgradedomain',
-                                  _XmlSerializer.walk_upgrade_domain_to_xml(upgrade_domain),
-                                  async=True)
+        return self._perform_post(
+            self._get_deployment_path_using_name(
+                service_name, deployment_name) + '/?comp=walkupgradedomain',
+            _XmlSerializer.walk_upgrade_domain_to_xml(
+                upgrade_domain),
+            async=True)
 
     def rollback_update_or_upgrade(self, service_name, deployment_name, mode, force):
         '''
@@ -554,9 +592,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('mode', mode)
         _validate_not_none('force', force)
-        return self._perform_post(self._get_deployment_path_using_name(service_name, deployment_name) + '/?comp=rollback',
-                                  _XmlSerializer.rollback_upgrade_to_xml(mode, force),
-                                  async=True)
+        return self._perform_post(
+            self._get_deployment_path_using_name(
+                service_name, deployment_name) + '/?comp=rollback',
+            _XmlSerializer.rollback_upgrade_to_xml(
+                mode, force),
+            async=True)
 
     def reboot_role_instance(self, service_name, deployment_name, role_instance_name):
         '''
@@ -569,9 +610,11 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_instance_name', role_instance_name)
-        return self._perform_post(self._get_deployment_path_using_name(service_name, deployment_name) + '/roleinstances/' + _str(role_instance_name) + '?comp=reboot',
-                                  '',
-                                  async=True)
+        return self._perform_post(
+            self._get_deployment_path_using_name(
+                service_name, deployment_name) + '/roleinstances/' + _str(role_instance_name) + '?comp=reboot',
+            '',
+            async=True)
 
     def reimage_role_instance(self, service_name, deployment_name, role_instance_name):
         '''
@@ -584,9 +627,11 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_instance_name', role_instance_name)
-        return self._perform_post(self._get_deployment_path_using_name(service_name, deployment_name) + '/roleinstances/' + _str(role_instance_name) + '?comp=reimage',
-                                  '',
-                                  async=True)
+        return self._perform_post(
+            self._get_deployment_path_using_name(
+                service_name, deployment_name) + '/roleinstances/' + _str(role_instance_name) + '?comp=reimage',
+            '',
+            async=True)
 
     def check_hosted_service_name_availability(self, service_name):
         '''
@@ -596,8 +641,11 @@ class ServiceManagementService(_ServiceManagementClient):
         service_name: Name of the hosted service.
         '''
         _validate_not_none('service_name', service_name)
-        return self._perform_get('/' + self.subscription_id + '/services/hostedservices/operations/isavailable/' + _str(service_name) + '',
-                                 AvailabilityResponse)
+        return self._perform_get(
+            '/' + self.subscription_id +
+            '/services/hostedservices/operations/isavailable/' +
+            _str(service_name) + '',
+            AvailabilityResponse)
 
     #--Operations for service certificates -------------------------------
     def list_service_certificates(self, service_name):
@@ -608,8 +656,10 @@ class ServiceManagementService(_ServiceManagementClient):
         service_name: Name of the hosted service.
         '''
         _validate_not_none('service_name', service_name)
-        return self._perform_get('/' + self.subscription_id + '/services/hostedservices/' + _str(service_name) + '/certificates',
-                                 Certificates)
+        return self._perform_get(
+            '/' + self.subscription_id + '/services/hostedservices/' +
+            _str(service_name) + '/certificates',
+            Certificates)
 
     def get_service_certificate(self, service_name, thumbalgorithm, thumbprint):
         '''
@@ -623,8 +673,11 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('thumbalgorithm', thumbalgorithm)
         _validate_not_none('thumbprint', thumbprint)
-        return self._perform_get('/' + self.subscription_id + '/services/hostedservices/' + _str(service_name) + '/certificates/' + _str(thumbalgorithm) + '-' + _str(thumbprint) + '',
-                                 Certificate)
+        return self._perform_get(
+            '/' + self.subscription_id + '/services/hostedservices/' +
+            _str(service_name) + '/certificates/' +
+            _str(thumbalgorithm) + '-' + _str(thumbprint) + '',
+            Certificate)
 
     def add_service_certificate(self, service_name, data, certificate_format, password):
         '''
@@ -640,9 +693,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('data', data)
         _validate_not_none('certificate_format', certificate_format)
         _validate_not_none('password', password)
-        return self._perform_post('/' + self.subscription_id + '/services/hostedservices/' + _str(service_name) + '/certificates',
-                                  _XmlSerializer.certificate_file_to_xml(data, certificate_format, password),
-                                  async=True)
+        return self._perform_post(
+            '/' + self.subscription_id + '/services/hostedservices/' +
+            _str(service_name) + '/certificates',
+            _XmlSerializer.certificate_file_to_xml(
+                data, certificate_format, password),
+            async=True)
 
     def delete_service_certificate(self, service_name, thumbalgorithm, thumbprint):
         '''
@@ -656,8 +712,11 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('thumbalgorithm', thumbalgorithm)
         _validate_not_none('thumbprint', thumbprint)
-        return self._perform_delete('/' + self.subscription_id + '/services/hostedservices/' + _str(service_name) + '/certificates/' + _str(thumbalgorithm) + '-' + _str(thumbprint),
-                                    async=True)
+        return self._perform_delete(
+            '/' + self.subscription_id + '/services/hostedservices/' +
+            _str(service_name) + '/certificates/' +
+            _str(thumbalgorithm) + '-' + _str(thumbprint),
+            async=True)
 
     #--Operations for management certificates ----------------------------
     def list_management_certificates(self):
@@ -682,8 +741,9 @@ class ServiceManagementService(_ServiceManagementClient):
         thumbprint: The thumbprint value of the certificate.
         '''
         _validate_not_none('thumbprint', thumbprint)
-        return self._perform_get('/' + self.subscription_id + '/certificates/' + _str(thumbprint),
-                                 SubscriptionCertificate)
+        return self._perform_get(
+            '/' + self.subscription_id + '/certificates/' + _str(thumbprint),
+            SubscriptionCertificate)
 
     def add_management_certificate(self, public_key, thumbprint, data):
         '''
@@ -724,8 +784,9 @@ class ServiceManagementService(_ServiceManagementClient):
         '''
         Lists the affinity groups associated with the specified subscription.
         '''
-        return self._perform_get('/' + self.subscription_id + '/affinitygroups',
-                                 AffinityGroups)
+        return self._perform_get(
+            '/' + self.subscription_id + '/affinitygroups',
+            AffinityGroups)
 
     def get_affinity_group_properties(self, affinity_group_name):
         '''
@@ -735,8 +796,10 @@ class ServiceManagementService(_ServiceManagementClient):
         affinity_group_name: The name of the affinity group.
         '''
         _validate_not_none('affinity_group_name', affinity_group_name)
-        return self._perform_get('/' + self.subscription_id + '/affinitygroups/' + _str(affinity_group_name) + '',
-                                 AffinityGroup)
+        return self._perform_get(
+            '/' + self.subscription_id + '/affinitygroups/' +
+            _str(affinity_group_name) + '',
+            AffinityGroup)
 
     def create_affinity_group(self, name, label, location, description=None):
         '''
@@ -756,8 +819,9 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('name', name)
         _validate_not_none('label', label)
         _validate_not_none('location', location)
-        return self._perform_post('/' + self.subscription_id + '/affinitygroups',
-                                  _XmlSerializer.create_affinity_group_to_xml(name, label, description, location))
+        return self._perform_post(
+            '/' + self.subscription_id + '/affinitygroups',
+            _XmlSerializer.create_affinity_group_to_xml(name, label, description, location))
 
     def update_affinity_group(self, affinity_group_name, label, description=None):
         '''
@@ -774,8 +838,10 @@ class ServiceManagementService(_ServiceManagementClient):
         '''
         _validate_not_none('affinity_group_name', affinity_group_name)
         _validate_not_none('label', label)
-        return self._perform_put('/' + self.subscription_id + '/affinitygroups/' + _str(affinity_group_name),
-                                 _XmlSerializer.update_affinity_group_to_xml(label, description))
+        return self._perform_put(
+            '/' + self.subscription_id + '/affinitygroups/' +
+            _str(affinity_group_name),
+            _XmlSerializer.update_affinity_group_to_xml(label, description))
 
     def delete_affinity_group(self, affinity_group_name):
         '''
@@ -805,8 +871,9 @@ class ServiceManagementService(_ServiceManagementClient):
         request_id: The request ID for the request you wish to track.
         '''
         _validate_not_none('request_id', request_id)
-        return self._perform_get('/' + self.subscription_id + '/operations/' + _str(request_id),
-                                 Operation)
+        return self._perform_get(
+            '/' + self.subscription_id + '/operations/' + _str(request_id),
+            Operation)
 
     #--Operations for retrieving operating system information ------------
     def list_operating_systems(self):
@@ -814,16 +881,18 @@ class ServiceManagementService(_ServiceManagementClient):
         Lists the versions of the guest operating system that are currently 
         available in Windows Azure.
         '''
-        return self._perform_get('/' + self.subscription_id + '/operatingsystems',
-                                 OperatingSystems)
+        return self._perform_get(
+            '/' + self.subscription_id + '/operatingsystems',
+            OperatingSystems)
 
     def list_operating_system_families(self):
         '''
         Lists the guest operating system families available in Windows Azure, 
         and also lists the operating system versions available for each family.
         '''
-        return self._perform_get('/' + self.subscription_id + '/operatingsystemfamilies',
-                                 OperatingSystemFamilies)
+        return self._perform_get(
+            '/' + self.subscription_id + '/operatingsystemfamilies',
+            OperatingSystemFamilies)
 
     #--Operations for retrieving subscription history --------------------
     def get_subscription(self):
@@ -846,8 +915,9 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
-        return self._perform_get(self._get_role_path(service_name, deployment_name, role_name),
-                                 PersistentVMRole)
+        return self._perform_get(
+            self._get_role_path(service_name, deployment_name, role_name),
+            PersistentVMRole)
 
     def create_virtual_machine_deployment(self, service_name, deployment_name, deployment_slot, label, role_name, system_config, os_virtual_hard_disk, network_config=None, availability_set_name=None, data_virtual_hard_disks=None, role_size=None, role_type='PersistentVMRole', virtual_network_name=None):
         '''
@@ -908,9 +978,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('role_name', role_name)
         _validate_not_none('system_config', system_config)
         _validate_not_none('os_virtual_hard_disk', os_virtual_hard_disk)
-        return self._perform_post(self._get_deployment_path_using_name(service_name),
-                                  _XmlSerializer.virtual_machine_deployment_to_xml(deployment_name, deployment_slot, label, role_name, system_config, os_virtual_hard_disk, role_type, network_config, availability_set_name, data_virtual_hard_disks, role_size, virtual_network_name),
-                                  async=True)
+        return self._perform_post(
+            self._get_deployment_path_using_name(service_name),
+            _XmlSerializer.virtual_machine_deployment_to_xml(
+                deployment_name, deployment_slot, label, role_name, system_config, os_virtual_hard_disk,
+                role_type, network_config, availability_set_name, data_virtual_hard_disks, role_size, virtual_network_name),
+            async=True)
 
     def add_role(self, service_name, deployment_name, role_name, system_config, os_virtual_hard_disk, network_config=None, availability_set_name=None, data_virtual_hard_disks=None, role_size=None, role_type='PersistentVMRole'):
         '''
@@ -956,9 +1029,11 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('role_name', role_name)
         _validate_not_none('system_config', system_config)
         _validate_not_none('os_virtual_hard_disk', os_virtual_hard_disk)
-        return self._perform_post(self._get_role_path(service_name, deployment_name),
-                                  _XmlSerializer.add_role_to_xml(role_name, system_config, os_virtual_hard_disk, role_type, network_config, availability_set_name, data_virtual_hard_disks, role_size),
-                                  async=True)
+        return self._perform_post(
+            self._get_role_path(service_name, deployment_name),
+            _XmlSerializer.add_role_to_xml(
+                role_name, system_config, os_virtual_hard_disk, role_type, network_config, availability_set_name, data_virtual_hard_disks, role_size),
+            async=True)
 
     def update_role(self, service_name, deployment_name, role_name, os_virtual_hard_disk=None, network_config=None, availability_set_name=None, data_virtual_hard_disks=None, role_size=None, role_type='PersistentVMRole'):
         '''
@@ -998,9 +1073,11 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
-        return self._perform_put(self._get_role_path(service_name, deployment_name, role_name),
-                                 _XmlSerializer.update_role_to_xml(role_name, os_virtual_hard_disk, role_type, network_config, availability_set_name, data_virtual_hard_disks, role_size),
-                                 async=True)
+        return self._perform_put(
+            self._get_role_path(service_name, deployment_name, role_name),
+            _XmlSerializer.update_role_to_xml(
+                role_name, os_virtual_hard_disk, role_type, network_config, availability_set_name, data_virtual_hard_disks, role_size),
+            async=True)
 
     def delete_role(self, service_name, deployment_name, role_name):
         '''
@@ -1013,8 +1090,9 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
-        return self._perform_delete(self._get_role_path(service_name, deployment_name, role_name),
-                                    async=True)
+        return self._perform_delete(
+            self._get_role_path(service_name, deployment_name, role_name),
+            async=True)
 
     def capture_role(self, service_name, deployment_name, role_name, post_capture_action, target_image_name, target_image_label, provisioning_configuration=None):
         '''
@@ -1041,9 +1119,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('post_capture_action', post_capture_action)
         _validate_not_none('target_image_name', target_image_name)
         _validate_not_none('target_image_label', target_image_label)
-        return self._perform_post(self._get_role_instance_operations_path(service_name, deployment_name, role_name),
-                                  _XmlSerializer.capture_role_to_xml(post_capture_action, target_image_name, target_image_label, provisioning_configuration),
-                                  async=True)
+        return self._perform_post(
+            self._get_role_instance_operations_path(
+                service_name, deployment_name, role_name),
+            _XmlSerializer.capture_role_to_xml(
+                post_capture_action, target_image_name, target_image_label, provisioning_configuration),
+            async=True)
 
     def start_role(self, service_name, deployment_name, role_name):
         '''
@@ -1056,9 +1137,11 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
-        return self._perform_post(self._get_role_instance_operations_path(service_name, deployment_name, role_name),
-                                  _XmlSerializer.start_role_operation_to_xml(),
-                                  async=True)
+        return self._perform_post(
+            self._get_role_instance_operations_path(
+                service_name, deployment_name, role_name),
+            _XmlSerializer.start_role_operation_to_xml(),
+            async=True)
 
     def restart_role(self, service_name, deployment_name, role_name):
         '''
@@ -1071,9 +1154,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
-        return self._perform_post(self._get_role_instance_operations_path(service_name, deployment_name, role_name),
-                                  _XmlSerializer.restart_role_operation_to_xml(),
-                                  async=True)
+        return self._perform_post(
+            self._get_role_instance_operations_path(
+                service_name, deployment_name, role_name),
+            _XmlSerializer.restart_role_operation_to_xml(
+            ),
+            async=True)
 
     def shutdown_role(self, service_name, deployment_name, role_name):
         '''
@@ -1086,9 +1172,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
-        return self._perform_post(self._get_role_instance_operations_path(service_name, deployment_name, role_name),
-                                  _XmlSerializer.shutdown_role_operation_to_xml(),
-                                  async=True)
+        return self._perform_post(
+            self._get_role_instance_operations_path(
+                service_name, deployment_name, role_name),
+            _XmlSerializer.shutdown_role_operation_to_xml(
+            ),
+            async=True)
 
     #--Operations for virtual machine images -----------------------------
     def list_os_images(self):
@@ -1129,7 +1218,8 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('name', name)
         _validate_not_none('os', os)
         return self._perform_post(self._get_image_path(),
-                                  _XmlSerializer.os_image_to_xml(label, media_link, name, os),
+                                  _XmlSerializer.os_image_to_xml(
+                                      label, media_link, name, os),
                                   async=True)
 
     def update_os_image(self, image_name, label, media_link, name, os):
@@ -1160,7 +1250,8 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('name', name)
         _validate_not_none('os', os)
         return self._perform_put(self._get_image_path(image_name),
-                                 _XmlSerializer.os_image_to_xml(label, media_link, name, os),
+                                 _XmlSerializer.os_image_to_xml(
+                                     label, media_link, name, os),
                                  async=True)
 
     def delete_os_image(self, image_name):
@@ -1187,8 +1278,10 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
         _validate_not_none('lun', lun)
-        return self._perform_get(self._get_data_disk_path(service_name, deployment_name, role_name, lun),
-                                 DataVirtualHardDisk)
+        return self._perform_get(
+            self._get_data_disk_path(
+                service_name, deployment_name, role_name, lun),
+            DataVirtualHardDisk)
 
     def add_data_disk(self, service_name, deployment_name, role_name, lun, host_caching=None, media_link=None, disk_label=None, disk_name=None, logical_disk_size_in_gb=None, source_media_link=None):
         '''
@@ -1234,9 +1327,11 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
         _validate_not_none('lun', lun)
-        return self._perform_post(self._get_data_disk_path(service_name, deployment_name, role_name),
-                                  _XmlSerializer.data_virtual_hard_disk_to_xml(host_caching, disk_label, disk_name, lun, logical_disk_size_in_gb, media_link, source_media_link),
-                                  async=True)
+        return self._perform_post(
+            self._get_data_disk_path(service_name, deployment_name, role_name),
+            _XmlSerializer.data_virtual_hard_disk_to_xml(
+                host_caching, disk_label, disk_name, lun, logical_disk_size_in_gb, media_link, source_media_link),
+            async=True)
 
     def update_data_disk(self, service_name, deployment_name, role_name, lun, host_caching=None, media_link=None, updated_lun=None, disk_label=None, disk_name=None, logical_disk_size_in_gb=None):
         '''
@@ -1285,9 +1380,12 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
         _validate_not_none('lun', lun)
-        return self._perform_put(self._get_data_disk_path(service_name, deployment_name, role_name, lun),
-                                 _XmlSerializer.data_virtual_hard_disk_to_xml(host_caching, disk_label, disk_name, updated_lun, logical_disk_size_in_gb, media_link, None),
-                                 async=True)
+        return self._perform_put(
+            self._get_data_disk_path(
+                service_name, deployment_name, role_name, lun),
+            _XmlSerializer.data_virtual_hard_disk_to_xml(
+                host_caching, disk_label, disk_name, updated_lun, logical_disk_size_in_gb, media_link, None),
+            async=True)
 
     def delete_data_disk(self, service_name, deployment_name, role_name, lun):
         '''
@@ -1302,8 +1400,10 @@ class ServiceManagementService(_ServiceManagementClient):
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
         _validate_not_none('lun', lun)
-        return self._perform_delete(self._get_data_disk_path(service_name, deployment_name, role_name, lun),
-                                    async=True)
+        return self._perform_delete(
+            self._get_data_disk_path(
+                service_name, deployment_name, role_name, lun),
+            async=True)
 
     #--Operations for virtual machine disks ------------------------------
     def list_disks(self):

@@ -31,7 +31,10 @@ SIGNED_RESOURCE_TYPE = 'resource'
 SHARED_ACCESS_PERMISSION = 'permission'
 
 #--------------------------------------------------------------------------
+
+
 class WebResource:
+
     ''' 
     Class that stands for the resource to get the share access signature
 
@@ -46,7 +49,9 @@ class WebResource:
         self.properties = properties
         self.request_url = request_url
 
+
 class Permission:
+
     ''' 
     Permission class. Contains the path and query_string for the path.
 
@@ -55,17 +60,23 @@ class Permission:
             SIGNED_RESOURCE, SIGNED_PERMISSION, SIGNED_IDENTIFIER, 
             SIGNED_SIGNATURE name values.
     '''
+
     def __init__(self, path=None, query_string=None):
         self.path = path
         self.query_string = query_string
 
+
 class SharedAccessPolicy:
+
     ''' SharedAccessPolicy class. '''
+
     def __init__(self, access_policy, signed_identifier=None):
         self.id = signed_identifier
         self.access_policy = access_policy
 
+
 class SharedAccessSignature:
+
     ''' 
     The main class used to do the signing and generating the signature. 
     
@@ -90,16 +101,19 @@ class SharedAccessSignature:
 
         query_string = {}
         if shared_access_policy.access_policy.start:
-            query_string[SIGNED_START] = shared_access_policy.access_policy.start
-        
+            query_string[
+                SIGNED_START] = shared_access_policy.access_policy.start
+
         query_string[SIGNED_EXPIRY] = shared_access_policy.access_policy.expiry
         query_string[SIGNED_RESOURCE] = resource_type
-        query_string[SIGNED_PERMISSION] = shared_access_policy.access_policy.permission
+        query_string[
+            SIGNED_PERMISSION] = shared_access_policy.access_policy.permission
 
         if shared_access_policy.id:
             query_string[SIGNED_IDENTIFIER] = shared_access_policy.id
 
-        query_string[SIGNED_SIGNATURE] = self._generate_signature(path, resource_type, shared_access_policy)
+        query_string[SIGNED_SIGNATURE] = self._generate_signature(
+            path, resource_type, shared_access_policy)
         return query_string
 
     def sign_request(self, web_resource):
@@ -107,15 +121,18 @@ class SharedAccessSignature:
 
         if self.permission_set:
             for shared_access_signature in self.permission_set:
-                if self._permission_matches_request(shared_access_signature, web_resource, 
-                                                    web_resource.properties[SIGNED_RESOURCE_TYPE], 
-                                                    web_resource.properties[SHARED_ACCESS_PERMISSION]):
+                if self._permission_matches_request(
+                        shared_access_signature, web_resource,
+                        web_resource.properties[
+                            SIGNED_RESOURCE_TYPE],
+                        web_resource.properties[SHARED_ACCESS_PERMISSION]):
                     if web_resource.request_url.find('?') == -1:
                         web_resource.request_url += '?'
                     else:
                         web_resource.request_url += '&'
 
-                    web_resource.request_url += self._convert_query_string(shared_access_signature.query_string)
+                    web_resource.request_url += self._convert_query_string(
+                        shared_access_signature.query_string)
                     break
         return web_resource
 
@@ -124,14 +141,19 @@ class SharedAccessSignature:
 
         convert_str = ''
         if query_string.has_key(SIGNED_START):
-            convert_str += SIGNED_START + '=' + query_string[SIGNED_START] + '&'
+            convert_str += SIGNED_START + '=' + \
+                query_string[SIGNED_START] + '&'
         convert_str += SIGNED_EXPIRY + '=' + query_string[SIGNED_EXPIRY] + '&'
-        convert_str += SIGNED_PERMISSION + '=' + query_string[SIGNED_PERMISSION] + '&'
-        convert_str += SIGNED_RESOURCE + '=' + query_string[SIGNED_RESOURCE] + '&'
+        convert_str += SIGNED_PERMISSION + '=' + \
+            query_string[SIGNED_PERMISSION] + '&'
+        convert_str += SIGNED_RESOURCE + '=' + \
+            query_string[SIGNED_RESOURCE] + '&'
 
         if query_string.has_key(SIGNED_IDENTIFIER):
-            convert_str += SIGNED_IDENTIFIER + '=' + query_string[SIGNED_IDENTIFIER] + '&'
-        convert_str += SIGNED_SIGNATURE + '=' + urllib2.quote(query_string[SIGNED_SIGNATURE]) + '&'
+            convert_str += SIGNED_IDENTIFIER + '=' + \
+                query_string[SIGNED_IDENTIFIER] + '&'
+        convert_str += SIGNED_SIGNATURE + '=' + \
+            urllib2.quote(query_string[SIGNED_SIGNATURE]) + '&'
         return convert_str
 
     def _generate_signature(self, path, resource_type, shared_access_policy):
@@ -148,13 +170,13 @@ class SharedAccessSignature:
         if path[0] != '/':
             path = '/' + path
 
-        canonicalized_resource = '/' + self.account_name + path;
+        canonicalized_resource = '/' + self.account_name + path
 
-        #form the string to sign from shared_access_policy and canonicalized resource. 
-        #The order of values is important.
-        string_to_sign = (get_value_to_append(shared_access_policy.access_policy.permission) + 
+        # form the string to sign from shared_access_policy and canonicalized resource.
+        # The order of values is important.
+        string_to_sign = (get_value_to_append(shared_access_policy.access_policy.permission) +
                           get_value_to_append(shared_access_policy.access_policy.start) +
-                          get_value_to_append(shared_access_policy.access_policy.expiry) + 
+                          get_value_to_append(shared_access_policy.access_policy.expiry) +
                           get_value_to_append(canonicalized_resource) +
                           get_value_to_append(shared_access_policy.id, True))
 
@@ -179,5 +201,6 @@ class SharedAccessSignature:
         ''' use HMAC-SHA256 to sign the string and convert it as base64 encoded string. '''
 
         decode_account_key = base64.b64decode(self.account_key)
-        signed_hmac_sha256 = hmac.HMAC(decode_account_key, string_to_sign, hashlib.sha256)
+        signed_hmac_sha256 = hmac.HMAC(
+            decode_account_key, string_to_sign, hashlib.sha256)
         return base64.b64encode(signed_hmac_sha256.digest())

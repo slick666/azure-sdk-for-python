@@ -56,18 +56,20 @@ from azure.servicebus import (AZURE_SERVICEBUS_NAMESPACE,
 # Shared by the different instances of ServiceBusService
 _tokens = {}
 
+
 class ServiceBusService:
 
     def __init__(self, service_namespace=None, account_key=None, issuer=None, x_ms_version='2011-06-01', host_base=SERVICE_BUS_HOST_BASE):
-        #x_ms_version is not used, but the parameter is kept for backwards compatibility
+        # x_ms_version is not used, but the parameter is kept for backwards
+        # compatibility
         self.requestid = None
         self.service_namespace = service_namespace
         self.account_key = account_key
         self.issuer = issuer
         self.host_base = host_base
-        
-        #get service namespace, account key and issuer. If they are set when constructing, then use them.
-        #else find them from environment variables.
+
+        # get service namespace, account key and issuer. If they are set when constructing, then use them.
+        # else find them from environment variables.
         if not service_namespace:
             if os.environ.has_key(AZURE_SERVICEBUS_NAMESPACE):
                 self.service_namespace = os.environ[AZURE_SERVICEBUS_NAMESPACE]
@@ -77,13 +79,15 @@ class ServiceBusService:
         if not issuer:
             if os.environ.has_key(AZURE_SERVICEBUS_ISSUER):
                 self.issuer = os.environ[AZURE_SERVICEBUS_ISSUER]
-        
+
         if not self.service_namespace or not self.account_key or not self.issuer:
-            raise WindowsAzureError('You need to provide servicebus namespace, access key and Issuer')
-        
-        self._httpclient = _HTTPClient(service_instance=self, service_namespace=service_namespace, account_key=account_key, issuer=issuer)
+            raise WindowsAzureError(
+                'You need to provide servicebus namespace, access key and Issuer')
+
+        self._httpclient = _HTTPClient(
+            service_instance=self, service_namespace=service_namespace, account_key=account_key, issuer=issuer)
         self._filter = self._httpclient.perform_request
-    
+
     def with_filter(self, filter):
         '''
         Returns a new service which will process requests with the specified 
@@ -93,15 +97,16 @@ class ServiceBusService:
         request, pass it off to the next lambda, and then perform any 
         post-processing on the response.
         '''
-        res = ServiceBusService(self.service_namespace, self.account_key, 
+        res = ServiceBusService(self.service_namespace, self.account_key,
                                 self.issuer)
         old_filter = self._filter
+
         def new_filter(request):
             return filter(request, old_filter)
-                    
+
         res._filter = new_filter
         return res
-            
+
     def set_proxy(self, host, port, user=None, password=None):
         '''
         Sets the proxy server host and port for the HTTP CONNECT Tunnelling.
@@ -304,7 +309,9 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'PUT'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + '/rules/' + _str(rule_name) + ''
+        request.path = '/' + _str(topic_name) + '/subscriptions/' + \
+            _str(subscription_name) + \
+            '/rules/' + _str(rule_name) + ''
         request.body = _get_request_body(_convert_rule_to_xml(rule))
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
@@ -337,7 +344,9 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'DELETE'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + '/rules/' + _str(rule_name) + ''
+        request.path = '/' + _str(topic_name) + '/subscriptions/' + \
+            _str(subscription_name) + \
+            '/rules/' + _str(rule_name) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         if not fail_not_exist:
@@ -365,7 +374,9 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'GET'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + '/rules/' + _str(rule_name) + ''
+        request.path = '/' + _str(topic_name) + '/subscriptions/' + \
+            _str(subscription_name) + \
+            '/rules/' + _str(rule_name) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
@@ -384,7 +395,9 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'GET'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + '/rules/'
+        request.path = '/' + \
+            _str(topic_name) + '/subscriptions/' + \
+            _str(subscription_name) + '/rules/'
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
@@ -406,8 +419,10 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'PUT'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + ''
-        request.body = _get_request_body(_convert_subscription_to_xml(subscription))
+        request.path = '/' + \
+            _str(topic_name) + '/subscriptions/' + _str(subscription_name) + ''
+        request.body = _get_request_body(
+            _convert_subscription_to_xml(subscription))
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         if not fail_on_exist:
@@ -436,7 +451,8 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'DELETE'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + ''
+        request.path = '/' + \
+            _str(topic_name) + '/subscriptions/' + _str(subscription_name) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         if not fail_not_exist:
@@ -462,7 +478,8 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'GET'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + ''
+        request.path = '/' + \
+            _str(topic_name) + '/subscriptions/' + _str(subscription_name) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
@@ -532,7 +549,9 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'POST'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + '/messages/head'
+        request.path = '/' + \
+            _str(topic_name) + '/subscriptions/' + \
+            _str(subscription_name) + '/messages/head'
         request.query = [('timeout', _int_or_none(timeout))]
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
@@ -563,7 +582,10 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'PUT'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + '/messages/' + _str(sequence_number) + '/' + _str(lock_token) + ''
+        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + \
+            '/messages/' + \
+            _str(sequence_number) + '/' + \
+            _str(lock_token) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
@@ -584,7 +606,9 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'DELETE'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + '/messages/head'
+        request.path = '/' + \
+            _str(topic_name) + '/subscriptions/' + \
+            _str(subscription_name) + '/messages/head'
         request.query = [('timeout', _int_or_none(timeout))]
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
@@ -615,7 +639,10 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'DELETE'
         request.host = self._get_host()
-        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + '/messages/' + _str(sequence_number) + '/' + _str(lock_token) + ''
+        request.path = '/' + _str(topic_name) + '/subscriptions/' + _str(subscription_name) + \
+            '/messages/' + \
+            _str(sequence_number) + '/' + \
+            _str(lock_token) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
@@ -690,7 +717,9 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'PUT'
         request.host = self._get_host()
-        request.path = '/' + _str(queue_name) + '/messages/' + _str(sequence_number) + '/' + _str(lock_token) + ''
+        request.path = '/' + _str(queue_name) + '/messages/' + \
+            _str(sequence_number) + '/' + \
+            _str(lock_token) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
@@ -738,7 +767,9 @@ class ServiceBusService:
         request = HTTPRequest()
         request.method = 'DELETE'
         request.host = self._get_host()
-        request.path = '/' + _str(queue_name) + '/messages/' + _str(sequence_number) + '/' + _str(lock_token) + ''
+        request.path = '/' + _str(queue_name) + '/messages/' + \
+            _str(sequence_number) + '/' + \
+            _str(lock_token) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
@@ -785,22 +816,24 @@ class ServiceBusService:
 
         return resp
 
-    def _update_service_bus_header(self, request): 
+    def _update_service_bus_header(self, request):
         ''' Add additional headers for service bus. '''
 
         if request.method in ['PUT', 'POST', 'MERGE', 'DELETE']:
             request.headers.append(('Content-Length', str(len(request.body))))
-        
+
         # if it is not GET or HEAD request, must set content-type.
         if not request.method in ['GET', 'HEAD']:
             for name, value in request.headers:
                 if 'content-type' == name.lower():
                     break
             else:
-                request.headers.append(('Content-Type', 'application/atom+xml;type=entry;charset=utf-8')) 
+                request.headers.append(
+                    ('Content-Type', 'application/atom+xml;type=entry;charset=utf-8'))
 
         # Adds authoriaztion header for authentication.
-        request.headers.append(('Authorization', self._sign_service_bus_request(request)))
+        request.headers.append(
+            ('Authorization', self._sign_service_bus_request(request)))
 
         return request.headers
 
@@ -816,7 +849,8 @@ class ServiceBusService:
         token_expire_time = int(token[time_pos_begin:time_pos_end])
         time_now = time.mktime(time.localtime())
 
-        #Adding 30 seconds so the token wouldn't be expired when we send the token to server.
+        # Adding 30 seconds so the token wouldn't be expired when we send the
+        # token to server.
         return (token_expire_time - time_now) < 30
 
     def _get_token(self, host, path):
@@ -828,26 +862,27 @@ class ServiceBusService:
         '''
         wrap_scope = 'http://' + host + path + self.issuer + self.account_key
 
-        # Check whether has unexpired cache, return cached token if it is still usable. 
+        # Check whether has unexpired cache, return cached token if it is still
+        # usable.
         if _tokens.has_key(wrap_scope):
             token = _tokens[wrap_scope]
             if not self._token_is_expired(token):
                 return token
 
-        #get token from accessconstrol server
+        # get token from accessconstrol server
         request = HTTPRequest()
         request.protocol_override = 'https'
         request.host = host.replace('.servicebus.', '-sb.accesscontrol.')
         request.method = 'POST'
         request.path = '/WRAPv0.9'
         request.body = ('wrap_name=' + urllib2.quote(self.issuer) + '&wrap_password=' +
-                        urllib2.quote(self.account_key) + '&wrap_scope=' + 
+                        urllib2.quote(self.account_key) + '&wrap_scope=' +
                         urllib2.quote('http://' + host + path))
         request.headers.append(('Content-Length', str(len(request.body))))
         resp = self._httpclient.perform_request(request)
 
         token = resp.body
-        token = urllib2.unquote(token[token.find('=')+1:token.rfind('&')])
+        token = urllib2.unquote(token[token.find('=') + 1:token.rfind('&')])
         _tokens[wrap_scope] = token
 
         return token

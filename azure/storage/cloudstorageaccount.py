@@ -16,7 +16,9 @@ from azure.storage.blobservice import BlobService
 from azure.storage.tableservice import TableService
 from azure.storage.queueservice import QueueService
 
+
 class CloudStorageAccount:
+
     """
     Provides a factory for creating the blob, queue, and table services 
     with a common account name and account key.  Users can either use the 

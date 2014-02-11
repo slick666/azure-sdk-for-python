@@ -15,7 +15,9 @@
 
 HTTP_RESPONSE_NO_CONTENT = 204
 
+
 class HTTPError(Exception):
+
     ''' HTTP Exception when response status code >= 300 '''
 
     def __init__(self, status, message, respheader, respbody):
@@ -28,6 +30,7 @@ class HTTPError(Exception):
 
 
 class HTTPResponse(object):
+
     """Represents a response from an HTTP request.  An HTTPResponse has the
     following attributes:
 
@@ -45,6 +48,7 @@ class HTTPResponse(object):
 
 
 class HTTPRequest:
+
     '''Represents an HTTP Request.  An HTTP Request consists of the following attributes:
     
     host: the host name to connect to

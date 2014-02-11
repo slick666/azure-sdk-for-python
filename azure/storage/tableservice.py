@@ -43,12 +43,14 @@ from azure.storage import (StorageServiceProperties,
                            )
 from azure.storage.storageclient import _StorageClient
 
+
 class TableService(_StorageClient):
+
     '''
     This is the main class managing Table resources.
     '''
 
-    def __init__(self, account_name = None, account_key = None, protocol = 'https', host_base = TABLE_SERVICE_HOST_BASE, dev_host = DEV_TABLE_HOST):
+    def __init__(self, account_name=None, account_key=None, protocol='https', host_base=TABLE_SERVICE_HOST_BASE, dev_host=DEV_TABLE_HOST):
         '''
         account_name: your storage account name, required for all operations.
         account_key: your storage account key, required for all operations.
@@ -62,7 +64,8 @@ class TableService(_StorageClient):
 
     def begin_batch(self):
         if self._batchclient is None:
-            self._batchclient = _BatchClient(service_instance=self, account_key=self.account_key, account_name=self.account_name)
+            self._batchclient = _BatchClient(
+                service_instance=self, account_key=self.account_key, account_name=self.account_name)
         return self._batchclient.begin_batch()
 
     def commit_batch(self):
@@ -84,7 +87,8 @@ class TableService(_StorageClient):
         request.method = 'GET'
         request.host = self._get_host()
         request.path = '/?restype=service&comp=properties'
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
@@ -97,19 +101,22 @@ class TableService(_StorageClient):
         
         storage_service_properties: StorageServiceProperties object.
         '''
-        _validate_not_none('storage_service_properties', storage_service_properties)
+        _validate_not_none('storage_service_properties',
+                           storage_service_properties)
         request = HTTPRequest()
         request.method = 'PUT'
         request.host = self._get_host()
         request.path = '/?restype=service&comp=properties'
-        request.body = _get_request_body(_convert_class_to_xml(storage_service_properties))
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.body = _get_request_body(
+            _convert_class_to_xml(storage_service_properties))
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
         return _parse_response_for_dict(response)
 
-    def query_tables(self, table_name = None, top=None, next_table_name=None):
+    def query_tables(self, table_name=None, top=None, next_table_name=None):
         '''
         Returns a list of tables under the specified account.
         
@@ -130,8 +137,9 @@ class TableService(_StorageClient):
         request.query = [
             ('$top', _int_or_none(top)),
             ('NextTableName', _str_or_none(next_table_name))
-            ]
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        ]
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
@@ -153,7 +161,8 @@ class TableService(_StorageClient):
         request.host = self._get_host()
         request.path = '/Tables'
         request.body = _get_request_body(_convert_table_to_xml(table))
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         if not fail_on_exist:
             try:
@@ -177,7 +186,8 @@ class TableService(_StorageClient):
         request.method = 'DELETE'
         request.host = self._get_host()
         request.path = '/Tables(\'' + _str(table_name) + '\')'
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         if not fail_not_exist:
             try:
@@ -205,8 +215,12 @@ class TableService(_StorageClient):
         request = HTTPRequest()
         request.method = 'GET'
         request.host = self._get_host()
-        request.path = '/' + _str(table_name) + '(PartitionKey=\'' + _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')?$select=' + _str(select) + ''
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.path = '/' + _str(table_name) + '(PartitionKey=\'' + _str(partition_key) + \
+            '\',RowKey=\'' + \
+            _str(row_key) + '\')?$select=' + \
+            _str(select) + ''
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
@@ -240,8 +254,9 @@ class TableService(_StorageClient):
             ('$top', _int_or_none(top)),
             ('NextPartitionKey', _str_or_none(next_partition_key)),
             ('NextRowKey', _str_or_none(next_row_key))
-            ]
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        ]
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
@@ -266,7 +281,8 @@ class TableService(_StorageClient):
         request.path = '/' + _str(table_name) + ''
         request.headers = [('Content-Type', _str_or_none(content_type))]
         request.body = _get_request_body(_convert_entity_to_xml(entity))
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
@@ -297,13 +313,16 @@ class TableService(_StorageClient):
         request = HTTPRequest()
         request.method = 'PUT'
         request.host = self._get_host()
-        request.path = '/' + _str(table_name) + '(PartitionKey=\'' + _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
+        request.path = '/' + \
+            _str(table_name) + '(PartitionKey=\'' + \
+            _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
         request.headers = [
             ('Content-Type', _str_or_none(content_type)),
             ('If-Match', _str_or_none(if_match))
-            ]
+        ]
         request.body = _get_request_body(_convert_entity_to_xml(entity))
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
@@ -335,13 +354,16 @@ class TableService(_StorageClient):
         request = HTTPRequest()
         request.method = 'MERGE'
         request.host = self._get_host()
-        request.path = '/' + _str(table_name) + '(PartitionKey=\'' + _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
+        request.path = '/' + \
+            _str(table_name) + '(PartitionKey=\'' + \
+            _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
         request.headers = [
             ('Content-Type', _str_or_none(content_type)),
             ('If-Match', _str_or_none(if_match))
-            ]
+        ]
         request.body = _get_request_body(_convert_entity_to_xml(entity))
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
@@ -368,12 +390,15 @@ class TableService(_StorageClient):
         request = HTTPRequest()
         request.method = 'DELETE'
         request.host = self._get_host()
-        request.path = '/' + _str(table_name) + '(PartitionKey=\'' + _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
+        request.path = '/' + \
+            _str(table_name) + '(PartitionKey=\'' + \
+            _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
         request.headers = [
             ('Content-Type', _str_or_none(content_type)),
             ('If-Match', _str_or_none(if_match))
-            ]
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        ]
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
@@ -399,10 +424,13 @@ class TableService(_StorageClient):
         request = HTTPRequest()
         request.method = 'PUT'
         request.host = self._get_host()
-        request.path = '/' + _str(table_name) + '(PartitionKey=\'' + _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
+        request.path = '/' + \
+            _str(table_name) + '(PartitionKey=\'' + \
+            _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
         request.headers = [('Content-Type', _str_or_none(content_type))]
         request.body = _get_request_body(_convert_entity_to_xml(entity))
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
@@ -430,18 +458,21 @@ class TableService(_StorageClient):
         request = HTTPRequest()
         request.method = 'MERGE'
         request.host = self._get_host()
-        request.path = '/' + _str(table_name) + '(PartitionKey=\'' + _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
+        request.path = '/' + \
+            _str(table_name) + '(PartitionKey=\'' + \
+            _str(partition_key) + '\',RowKey=\'' + _str(row_key) + '\')'
         request.headers = [('Content-Type', _str_or_none(content_type))]
         request.body = _get_request_body(_convert_entity_to_xml(entity))
-        request.path, request.query = _update_request_uri_query_local_storage(request, self.use_local_storage)
+        request.path, request.query = _update_request_uri_query_local_storage(
+            request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
         response = self._perform_request(request)
 
         return _parse_response_for_dict_filter(response, filter=['etag'])
 
     def _perform_request_worker(self, request):
-        auth = _sign_storage_table_request(request, 
-                                                self.account_name, 
-                                                self.account_key)
+        auth = _sign_storage_table_request(request,
+                                           self.account_name,
+                                           self.account_key)
         request.headers.append(('Authorization', auth))
         return self._httpclient.perform_request(request)

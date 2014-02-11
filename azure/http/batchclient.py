@@ -22,14 +22,17 @@ from xml.dom import minidom
 
 _DATASERVICES_NS = 'http://schemas.microsoft.com/ado/2007/08/dataservices'
 
+
 class _BatchClient(_HTTPClient):
+
     '''
     This is the class that is used for batch operation for storage table service. 
     It only supports one changeset.
     '''
 
     def __init__(self, service_instance, account_key, account_name, protocol='http'):
-        _HTTPClient.__init__(self, service_instance, account_name=account_name, account_key=account_key, protocol=protocol)
+        _HTTPClient.__init__(self, service_instance, account_name=account_name,
+                             account_key=account_key, protocol=protocol)
         self.is_batch = False
         self.batch_requests = []
         self.batch_table = ''
@@ -47,7 +50,7 @@ class _BatchClient(_HTTPClient):
             pos = request.path.find('(')
             return request.path[1:pos]
         else:
-            return request.path[1:]  
+            return request.path[1:]
 
     def get_request_partition_key(self, request):
         '''
@@ -59,7 +62,8 @@ class _BatchClient(_HTTPClient):
         '''
         if request.method == 'POST':
             doc = minidom.parseString(request.body)
-            part_key = _get_children_from_path(doc, 'entry', 'content', (METADATA_NS, 'properties'), (_DATASERVICES_NS, 'PartitionKey'))
+            part_key = _get_children_from_path(
+                doc, 'entry', 'content', (METADATA_NS, 'properties'), (_DATASERVICES_NS, 'PartitionKey'))
             if not part_key:
                 raise WindowsAzureError(azure._ERROR_CANNOT_FIND_PARTITION_KEY)
             return part_key[0].firstChild.nodeValue
@@ -81,7 +85,8 @@ class _BatchClient(_HTTPClient):
         '''
         if request.method == 'POST':
             doc = minidom.parseString(request.body)
-            row_key = _get_children_from_path(doc, 'entry', 'content', (METADATA_NS, 'properties'), (_DATASERVICES_NS, 'RowKey'))
+            row_key = _get_children_from_path(
+                doc, 'entry', 'content', (METADATA_NS, 'properties'), (_DATASERVICES_NS, 'RowKey'))
             if not row_key:
                 raise WindowsAzureError(azure._ERROR_CANNOT_FIND_ROW_KEY)
             return row_key[0].firstChild.nodeValue
@@ -116,7 +121,8 @@ class _BatchClient(_HTTPClient):
         '''
         if self.batch_partition_key:
             if self.get_request_partition_key(request) != self.batch_partition_key:
-                raise WindowsAzureError(azure._ERROR_INCORRECT_PARTITION_KEY_IN_BATCH)
+                raise WindowsAzureError(
+                    azure._ERROR_INCORRECT_PARTITION_KEY_IN_BATCH)
         else:
             self.batch_partition_key = self.get_request_partition_key(request)
 
@@ -125,10 +131,11 @@ class _BatchClient(_HTTPClient):
         Validates that all requests have the different RowKey and adds RowKey to existing RowKey list.
 
         request: the request to insert, update or delete entity
-        '''       
+        '''
         if self.batch_row_keys:
             if self.get_request_row_key(request) in self.batch_row_keys:
-                raise WindowsAzureError(azure._ERROR_DUPLICATE_ROW_KEY_IN_BATCH)
+                raise WindowsAzureError(
+                    azure._ERROR_DUPLICATE_ROW_KEY_IN_BATCH)
         else:
             self.batch_row_keys.append(self.get_request_row_key(request))
 
@@ -153,37 +160,39 @@ class _BatchClient(_HTTPClient):
         Adds request to batch operation.
                 
         request: the request to insert, update or delete entity
-        '''  
+        '''
         self.validate_request_table(request)
         self.validate_request_partition_key(request)
         self.validate_request_row_key(request)
         self.batch_requests.append(request)
 
     def commit_batch(self):
-        ''' Resets batch flag and commits the batch requests. '''  
+        ''' Resets batch flag and commits the batch requests. '''
         if self.is_batch:
             self.is_batch = False
-            self.commit_batch_requests()            
-        
+            self.commit_batch_requests()
 
     def commit_batch_requests(self):
         ''' Commits the batch requests. '''
 
         batch_boundary = 'batch_a2e9d677-b28b-435e-a89e-87e6a768a431'
         changeset_boundary = 'changeset_8128b620-b4bb-458c-a177-0959fb14c977'
-        
-        #Commits batch only the requests list is not empty.
+
+        # Commits batch only the requests list is not empty.
         if self.batch_requests:
             request = HTTPRequest()
             request.method = 'POST'
             request.host = self.batch_requests[0].host
             request.path = '/$batch'
-            request.headers = [('Content-Type', 'multipart/mixed; boundary=' + batch_boundary),
-                              ('Accept', 'application/atom+xml,application/xml'),
-                              ('Accept-Charset', 'UTF-8')]
-            
+            request.headers = [(
+                'Content-Type', 'multipart/mixed; boundary=' + batch_boundary),
+                ('Accept',
+                 'application/atom+xml,application/xml'),
+                ('Accept-Charset', 'UTF-8')]
+
             request.body = '--' + batch_boundary + '\n'
-            request.body += 'Content-Type: multipart/mixed; boundary=' + changeset_boundary + '\n\n'
+            request.body += 'Content-Type: multipart/mixed; boundary=' + \
+                changeset_boundary + '\n\n'
 
             content_id = 1
 
@@ -193,19 +202,23 @@ class _BatchClient(_HTTPClient):
                 request.body += 'Content-Type: application/http\n'
                 request.body += 'Content-Transfer-Encoding: binary\n\n'
 
-                request.body += batch_request.method + ' http://' + batch_request.host + batch_request.path + ' HTTP/1.1\n'
+                request.body += batch_request.method + ' http://' + \
+                    batch_request.host + batch_request.path + ' HTTP/1.1\n'
                 request.body += 'Content-ID: ' + str(content_id) + '\n'
                 content_id += 1
-                
+
                 # Add different headers for different type requests.
                 if not batch_request.method == 'DELETE':
                     request.body += 'Content-Type: application/atom+xml;type=entry\n'
-                    request.body += 'Content-Length: ' + str(len(batch_request.body)) + '\n\n'
+                    request.body += 'Content-Length: ' + \
+                        str(len(batch_request.body)) + '\n\n'
                     request.body += batch_request.body + '\n'
                 else:
                     find_if_match = False
                     for name, value in batch_request.headers:
-                        #If-Match should be already included in batch_request.headers, but in case it is missing, just add it.
+                        # If-Match should be already included in
+                        # batch_request.headers, but in case it is missing,
+                        # just add it.
                         if name == 'If-Match':
                             request.body += name + ': ' + value + '\n\n'
                             break
@@ -213,25 +226,24 @@ class _BatchClient(_HTTPClient):
                         request.body += 'If-Match: *\n\n'
 
             request.body += '--' + changeset_boundary + '--' + '\n'
-            request.body += '--' + batch_boundary + '--' 
+            request.body += '--' + batch_boundary + '--'
 
             request.path, request.query = _update_request_uri_query(request)
             request.headers = _update_storage_table_header(request)
-            auth = _sign_storage_table_request(request, 
-                                        self.account_name, 
-                                        self.account_key)
+            auth = _sign_storage_table_request(request,
+                                               self.account_name,
+                                               self.account_key)
             request.headers.append(('Authorization', auth))
 
-            #Submit the whole request as batch request.
+            # Submit the whole request as batch request.
             response = self.perform_request(request)
             resp = response.body
 
             if response.status >= 300:
-                raise HTTPError(status, azure._ERROR_BATCH_COMMIT_FAIL, self.respheader, resp)
+                raise HTTPError(
+                    status, azure._ERROR_BATCH_COMMIT_FAIL, self.respheader, resp)
             return resp
 
     def cancel_batch(self):
         ''' Resets the batch flag. '''
         self.is_batch = False
-        
-    

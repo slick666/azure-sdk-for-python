@@ -28,7 +28,9 @@ from xml.dom import minidom
 from azure.http import HTTPError, HTTPResponse
 from azure import _USER_AGENT_STRING
 
+
 class _HTTPClient:
+
     ''' 
     Takes the request and sends it to cloud service and returns the response.
     '''
@@ -48,8 +50,8 @@ class _HTTPClient:
         self.message = None
         self.cert_file = cert_file
         self.account_name = account_name
-        self.account_key = account_key    
-        self.service_namespace = service_namespace    
+        self.account_key = account_key
+        self.service_namespace = service_namespace
         self.issuer = issuer
         self.protocol = protocol
         self.proxy_host = None
@@ -77,12 +79,14 @@ class _HTTPClient:
         target_host = request.host
         target_port = httplib.HTTP_PORT if protocol == 'http' else httplib.HTTPS_PORT
 
-        # If on Windows then use winhttp HTTPConnection instead of httplib HTTPConnection due to the 
-        # bugs in httplib HTTPSConnection. We've reported the issue to the Python 
-        # dev team and it's already fixed for 2.7.4 but we'll need to keep this workaround meanwhile.
+        # If on Windows then use winhttp HTTPConnection instead of httplib HTTPConnection due to the
+        # bugs in httplib HTTPSConnection. We've reported the issue to the Python
+        # dev team and it's already fixed for 2.7.4 but we'll need to keep this
+        # workaround meanwhile.
         if sys.platform.lower().startswith('win'):
             import azure.http.winhttp
-            connection = azure.http.winhttp._HTTPConnection(target_host, cert_file=self.cert_file, protocol=protocol)
+            connection = azure.http.winhttp._HTTPConnection(
+                target_host, cert_file=self.cert_file, protocol=protocol)
             proxy_host = self.proxy_host
             proxy_port = self.proxy_port
         else:
@@ -98,12 +102,14 @@ class _HTTPClient:
             if protocol == 'http':
                 connection = httplib.HTTPConnection(host, int(port))
             else:
-                connection = httplib.HTTPSConnection(host, int(port), cert_file=self.cert_file)
+                connection = httplib.HTTPSConnection(
+                    host, int(port), cert_file=self.cert_file)
 
         if self.proxy_host:
             headers = None
             if self.proxy_user and self.proxy_password:
-                auth = base64.encodestring("%s:%s" % (self.proxy_user, self.proxy_password))
+                auth = base64.encodestring("%s:%s" %
+                                           (self.proxy_user, self.proxy_password))
                 headers = {'Proxy-Authorization': 'Basic %s' % auth}
             connection.set_tunnel(proxy_host, int(proxy_port), headers)
 
@@ -115,7 +121,8 @@ class _HTTPClient:
                 for i in connection._buffer:
                     if i.startswith("Host: "):
                         connection._buffer.remove(i)
-                connection.putheader('Host', "%s:%s" % (connection._tunnel_host, connection._tunnel_port))
+                connection.putheader('Host', "%s:%s" %
+                                     (connection._tunnel_host, connection._tunnel_port))
 
         for name, value in request_headers:
             if value:
@@ -127,10 +134,10 @@ class _HTTPClient:
     def send_request_body(self, connection, request_body):
         if request_body:
             connection.send(request_body)
-        elif (not isinstance(connection, httplib.HTTPSConnection) and 
+        elif (not isinstance(connection, httplib.HTTPSConnection) and
               not isinstance(connection, httplib.HTTPConnection)):
             connection.send(None)
-     
+
     def perform_request(self, request):
         ''' Sends request to cloud service server and return the response. '''
 
@@ -139,7 +146,8 @@ class _HTTPClient:
 
         if sys.platform.lower().startswith('win'):
             if self.proxy_host and self.proxy_user:
-                connection.set_proxy_credentials(self.proxy_user, self.proxy_password)
+                connection.set_proxy_credentials(
+                    self.proxy_user, self.proxy_password)
 
         self.send_request_headers(connection, request.headers)
         self.send_request_body(connection, request.body)
@@ -153,9 +161,11 @@ class _HTTPClient:
             respbody = resp.read()
         elif resp.length > 0:
             respbody = resp.read(resp.length)
-    
-        response = HTTPResponse(int(resp.status), resp.reason, headers, respbody)
+
+        response = HTTPResponse(
+            int(resp.status), resp.reason, headers, respbody)
         if self.status >= 300:
-            raise HTTPError(self.status, self.message, self.respheader, respbody)
-        
+            raise HTTPError(self.status, self.message,
+                            self.respheader, respbody)
+
         return response
