@@ -24,6 +24,8 @@ from util import (AzureTestCase,
                   )
 
 #------------------------------------------------------------------------------
+
+
 class StorageManagementServiceTest(AzureTestCase):
 
     def setUp(self):
@@ -35,12 +37,14 @@ class StorageManagementServiceTest(AzureTestCase):
                            credentials.getProxyUser(),
                            credentials.getProxyPassword())
 
-        self.storage_account_name = getUniqueNameBasedOnCurrentTime('utstorage')
+        self.storage_account_name = getUniqueNameBasedOnCurrentTime(
+            'utstorage')
 
     def tearDown(self):
         try:
             self.sms.delete_storage_account(self.storage_account_name)
-        except: pass
+        except:
+            pass
 
     #--Helpers-----------------------------------------------------------------
     def _wait_for_async(self, request_id):
@@ -49,13 +53,15 @@ class StorageManagementServiceTest(AzureTestCase):
         while result.status == 'InProgress':
             count = count + 1
             if count > 120:
-                self.assertTrue(False, 'Timed out waiting for async operation to complete.')
+                self.assertTrue(
+                    False, 'Timed out waiting for async operation to complete.')
             time.sleep(5)
             result = self.sms.get_operation_status(request_id)
         self.assertEqual(result.status, 'Succeeded')
 
     def _create_storage_account(self, name):
-        result = self.sms.create_storage_account(name, name + 'description', name + 'label', None, 'West US', False, {'ext1':'val1', 'ext2':42})
+        result = self.sms.create_storage_account(
+            name, name + 'description', name + 'label', None, 'West US', False, {'ext1': 'val1', 'ext2': 42})
         self._wait_for_async(result.request_id)
 
     def _storage_account_exists(self, name):
@@ -72,7 +78,7 @@ class StorageManagementServiceTest(AzureTestCase):
 
         # Act
         result = self.sms.list_storage_accounts()
-        
+
         # Assert
         self.assertIsNotNone(result)
         self.assertTrue(len(result) > 0)
@@ -82,22 +88,28 @@ class StorageManagementServiceTest(AzureTestCase):
             if temp.service_name == self.storage_account_name:
                 storage = temp
                 break
-        
+
         self.assertIsNotNone(storage)
         self.assertIsNotNone(storage.service_name)
         self.assertIsNone(storage.storage_service_keys)
         self.assertIsNotNone(storage.storage_service_properties)
         self.assertIsNotNone(storage.storage_service_properties.affinity_group)
         self.assertIsNotNone(storage.storage_service_properties.description)
-        self.assertIsNotNone(storage.storage_service_properties.geo_primary_region)
-        self.assertIsNotNone(storage.storage_service_properties.geo_replication_enabled)
-        self.assertIsNotNone(storage.storage_service_properties.geo_secondary_region)
+        self.assertIsNotNone(
+            storage.storage_service_properties.geo_primary_region)
+        self.assertIsNotNone(
+            storage.storage_service_properties.geo_replication_enabled)
+        self.assertIsNotNone(
+            storage.storage_service_properties.geo_secondary_region)
         self.assertIsNotNone(storage.storage_service_properties.label)
-        self.assertIsNotNone(storage.storage_service_properties.last_geo_failover_time)
+        self.assertIsNotNone(
+            storage.storage_service_properties.last_geo_failover_time)
         self.assertIsNotNone(storage.storage_service_properties.location)
         self.assertIsNotNone(storage.storage_service_properties.status)
-        self.assertIsNotNone(storage.storage_service_properties.status_of_primary)
-        self.assertIsNotNone(storage.storage_service_properties.status_of_secondary)
+        self.assertIsNotNone(
+            storage.storage_service_properties.status_of_primary)
+        self.assertIsNotNone(
+            storage.storage_service_properties.status_of_secondary)
         self.assertIsNotNone(storage.storage_service_properties.endpoints)
         self.assertTrue(len(storage.storage_service_properties.endpoints) > 0)
         self.assertIsNotNone(storage.extended_properties)
@@ -108,7 +120,8 @@ class StorageManagementServiceTest(AzureTestCase):
         self._create_storage_account(self.storage_account_name)
 
         # Act
-        result = self.sms.get_storage_account_properties(self.storage_account_name)
+        result = self.sms.get_storage_account_properties(
+            self.storage_account_name)
 
         # Assert
         self.assertIsNotNone(result)
@@ -118,15 +131,21 @@ class StorageManagementServiceTest(AzureTestCase):
         self.assertIsNotNone(result.storage_service_properties)
         self.assertIsNotNone(result.storage_service_properties.affinity_group)
         self.assertIsNotNone(result.storage_service_properties.description)
-        self.assertIsNotNone(result.storage_service_properties.geo_primary_region)
-        self.assertIsNotNone(result.storage_service_properties.geo_replication_enabled)
-        self.assertIsNotNone(result.storage_service_properties.geo_secondary_region)
+        self.assertIsNotNone(
+            result.storage_service_properties.geo_primary_region)
+        self.assertIsNotNone(
+            result.storage_service_properties.geo_replication_enabled)
+        self.assertIsNotNone(
+            result.storage_service_properties.geo_secondary_region)
         self.assertIsNotNone(result.storage_service_properties.label)
-        self.assertIsNotNone(result.storage_service_properties.last_geo_failover_time)
+        self.assertIsNotNone(
+            result.storage_service_properties.last_geo_failover_time)
         self.assertIsNotNone(result.storage_service_properties.location)
         self.assertIsNotNone(result.storage_service_properties.status)
-        self.assertIsNotNone(result.storage_service_properties.status_of_primary)
-        self.assertIsNotNone(result.storage_service_properties.status_of_secondary)
+        self.assertIsNotNone(
+            result.storage_service_properties.status_of_primary)
+        self.assertIsNotNone(
+            result.storage_service_properties.status_of_secondary)
         self.assertIsNotNone(result.storage_service_properties.endpoints)
         self.assertTrue(len(result.storage_service_properties.endpoints) > 0)
         self.assertIsNotNone(result.extended_properties)
@@ -155,7 +174,8 @@ class StorageManagementServiceTest(AzureTestCase):
         previous = self.sms.get_storage_account_keys(self.storage_account_name)
 
         # Act
-        result = self.sms.regenerate_storage_account_keys(self.storage_account_name, 'Secondary')
+        result = self.sms.regenerate_storage_account_keys(
+            self.storage_account_name, 'Secondary')
 
         # Assert
         self.assertIsNotNone(result)
@@ -164,8 +184,10 @@ class StorageManagementServiceTest(AzureTestCase):
         self.assertIsNotNone(result.storage_service_keys.primary)
         self.assertIsNotNone(result.storage_service_keys.secondary)
         self.assertIsNone(result.storage_service_properties)
-        self.assertEqual(result.storage_service_keys.primary, previous.storage_service_keys.primary)
-        self.assertNotEqual(result.storage_service_keys.secondary, previous.storage_service_keys.secondary)
+        self.assertEqual(result.storage_service_keys.primary,
+                         previous.storage_service_keys.primary)
+        self.assertNotEqual(result.storage_service_keys.secondary,
+                            previous.storage_service_keys.secondary)
 
     def test_create_storage_account(self):
         # Arrange
@@ -173,11 +195,13 @@ class StorageManagementServiceTest(AzureTestCase):
         label = self.storage_account_name + 'label'
 
         # Act
-        result = self.sms.create_storage_account(self.storage_account_name, description, label, None, 'West US', True, {'ext1':'val1', 'ext2':42})
+        result = self.sms.create_storage_account(
+            self.storage_account_name, description, label, None, 'West US', True, {'ext1': 'val1', 'ext2': 42})
         self._wait_for_async(result.request_id)
 
         # Assert
-        self.assertTrue(self._storage_account_exists(self.storage_account_name))
+        self.assertTrue(
+            self._storage_account_exists(self.storage_account_name))
 
     def test_update_storage_account(self):
         # Arrange
@@ -186,12 +210,15 @@ class StorageManagementServiceTest(AzureTestCase):
         label = self.storage_account_name + 'labelupdate'
 
         # Act
-        result = self.sms.update_storage_account(self.storage_account_name, description, label, False, {'ext1':'val1update', 'ext2':53, 'ext3':'brandnew'})
+        result = self.sms.update_storage_account(
+            self.storage_account_name, description, label, False, {'ext1': 'val1update', 'ext2': 53, 'ext3': 'brandnew'})
 
         # Assert
         self.assertIsNone(result)
-        props = self.sms.get_storage_account_properties(self.storage_account_name)
-        self.assertEqual(props.storage_service_properties.description, description)
+        props = self.sms.get_storage_account_properties(
+            self.storage_account_name)
+        self.assertEqual(
+            props.storage_service_properties.description, description)
         self.assertEqual(props.storage_service_properties.label, label)
         self.assertEqual(props.extended_properties['ext1'], 'val1update')
         self.assertEqual(props.extended_properties['ext2'], '53')
@@ -206,14 +233,16 @@ class StorageManagementServiceTest(AzureTestCase):
 
         # Assert
         self.assertIsNone(result)
-        self.assertFalse(self._storage_account_exists(self.storage_account_name))
+        self.assertFalse(
+            self._storage_account_exists(self.storage_account_name))
 
     def test_check_storage_account_name_availability_not_available(self):
         # Arrange
         self._create_storage_account(self.storage_account_name)
 
         # Act
-        result = self.sms.check_storage_account_name_availability(self.storage_account_name)
+        result = self.sms.check_storage_account_name_availability(
+            self.storage_account_name)
 
         # Assert
         self.assertIsNotNone(result)
@@ -223,7 +252,8 @@ class StorageManagementServiceTest(AzureTestCase):
         # Arrange
 
         # Act
-        result = self.sms.check_storage_account_name_availability(self.storage_account_name)
+        result = self.sms.check_storage_account_name_availability(
+            self.storage_account_name)
 
         # Assert
         self.assertIsNotNone(result)
@@ -231,14 +261,16 @@ class StorageManagementServiceTest(AzureTestCase):
 
     def test_unicode_create_storage_account_unicode_name(self):
         # Arrange
-        self.storage_account_name = unicode(self.storage_account_name) + u'啊齄丂狛狜'
+        self.storage_account_name = unicode(
+            self.storage_account_name) + u'啊齄丂狛狜'
         description = 'description'
         label = 'label'
 
         # Act
         with self.assertRaises(WindowsAzureError):
             # not supported - queue name must be alphanumeric, lowercase
-            result = self.sms.create_storage_account(self.storage_account_name, description, label, None, 'West US', True, {'ext1':'val1', 'ext2':42})
+            result = self.sms.create_storage_account(
+                self.storage_account_name, description, label, None, 'West US', True, {'ext1': 'val1', 'ext2': 42})
             self._wait_for_async(result.request_id)
 
         # Assert
@@ -249,12 +281,15 @@ class StorageManagementServiceTest(AzureTestCase):
         label = u'丂狛狜'
 
         # Act
-        result = self.sms.create_storage_account(self.storage_account_name, description, label, None, 'West US', True, {'ext1':'val1', 'ext2':42})
+        result = self.sms.create_storage_account(
+            self.storage_account_name, description, label, None, 'West US', True, {'ext1': 'val1', 'ext2': 42})
         self._wait_for_async(result.request_id)
 
         # Assert
-        result = self.sms.get_storage_account_properties(self.storage_account_name)
-        self.assertEqual(result.storage_service_properties.description, description)
+        result = self.sms.get_storage_account_properties(
+            self.storage_account_name)
+        self.assertEqual(
+            result.storage_service_properties.description, description)
         self.assertEqual(result.storage_service_properties.label, label)
 
     def test_unicode_create_storage_account_unicode_property_value(self):
@@ -263,12 +298,15 @@ class StorageManagementServiceTest(AzureTestCase):
         label = 'label'
 
         # Act
-        result = self.sms.create_storage_account(self.storage_account_name, description, label, None, 'West US', True, {'ext1':u'丂狛狜', 'ext2':42})
+        result = self.sms.create_storage_account(
+            self.storage_account_name, description, label, None, 'West US', True, {'ext1': u'丂狛狜', 'ext2': 42})
         self._wait_for_async(result.request_id)
 
         # Assert
-        result = self.sms.get_storage_account_properties(self.storage_account_name)
-        self.assertEqual(result.storage_service_properties.description, description)
+        result = self.sms.get_storage_account_properties(
+            self.storage_account_name)
+        self.assertEqual(
+            result.storage_service_properties.description, description)
         self.assertEqual(result.storage_service_properties.label, label)
         self.assertEqual(result.extended_properties['ext1'], u'丂狛狜')
 

@@ -26,6 +26,8 @@ from util import (AzureTestCase,
                   )
 
 #------------------------------------------------------------------------------
+
+
 class ServiceBusManagementServiceTest(AzureTestCase):
 
     def setUp(self):
@@ -42,7 +44,8 @@ class ServiceBusManagementServiceTest(AzureTestCase):
     def tearDown(self):
         try:
             self.sms.delete_namespace(self.sb_namespace)
-        except: pass
+        except:
+            pass
 
     #--Helpers-----------------------------------------------------------------
     def _namespace_exists(self, name):
@@ -59,7 +62,8 @@ class ServiceBusManagementServiceTest(AzureTestCase):
         while ns.status != 'Active':
             count = count + 1
             if count > 120:
-                self.assertTrue(False, 'Timed out waiting for service bus namespace activation.')
+                self.assertTrue(
+                    False, 'Timed out waiting for service bus namespace activation.')
             time.sleep(5)
             ns = self.sms.get_namespace(name)
 
@@ -93,7 +97,7 @@ class ServiceBusManagementServiceTest(AzureTestCase):
     def test_get_namespace(self):
         # Arrange
         name = credentials.getServiceBusNamespace()
-        
+
         # Act
         result = self.sms.get_namespace(name)
 
@@ -107,13 +111,14 @@ class ServiceBusManagementServiceTest(AzureTestCase):
         self.assertIsNotNone(result.acs_management_endpoint)
         self.assertIsNotNone(result.servicebus_endpoint)
         self.assertIsNotNone(result.connection_string)
-        self.assertEqual(result.subscription_id, credentials.getSubscriptionId().replace('-', ''))
+        self.assertEqual(result.subscription_id,
+                         credentials.getSubscriptionId().replace('-', ''))
         self.assertTrue(result.enabled)
 
     def test_get_namespace_with_non_existing_namespace(self):
         # Arrange
         name = self.sb_namespace
-        
+
         # Act
         with self.assertRaises(WindowsAzureMissingResourceError):
             self.sms.get_namespace(name)

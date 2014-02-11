@@ -43,13 +43,13 @@ input = raw_input('>')
 if input == 'YES':
     print('Cleaning storage account...')
 
-    bc = BlobService(credentials.getStorageServicesName(), 
+    bc = BlobService(credentials.getStorageServicesName(),
                      credentials.getStorageServicesKey())
 
-    ts = TableService(credentials.getStorageServicesName(), 
+    ts = TableService(credentials.getStorageServicesName(),
                       credentials.getStorageServicesKey())
 
-    qs = QueueService(credentials.getStorageServicesName(), 
+    qs = QueueService(credentials.getStorageServicesName(),
                       credentials.getStorageServicesKey())
 
     for container in bc.list_containers():
@@ -63,8 +63,8 @@ if input == 'YES':
 
     print('Cleaning service namespace...')
 
-    sbs = ServiceBusService(credentials.getServiceBusNamespace(), 
-                            credentials.getServiceBusKey(), 
+    sbs = ServiceBusService(credentials.getServiceBusNamespace(),
+                            credentials.getServiceBusKey(),
                             'owner')
 
     for queue in sbs.list_queues():

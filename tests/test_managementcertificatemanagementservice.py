@@ -26,6 +26,8 @@ MANAGEMENT_CERT_DATA = 'MIIC9jCCAeKgAwIBAgIQ00IFaqV9VqVJxI+wZka0szAJBgUrDgMCHQUA
 MANAGEMENT_CERT_THUMBRINT = 'BEA4B74BD6B915E9DD6A01FB1B8C3C1740F517F2'
 
 #------------------------------------------------------------------------------
+
+
 class ManagementCertificateManagementServiceTest(AzureTestCase):
 
     def setUp(self):
@@ -43,13 +45,14 @@ class ManagementCertificateManagementServiceTest(AzureTestCase):
         for thumbprint in self.certificate_thumbprints:
             try:
                 self.sms.delete_management_certificate(thumbprint)
-            except: pass
+            except:
+                pass
 
     #--Helpers-----------------------------------------------------------------
     def _create_management_certificate(self, cert):
         self.certificate_thumbprints.append(cert.thumbprint)
-        result = self.sms.add_management_certificate(cert.public_key, 
-                                                     cert.thumbprint, 
+        result = self.sms.add_management_certificate(cert.public_key,
+                                                     cert.thumbprint,
                                                      cert.data)
         self.assertIsNone(result)
 
@@ -72,7 +75,7 @@ class ManagementCertificateManagementServiceTest(AzureTestCase):
         # Assert
         self.assertIsNotNone(result)
         self.assertTrue(len(result) > 0)
-        
+
         cert = None
         for temp in result:
             if temp.subscription_certificate_thumbprint == local_cert.thumbprint:
@@ -81,9 +84,11 @@ class ManagementCertificateManagementServiceTest(AzureTestCase):
 
         self.assertIsNotNone(cert)
         self.assertIsNotNone(cert.created)
-        self.assertEqual(cert.subscription_certificate_public_key, local_cert.public_key)
+        self.assertEqual(cert.subscription_certificate_public_key,
+                         local_cert.public_key)
         self.assertEqual(cert.subscription_certificate_data, local_cert.data)
-        self.assertEqual(cert.subscription_certificate_thumbprint, local_cert.thumbprint)
+        self.assertEqual(cert.subscription_certificate_thumbprint,
+                         local_cert.thumbprint)
 
     def test_get_management_certificate(self):
         # Arrange
@@ -96,9 +101,11 @@ class ManagementCertificateManagementServiceTest(AzureTestCase):
         # Assert
         self.assertIsNotNone(result)
         self.assertIsNotNone(result.created)
-        self.assertEqual(result.subscription_certificate_public_key, local_cert.public_key)
+        self.assertEqual(result.subscription_certificate_public_key,
+                         local_cert.public_key)
         self.assertEqual(result.subscription_certificate_data, local_cert.data)
-        self.assertEqual(result.subscription_certificate_thumbprint, local_cert.thumbprint)
+        self.assertEqual(result.subscription_certificate_thumbprint,
+                         local_cert.thumbprint)
 
     def test_add_management_certificate(self):
         # Arrange
@@ -112,7 +119,8 @@ class ManagementCertificateManagementServiceTest(AzureTestCase):
 
         # Assert
         self.assertIsNone(result)
-        self.assertTrue(self._management_certificate_exists(local_cert.thumbprint))
+        self.assertTrue(
+            self._management_certificate_exists(local_cert.thumbprint))
 
     def test_delete_management_certificate(self):
         # Arrange
@@ -124,20 +132,23 @@ class ManagementCertificateManagementServiceTest(AzureTestCase):
 
         # Assert
         self.assertIsNone(result)
-        self.assertFalse(self._management_certificate_exists(local_cert.thumbprint))
+        self.assertFalse(
+            self._management_certificate_exists(local_cert.thumbprint))
 
 
 class LocalCertificate(object):
+
     def __init__(self, thumbprint='', data='', public_key=''):
         self.thumbprint = thumbprint
         self.data = data
         self.public_key = public_key
 
+
 def _local_certificate():
     # It would be nice to dynamically create this data, so that it is unique
     # But for now, we always create the same certificate
-    return LocalCertificate(MANAGEMENT_CERT_THUMBRINT, 
-                            MANAGEMENT_CERT_DATA, 
+    return LocalCertificate(MANAGEMENT_CERT_THUMBRINT,
+                            MANAGEMENT_CERT_DATA,
                             MANAGEMENT_CERT_PUBLICKEY)
 
 #------------------------------------------------------------------------------

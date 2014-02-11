@@ -20,35 +20,40 @@ import unittest
 from exceptions import EnvironmentError
 
 #------------------------------------------------------------------------------
+
+
 class Credentials(object):
+
     '''
     Azure credentials needed to run Azure client tests.
     '''
+
     def __init__(self):
         credentialsFilename = "windowsazurecredentials.json"
         tmpName = os.path.join(os.getcwd(), credentialsFilename)
         if not os.path.exists(tmpName):
             if os.environ.has_key("USERPROFILE"):
-                tmpName = os.path.join(os.environ["USERPROFILE"], 
+                tmpName = os.path.join(os.environ["USERPROFILE"],
                                        credentialsFilename)
             elif os.environ.has_key("HOME"):
-                tmpName = os.path.join(os.environ["HOME"], 
+                tmpName = os.path.join(os.environ["HOME"],
                                        credentialsFilename)
         if not os.path.exists(tmpName):
-            errMsg = "Cannot run Azure tests when the expected config file containing Azure credentials, '%s', does not exist!" % (tmpName)
+            errMsg = "Cannot run Azure tests when the expected config file containing Azure credentials, '%s', does not exist!" % (
+                tmpName)
             raise EnvironmentError(errMsg)
 
         with open(tmpName, "r") as f:
             self.ns = json.load(f)
 
     def getManagementCertFile(self):
-        return self.ns[u'managementcertfile'] 
+        return self.ns[u'managementcertfile']
 
     def getSubscriptionId(self):
-        return self.ns[u'subscriptionid'] 
+        return self.ns[u'subscriptionid']
 
     def getServiceBusKey(self):
-        return self.ns[u'servicebuskey'] 
+        return self.ns[u'servicebuskey']
 
     def getServiceBusNamespace(self):
         return self.ns[u'servicebusns']
@@ -76,6 +81,7 @@ class Credentials(object):
 
 credentials = Credentials()
 
+
 def getUniqueTestRunID():
     '''
     Returns a unique identifier for this particular test run so 
@@ -94,8 +100,11 @@ def getUniqueTestRunID():
     for bad in ["-", "_", " ", "."]:
         ret_val = ret_val.replace(bad, "")
     ret_val = ret_val.lower().strip()
-    #only return the first 20 characters so the lenghth of queue, table name will be less than 64. It may not be unique but doesn't really matter for the tests.
-    return ret_val[:20]  
+    # only return the first 20 characters so the lenghth of queue, table name
+    # will be less than 64. It may not be unique but doesn't really matter for
+    # the tests.
+    return ret_val[:20]
+
 
 def getUniqueNameBasedOnCurrentTime(base_name):
     '''
@@ -109,7 +118,9 @@ def getUniqueNameBasedOnCurrentTime(base_name):
     cur_time = cur_time.lower().strip()
     return base_name + cur_time
 
+
 class AzureTestCase(unittest.TestCase):
+
     def assertNamedItemInContainer(self, container, item_name, msg=None):
         for item in container:
             if item.name == item_name:
@@ -121,5 +132,6 @@ class AzureTestCase(unittest.TestCase):
     def assertNamedItemNotInContainer(self, container, item_name, msg=None):
         for item in container:
             if item.name == item_name:
-                standardMsg = '%s unexpectedly found in %s' % (repr(item_name), repr(container))
+                standardMsg = '%s unexpectedly found in %s' % (
+                    repr(item_name), repr(container))
                 self.fail(self._formatMessage(msg, standardMsg))

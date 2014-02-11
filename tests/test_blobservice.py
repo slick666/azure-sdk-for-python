@@ -65,22 +65,25 @@ from util import (AzureTestCase,
                   )
 
 #------------------------------------------------------------------------------
+
+
 class BlobServiceTest(AzureTestCase):
 
     def setUp(self):
-        self.bc = BlobService(credentials.getStorageServicesName(), 
+        self.bc = BlobService(credentials.getStorageServicesName(),
                               credentials.getStorageServicesKey())
 
         self.bc.set_proxy(credentials.getProxyHost(),
                           credentials.getProxyPort(),
-                          credentials.getProxyUser(), 
+                          credentials.getProxyUser(),
                           credentials.getProxyPassword())
 
         __uid = getUniqueTestRunID()
 
         container_base_name = u'mytestcontainer%s' % (__uid)
 
-        self.container_name = getUniqueNameBasedOnCurrentTime(container_base_name)
+        self.container_name = getUniqueNameBasedOnCurrentTime(
+            container_base_name)
         self.additional_container_names = []
 
     def tearDown(self):
@@ -90,12 +93,14 @@ class BlobServiceTest(AzureTestCase):
     def cleanup(self):
         try:
             self.bc.delete_container(self.container_name)
-        except: pass
+        except:
+            pass
 
         for name in self.additional_container_names:
             try:
                 self.bc.delete_container(name)
-            except: pass
+            except:
+                pass
 
     #--Helpers-----------------------------------------------------------------
     def _create_container(self, container_name):
@@ -103,27 +108,29 @@ class BlobServiceTest(AzureTestCase):
 
     def _create_container_and_block_blob(self, container_name, blob_name, blob_data):
         self._create_container(container_name)
-        resp = self.bc.put_blob(container_name, blob_name, blob_data, 'BlockBlob')
+        resp = self.bc.put_blob(
+            container_name, blob_name, blob_data, 'BlockBlob')
         self.assertIsNone(resp)
 
     def _create_container_and_page_blob(self, container_name, blob_name, content_length):
         self._create_container(container_name)
-        resp = self.bc.put_blob(self.container_name, blob_name, '', 'PageBlob', x_ms_blob_content_length=str(content_length))
+        resp = self.bc.put_blob(self.container_name, blob_name, '',
+                                'PageBlob', x_ms_blob_content_length=str(content_length))
         self.assertIsNone(resp)
 
     def _get_permission(self, sas, resource_type, resource_path, permission):
         date_format = "%Y-%m-%dT%H:%M:%SZ"
         start = datetime.datetime.utcnow() - datetime.timedelta(minutes=1)
         expiry = start + datetime.timedelta(hours=1)
-        
+
         sap = SharedAccessPolicy(AccessPolicy(start.strftime(date_format),
                                               expiry.strftime(date_format),
                                               permission))
-        
-        signed_query = sas.generate_signed_query_string(resource_path, 
-                                                   resource_type, 
-                                                   sap)
-        
+
+        signed_query = sas.generate_signed_query_string(resource_path,
+                                                        resource_type,
+                                                        sap)
+
         return Permission('/' + resource_path, signed_query)
 
     def _get_signed_web_resource(self, sas, resource_type, resource_path, permission):
@@ -132,7 +139,7 @@ class BlobServiceTest(AzureTestCase):
         web_rsrc.properties[SHARED_ACCESS_PERMISSION] = permission
         web_rsrc.path = '/' + resource_path
         web_rsrc.request_url = '/' + resource_path
-        
+
         return sas.sign_request(web_rsrc)
 
     def _get_request(self, host, url):
@@ -147,9 +154,10 @@ class BlobServiceTest(AzureTestCase):
     def _web_request(self, method, host, url, content):
         connection = httplib.HTTPConnection(host)
         connection.putrequest(method, url)
-        connection.putheader('Content-Type', 'application/octet-stream;Charset=UTF-8')
+        connection.putheader(
+            'Content-Type', 'application/octet-stream;Charset=UTF-8')
         if content is not None:
-            connection.putheader('Content-Length', str(len(content)))  
+            connection.putheader('Content-Length', str(len(content)))
         connection.endheaders()
         if content is not None:
             connection.send(content)
@@ -182,8 +190,10 @@ class BlobServiceTest(AzureTestCase):
 
     def test_create_blob_service_env_variables(self):
         # Arrange
-        os.environ[AZURE_STORAGE_ACCOUNT] = credentials.getStorageServicesName()
-        os.environ[AZURE_STORAGE_ACCESS_KEY] = credentials.getStorageServicesKey()
+        os.environ[
+            AZURE_STORAGE_ACCOUNT] = credentials.getStorageServicesName()
+        os.environ[
+            AZURE_STORAGE_ACCESS_KEY] = credentials.getStorageServicesKey()
 
         # Act
         bs = BlobService()
@@ -195,7 +205,8 @@ class BlobServiceTest(AzureTestCase):
 
         # Assert
         self.assertIsNotNone(bs)
-        self.assertEquals(bs.account_name, credentials.getStorageServicesName())
+        self.assertEquals(bs.account_name,
+                          credentials.getStorageServicesName())
         self.assertEquals(bs.account_key, credentials.getStorageServicesKey())
         self.assertEquals(bs.is_emulated, False)
 
@@ -231,8 +242,10 @@ class BlobServiceTest(AzureTestCase):
     def test_create_blob_service_emulated_false_env_variables(self):
         # Arrange
         os.environ[EMULATED] = 'false'
-        os.environ[AZURE_STORAGE_ACCOUNT] = credentials.getStorageServicesName()
-        os.environ[AZURE_STORAGE_ACCESS_KEY] = credentials.getStorageServicesKey()
+        os.environ[
+            AZURE_STORAGE_ACCOUNT] = credentials.getStorageServicesName()
+        os.environ[
+            AZURE_STORAGE_ACCESS_KEY] = credentials.getStorageServicesKey()
 
         # Act
         bs = BlobService()
@@ -246,7 +259,8 @@ class BlobServiceTest(AzureTestCase):
 
         # Assert
         self.assertIsNotNone(bs)
-        self.assertEquals(bs.account_name, credentials.getStorageServicesName())
+        self.assertEquals(bs.account_name,
+                          credentials.getStorageServicesName())
         self.assertEquals(bs.account_key, credentials.getStorageServicesKey())
         self.assertEquals(bs.is_emulated, False)
 
@@ -264,7 +278,8 @@ class BlobServiceTest(AzureTestCase):
         # Arrange
 
         # Act
-        created = self.bc.create_container(self.container_name, None, None, True)
+        created = self.bc.create_container(
+            self.container_name, None, None, True)
 
         # Assert
         self.assertTrue(created)
@@ -295,7 +310,8 @@ class BlobServiceTest(AzureTestCase):
         # Arrange
 
         # Act
-        created = self.bc.create_container(self.container_name, None, 'container')
+        created = self.bc.create_container(
+            self.container_name, None, 'container')
 
         # Assert
         self.assertTrue(created)
@@ -317,7 +333,8 @@ class BlobServiceTest(AzureTestCase):
         # Arrange
 
         # Act
-        created = self.bc.create_container(self.container_name, {'hello':'world', 'foo':'42'})
+        created = self.bc.create_container(
+            self.container_name, {'hello': 'world', 'foo': '42'})
 
         # Assert
         self.assertTrue(created)
@@ -353,15 +370,17 @@ class BlobServiceTest(AzureTestCase):
         self.assertEqual(len(containers), 1)
         self.assertIsNotNone(containers[0])
         self.assertEqual(containers[0].name, self.container_name)
-        self.assertIsNone(containers[0].metadata);
+        self.assertIsNone(containers[0].metadata)
 
     def test_list_containers_with_include_metadata(self):
         # Arrange
         self.bc.create_container(self.container_name)
-        resp = self.bc.set_container_metadata(self.container_name, {'hello':'world', 'bar':'43'})
+        resp = self.bc.set_container_metadata(
+            self.container_name, {'hello': 'world', 'bar': '43'})
 
         # Act
-        containers = self.bc.list_containers(self.container_name, None, None, 'metadata')
+        containers = self.bc.list_containers(
+            self.container_name, None, None, 'metadata')
 
         # Assert
         self.assertIsNotNone(containers)
@@ -373,16 +392,17 @@ class BlobServiceTest(AzureTestCase):
 
     def test_list_containers_with_maxresults_and_marker(self):
         # Arrange
-        self.additional_container_names = [self.container_name + 'a', 
-                                           self.container_name + 'b', 
-                                           self.container_name + 'c', 
+        self.additional_container_names = [self.container_name + 'a',
+                                           self.container_name + 'b',
+                                           self.container_name + 'c',
                                            self.container_name + 'd']
         for name in self.additional_container_names:
             self.bc.create_container(name)
 
         # Act
         containers1 = self.bc.list_containers(self.container_name, None, 2)
-        containers2 = self.bc.list_containers(self.container_name, containers1.next_marker, 2)
+        containers2 = self.bc.list_containers(
+            self.container_name, containers1.next_marker, 2)
 
         # Assert
         self.assertIsNotNone(containers1)
@@ -399,7 +419,8 @@ class BlobServiceTest(AzureTestCase):
         self.bc.create_container(self.container_name)
 
         # Act
-        resp = self.bc.set_container_metadata(self.container_name, {'hello':'world', 'bar':'43'})
+        resp = self.bc.set_container_metadata(
+            self.container_name, {'hello': 'world', 'bar': '43'})
 
         # Assert
         self.assertIsNone(resp)
@@ -413,7 +434,8 @@ class BlobServiceTest(AzureTestCase):
 
         # Act
         with self.assertRaises(WindowsAzureError):
-            self.bc.set_container_metadata(self.container_name, {'hello':'world', 'bar':'43'})
+            self.bc.set_container_metadata(
+                self.container_name, {'hello': 'world', 'bar': '43'})
 
         # Assert
 
@@ -421,7 +443,8 @@ class BlobServiceTest(AzureTestCase):
         # Arrange
         self.bc.create_container(self.container_name)
         self.bc.set_container_acl(self.container_name, None, 'container')
-        self.bc.set_container_metadata(self.container_name, {'hello':'world','foo':'42'})
+        self.bc.set_container_metadata(
+            self.container_name, {'hello': 'world', 'foo': '42'})
 
         # Act
         md = self.bc.get_container_metadata(self.container_name)
@@ -445,7 +468,8 @@ class BlobServiceTest(AzureTestCase):
         # Arrange
         self.bc.create_container(self.container_name)
         self.bc.set_container_acl(self.container_name, None, 'container')
-        self.bc.set_container_metadata(self.container_name, {'hello':'world','foo':'42'})
+        self.bc.set_container_metadata(
+            self.container_name, {'hello': 'world', 'foo': '42'})
 
         # Act
         props = self.bc.get_container_properties(self.container_name)
@@ -456,7 +480,8 @@ class BlobServiceTest(AzureTestCase):
         self.assertEquals(props['x-ms-meta-foo'], '42')
         # TODO:
         # get_container_properties returns container lease information whereas get_container_metadata doesn't
-        # we should lease the container in the arrange section and verify that we receive that info
+        # we should lease the container in the arrange section and verify that
+        # we receive that info
 
     def test_get_container_properties_with_non_existing_container(self):
         # Arrange
@@ -518,7 +543,8 @@ class BlobServiceTest(AzureTestCase):
         self.bc.create_container(self.container_name)
 
         # Act
-        resp = self.bc.set_container_acl(self.container_name, None, 'container')
+        resp = self.bc.set_container_acl(
+            self.container_name, None, 'container')
 
         # Assert
         self.assertIsNone(resp)
@@ -696,7 +722,8 @@ class BlobServiceTest(AzureTestCase):
         self.assertNamedItemInContainer(resp, 'blob1')
         self.assertNamedItemInContainer(resp, 'blob2')
         self.assertEqual(resp[0].properties.content_length, 11)
-        self.assertEqual(resp[1].properties.content_type, 'application/octet-stream Charset=UTF-8')
+        self.assertEqual(resp[1].properties.content_type,
+                         'application/octet-stream Charset=UTF-8')
 
     def test_list_blobs_with_prefix(self):
         # Arrange
@@ -722,17 +749,26 @@ class BlobServiceTest(AzureTestCase):
         # Arrange
         self._create_container(self.container_name)
         data = 'hello world'
-        self.bc.put_blob(self.container_name, 'documents/music/pop/thriller.mp3', data, 'BlockBlob')
-        self.bc.put_blob(self.container_name, 'documents/music/rock/stairwaytoheaven.mp3', data, 'BlockBlob')
-        self.bc.put_blob(self.container_name, 'documents/music/rock/hurt.mp3', data, 'BlockBlob')
-        self.bc.put_blob(self.container_name, 'documents/music/rock/metallica/one.mp3', data, 'BlockBlob')
-        self.bc.put_blob(self.container_name, 'documents/music/unsorted1.mp3', data, 'BlockBlob')
-        self.bc.put_blob(self.container_name, 'documents/music/unsorted2.mp3', data, 'BlockBlob')
-        self.bc.put_blob(self.container_name, 'documents/pictures/birthday/kid.jpg', data, 'BlockBlob')
-        self.bc.put_blob(self.container_name, 'documents/pictures/birthday/cake.jpg', data, 'BlockBlob')
+        self.bc.put_blob(self.container_name,
+                         'documents/music/pop/thriller.mp3', data, 'BlockBlob')
+        self.bc.put_blob(self.container_name,
+                         'documents/music/rock/stairwaytoheaven.mp3', data, 'BlockBlob')
+        self.bc.put_blob(self.container_name,
+                         'documents/music/rock/hurt.mp3', data, 'BlockBlob')
+        self.bc.put_blob(self.container_name,
+                         'documents/music/rock/metallica/one.mp3', data, 'BlockBlob')
+        self.bc.put_blob(self.container_name,
+                         'documents/music/unsorted1.mp3', data, 'BlockBlob')
+        self.bc.put_blob(self.container_name,
+                         'documents/music/unsorted2.mp3', data, 'BlockBlob')
+        self.bc.put_blob(self.container_name,
+                         'documents/pictures/birthday/kid.jpg', data, 'BlockBlob')
+        self.bc.put_blob(self.container_name,
+                         'documents/pictures/birthday/cake.jpg', data, 'BlockBlob')
 
         # Act
-        resp = self.bc.list_blobs(self.container_name, 'documents/music/', delimiter='/')
+        resp = self.bc.list_blobs(
+            self.container_name, 'documents/music/', delimiter='/')
 
         # Assert
         self.assertIsNotNone(resp)
@@ -743,8 +779,10 @@ class BlobServiceTest(AzureTestCase):
         self.assertEqual(resp.delimiter, '/')
         self.assertNamedItemInContainer(resp, 'documents/music/unsorted1.mp3')
         self.assertNamedItemInContainer(resp, 'documents/music/unsorted2.mp3')
-        self.assertNamedItemInContainer(resp.blobs, 'documents/music/unsorted1.mp3')
-        self.assertNamedItemInContainer(resp.blobs, 'documents/music/unsorted2.mp3')
+        self.assertNamedItemInContainer(
+            resp.blobs, 'documents/music/unsorted1.mp3')
+        self.assertNamedItemInContainer(
+            resp.blobs, 'documents/music/unsorted2.mp3')
         self.assertNamedItemInContainer(resp.prefixes, 'documents/music/pop/')
         self.assertNamedItemInContainer(resp.prefixes, 'documents/music/rock/')
 
@@ -777,7 +815,8 @@ class BlobServiceTest(AzureTestCase):
 
         # Act
         blobs1 = self.bc.list_blobs(self.container_name, None, None, 2)
-        blobs2 = self.bc.list_blobs(self.container_name, None, blobs1.next_marker, 2)
+        blobs2 = self.bc.list_blobs(
+            self.container_name, None, blobs1.next_marker, 2)
 
         # Assert
         self.assertEqual(len(blobs1), 2)
@@ -811,8 +850,10 @@ class BlobServiceTest(AzureTestCase):
         # Arrange
         self._create_container(self.container_name)
         data = 'hello world'
-        self.bc.put_blob(self.container_name, 'blob1', data, 'BlockBlob', x_ms_meta_name_values={'foo':'1','bar':'bob'})
-        self.bc.put_blob(self.container_name, 'blob2', data, 'BlockBlob', x_ms_meta_name_values={'foo':'2','bar':'car'})
+        self.bc.put_blob(self.container_name, 'blob1', data, 'BlockBlob',
+                         x_ms_meta_name_values={'foo': '1', 'bar': 'bob'})
+        self.bc.put_blob(self.container_name, 'blob2', data, 'BlockBlob',
+                         x_ms_meta_name_values={'foo': '2', 'bar': 'car'})
         self.bc.snapshot_blob(self.container_name, 'blob1')
 
         # Act
@@ -834,18 +875,20 @@ class BlobServiceTest(AzureTestCase):
         self.bc.put_block(self.container_name, 'blob1', 'AAA', '1')
         self.bc.put_block(self.container_name, 'blob1', 'BBB', '2')
         self.bc.put_block(self.container_name, 'blob1', 'CCC', '3')
-        self.bc.put_blob(self.container_name, 'blob2', data, 'BlockBlob', x_ms_meta_name_values={'foo':'2','bar':'car'})
+        self.bc.put_blob(self.container_name, 'blob2', data, 'BlockBlob',
+                         x_ms_meta_name_values={'foo': '2', 'bar': 'car'})
 
         # Act
-        blobs = self.bc.list_blobs(self.container_name, include='uncommittedblobs')
+        blobs = self.bc.list_blobs(
+            self.container_name, include='uncommittedblobs')
 
         # Assert
         self.assertEqual(len(blobs), 2)
         self.assertEqual(blobs[0].name, 'blob1')
         self.assertEqual(blobs[1].name, 'blob2')
 
-    #def test_list_blobs_with_include_copy(self):
-    #    # Arrange
+    # def test_list_blobs_with_include_copy(self):
+    # Arrange
     #    self._create_container(self.container_name)
     #    data = 'hello world'
     #    self.bc.put_blob(self.container_name, 'blob1', data, 'BlockBlob', x_ms_meta_name_values={'status':'original'})
@@ -854,25 +897,28 @@ class BlobServiceTest(AzureTestCase):
     #                                'blob1')
     #    self.bc.copy_blob(self.container_name, 'blob1copy', sourceblob, {'status':'copy'})
 
-    #    # Act
+    # Act
     #    blobs = self.bc.list_blobs(self.container_name, include='copy')
 
-    #    # Assert
+    # Assert
     #    self.assertEqual(len(blobs), 2)
     #    self.assertEqual(blobs[0].name, 'blob1')
     #    self.assertEqual(blobs[1].name, 'blob2')
-    #    #TODO: check for metadata related to copy blob
+    # TODO: check for metadata related to copy blob
 
     def test_list_blobs_with_include_multiple(self):
         # Arrange
         self._create_container(self.container_name)
         data = 'hello world'
-        self.bc.put_blob(self.container_name, 'blob1', data, 'BlockBlob', x_ms_meta_name_values={'foo':'1','bar':'bob'})
-        self.bc.put_blob(self.container_name, 'blob2', data, 'BlockBlob', x_ms_meta_name_values={'foo':'2','bar':'car'})
+        self.bc.put_blob(self.container_name, 'blob1', data, 'BlockBlob',
+                         x_ms_meta_name_values={'foo': '1', 'bar': 'bob'})
+        self.bc.put_blob(self.container_name, 'blob2', data, 'BlockBlob',
+                         x_ms_meta_name_values={'foo': '2', 'bar': 'car'})
         self.bc.snapshot_blob(self.container_name, 'blob1')
 
         # Act
-        blobs = self.bc.list_blobs(self.container_name, include='snapshots,metadata')
+        blobs = self.bc.list_blobs(
+            self.container_name, include='snapshots,metadata')
 
         # Assert
         self.assertEqual(len(blobs), 3)
@@ -895,7 +941,8 @@ class BlobServiceTest(AzureTestCase):
 
         # Act
         data = 'hello world'
-        resp = self.bc.put_blob(self.container_name, 'blob1', data, 'BlockBlob')
+        resp = self.bc.put_blob(
+            self.container_name, 'blob1', data, 'BlockBlob')
 
         # Assert
         self.assertIsNone(resp)
@@ -905,24 +952,28 @@ class BlobServiceTest(AzureTestCase):
         self._create_container(self.container_name)
 
         # Act
-        resp = self.bc.put_blob(self.container_name, 'blob1', '', 'PageBlob', x_ms_blob_content_length='1024')
+        resp = self.bc.put_blob(self.container_name, 'blob1',
+                                '', 'PageBlob', x_ms_blob_content_length='1024')
 
         # Assert
         self.assertIsNone(resp)
 
     def test_put_blob_with_lease_id(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
         lease = self.bc.lease_blob(self.container_name, 'blob1', 'acquire')
         lease_id = lease['x-ms-lease-id']
 
         # Act
         data = 'hello world again'
-        resp = self.bc.put_blob(self.container_name, 'blob1', data, 'BlockBlob', x_ms_lease_id=lease_id)
+        resp = self.bc.put_blob(
+            self.container_name, 'blob1', data, 'BlockBlob', x_ms_lease_id=lease_id)
 
         # Assert
         self.assertIsNone(resp)
-        blob = self.bc.get_blob(self.container_name, 'blob1', x_ms_lease_id=lease_id)
+        blob = self.bc.get_blob(
+            self.container_name, 'blob1', x_ms_lease_id=lease_id)
         self.assertEqual(blob, 'hello world again')
 
     def test_put_blob_with_metadata(self):
@@ -931,7 +982,8 @@ class BlobServiceTest(AzureTestCase):
 
         # Act
         data = 'hello world'
-        resp = self.bc.put_blob(self.container_name, 'blob1', data, 'BlockBlob', x_ms_meta_name_values={'hello':'world','foo':'42'})
+        resp = self.bc.put_blob(self.container_name, 'blob1', data,
+                                'BlockBlob', x_ms_meta_name_values={'hello': 'world', 'foo': '42'})
 
         # Assert
         self.assertIsNone(resp)
@@ -941,7 +993,8 @@ class BlobServiceTest(AzureTestCase):
 
     def test_get_blob_with_existing_blob(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
         blob = self.bc.get_blob(self.container_name, 'blob1')
@@ -952,11 +1005,13 @@ class BlobServiceTest(AzureTestCase):
 
     def test_get_blob_with_snapshot(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
         snapshot = self.bc.snapshot_blob(self.container_name, 'blob1')
 
         # Act
-        blob = self.bc.get_blob(self.container_name, 'blob1', snapshot['x-ms-snapshot'])
+        blob = self.bc.get_blob(
+            self.container_name, 'blob1', snapshot['x-ms-snapshot'])
 
         # Assert
         self.assertIsInstance(blob, BlobResult)
@@ -964,12 +1019,15 @@ class BlobServiceTest(AzureTestCase):
 
     def test_get_blob_with_snapshot_previous(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
         snapshot = self.bc.snapshot_blob(self.container_name, 'blob1')
-        self.bc.put_blob(self.container_name, 'blob1', 'hello world again', 'BlockBlob')
+        self.bc.put_blob(self.container_name, 'blob1',
+                         'hello world again', 'BlockBlob')
 
         # Act
-        blob_previous = self.bc.get_blob(self.container_name, 'blob1', snapshot['x-ms-snapshot'])
+        blob_previous = self.bc.get_blob(
+            self.container_name, 'blob1', snapshot['x-ms-snapshot'])
         blob_latest = self.bc.get_blob(self.container_name, 'blob1')
 
         # Assert
@@ -980,10 +1038,12 @@ class BlobServiceTest(AzureTestCase):
 
     def test_get_blob_with_range(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
-        blob = self.bc.get_blob(self.container_name, 'blob1', x_ms_range='bytes=0-5')
+        blob = self.bc.get_blob(
+            self.container_name, 'blob1', x_ms_range='bytes=0-5')
 
         # Assert
         self.assertIsInstance(blob, BlobResult)
@@ -991,24 +1051,29 @@ class BlobServiceTest(AzureTestCase):
 
     def test_get_blob_with_range_and_get_content_md5(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
-        blob = self.bc.get_blob(self.container_name, 'blob1', x_ms_range='bytes=0-5', x_ms_range_get_content_md5='true')
+        blob = self.bc.get_blob(self.container_name, 'blob1',
+                                x_ms_range='bytes=0-5', x_ms_range_get_content_md5='true')
 
         # Assert
         self.assertIsInstance(blob, BlobResult)
         self.assertEquals(blob, 'hello ')
-        self.assertEquals(blob.properties['content-md5'], '+BSJN3e8wilf/wXwDlCNpg==')
+        self.assertEquals(
+            blob.properties['content-md5'], '+BSJN3e8wilf/wXwDlCNpg==')
 
     def test_get_blob_with_lease(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
         lease = self.bc.lease_blob(self.container_name, 'blob1', 'acquire')
         lease_id = lease['x-ms-lease-id']
 
         # Act
-        blob = self.bc.get_blob(self.container_name, 'blob1', x_ms_lease_id=lease_id)
+        blob = self.bc.get_blob(
+            self.container_name, 'blob1', x_ms_lease_id=lease_id)
         self.bc.lease_blob(self.container_name, 'blob1', 'release', lease_id)
 
         # Assert
@@ -1017,11 +1082,13 @@ class BlobServiceTest(AzureTestCase):
 
     def test_get_blob_on_leased_blob_without_lease_id(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
         self.bc.lease_blob(self.container_name, 'blob1', 'acquire')
 
         # Act
-        blob = self.bc.get_blob(self.container_name, 'blob1') # get_blob is allowed without lease id
+        # get_blob is allowed without lease id
+        blob = self.bc.get_blob(self.container_name, 'blob1')
 
         # Assert
         self.assertIsInstance(blob, BlobResult)
@@ -1048,10 +1115,12 @@ class BlobServiceTest(AzureTestCase):
 
     def test_set_blob_properties_with_existing_blob(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
-        resp = self.bc.set_blob_properties(self.container_name, 'blob1', x_ms_blob_content_language='spanish')
+        resp = self.bc.set_blob_properties(
+            self.container_name, 'blob1', x_ms_blob_content_language='spanish')
 
         # Assert
         self.assertIsNone(resp)
@@ -1063,7 +1132,8 @@ class BlobServiceTest(AzureTestCase):
 
         # Act
         with self.assertRaises(WindowsAzureError):
-            self.bc.set_blob_properties(self.container_name, 'blob1', x_ms_blob_content_language='spanish')
+            self.bc.set_blob_properties(
+                self.container_name, 'blob1', x_ms_blob_content_language='spanish')
 
         # Assert
 
@@ -1073,13 +1143,15 @@ class BlobServiceTest(AzureTestCase):
 
         # Act
         with self.assertRaises(WindowsAzureError):
-            self.bc.set_blob_properties(self.container_name, 'blob1', x_ms_blob_content_language='spanish')
+            self.bc.set_blob_properties(
+                self.container_name, 'blob1', x_ms_blob_content_language='spanish')
 
         # Assert
 
     def test_get_blob_properties_with_existing_blob(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
         props = self.bc.get_blob_properties(self.container_name, 'blob1')
@@ -1111,7 +1183,8 @@ class BlobServiceTest(AzureTestCase):
 
     def test_get_blob_metadata_with_existing_blob(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
         md = self.bc.get_blob_metadata(self.container_name, 'blob1')
@@ -1121,10 +1194,12 @@ class BlobServiceTest(AzureTestCase):
 
     def test_set_blob_metadata_with_existing_blob(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
-        resp = self.bc.set_blob_metadata(self.container_name, 'blob1', {'hello':'world', 'foo':'42'})
+        resp = self.bc.set_blob_metadata(
+            self.container_name, 'blob1', {'hello': 'world', 'foo': '42'})
 
         # Assert
         self.assertIsNone(resp)
@@ -1135,7 +1210,8 @@ class BlobServiceTest(AzureTestCase):
 
     def test_delete_blob_with_existing_blob(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
         resp = self.bc.delete_blob(self.container_name, 'blob1')
@@ -1155,7 +1231,8 @@ class BlobServiceTest(AzureTestCase):
 
     def test_copy_blob_with_existing_blob(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
         sourceblob = '/%s/%s/%s' % (credentials.getStorageServicesName(),
@@ -1170,7 +1247,8 @@ class BlobServiceTest(AzureTestCase):
 
     def test_snapshot_blob(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
         resp = self.bc.snapshot_blob(self.container_name, 'blob1')
@@ -1181,11 +1259,13 @@ class BlobServiceTest(AzureTestCase):
 
     def test_lease_blob_acquire_and_release(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
 
         # Act
         resp1 = self.bc.lease_blob(self.container_name, 'blob1', 'acquire')
-        resp2 = self.bc.lease_blob(self.container_name, 'blob1', 'release', resp1['x-ms-lease-id'])
+        resp2 = self.bc.lease_blob(
+            self.container_name, 'blob1', 'release', resp1['x-ms-lease-id'])
 
         # Assert
         self.assertIsNotNone(resp1)
@@ -1193,13 +1273,15 @@ class BlobServiceTest(AzureTestCase):
 
     def test_lease_blob_acquire_twice_fails(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', 'hello world')
         resp1 = self.bc.lease_blob(self.container_name, 'blob1', 'acquire')
 
         # Act
         with self.assertRaises(WindowsAzureError):
             self.bc.lease_blob(self.container_name, 'blob1', 'acquire')
-        resp2 = self.bc.lease_blob(self.container_name, 'blob1', 'release', resp1['x-ms-lease-id'])
+        resp2 = self.bc.lease_blob(
+            self.container_name, 'blob1', 'release', resp1['x-ms-lease-id'])
 
         # Assert
         self.assertIsNotNone(resp1)
@@ -1211,7 +1293,7 @@ class BlobServiceTest(AzureTestCase):
 
         # Act
         for i in xrange(5):
-            resp = self.bc.put_block(self.container_name, 
+            resp = self.bc.put_block(self.container_name,
                                      'blob1',
                                      'block %d' % (i),
                                      str(i))
@@ -1227,7 +1309,8 @@ class BlobServiceTest(AzureTestCase):
         self.bc.put_block(self.container_name, 'blob1', 'CCC', '3')
 
         # Act
-        resp = self.bc.put_block_list(self.container_name, 'blob1', ['1', '2', '3'])
+        resp = self.bc.put_block_list(
+            self.container_name, 'blob1', ['1', '2', '3'])
 
         # Assert
         self.assertIsNone(resp)
@@ -1239,7 +1322,8 @@ class BlobServiceTest(AzureTestCase):
         self._create_container_and_block_blob(self.container_name, 'blob1', '')
 
         # Act
-        block_list = self.bc.get_block_list(self.container_name, 'blob1', None, 'all')
+        block_list = self.bc.get_block_list(
+            self.container_name, 'blob1', None, 'all')
 
         # Assert
         self.assertIsNotNone(block_list)
@@ -1255,7 +1339,8 @@ class BlobServiceTest(AzureTestCase):
         self.bc.put_block(self.container_name, 'blob1', 'CCC', '3')
 
         # Act
-        block_list = self.bc.get_block_list(self.container_name, 'blob1', None, 'all')
+        block_list = self.bc.get_block_list(
+            self.container_name, 'blob1', None, 'all')
 
         # Assert
         self.assertIsNotNone(block_list)
@@ -1272,7 +1357,8 @@ class BlobServiceTest(AzureTestCase):
         self.bc.put_block_list(self.container_name, 'blob1', ['1', '2', '3'])
 
         # Act
-        block_list = self.bc.get_block_list(self.container_name, 'blob1', None, 'all')
+        block_list = self.bc.get_block_list(
+            self.container_name, 'blob1', None, 'all')
 
         # Assert
         self.assertIsNotNone(block_list)
@@ -1282,28 +1368,33 @@ class BlobServiceTest(AzureTestCase):
 
     def test_put_page_update(self):
         # Arrange
-        self._create_container_and_page_blob(self.container_name, 'blob1', 1024)
+        self._create_container_and_page_blob(
+            self.container_name, 'blob1', 1024)
 
         # Act
         data = 'abcdefghijklmnop' * 32
-        resp = self.bc.put_page(self.container_name, 'blob1', data, 'bytes=0-511', 'update')
+        resp = self.bc.put_page(
+            self.container_name, 'blob1', data, 'bytes=0-511', 'update')
 
         # Assert
         self.assertIsNone(resp)
 
     def test_put_page_clear(self):
         # Arrange
-        self._create_container_and_page_blob(self.container_name, 'blob1', 1024)
+        self._create_container_and_page_blob(
+            self.container_name, 'blob1', 1024)
 
         # Act
-        resp = self.bc.put_page(self.container_name, 'blob1', '', 'bytes=0-511', 'clear')
+        resp = self.bc.put_page(
+            self.container_name, 'blob1', '', 'bytes=0-511', 'clear')
 
         # Assert
         self.assertIsNone(resp)
 
     def test_get_page_ranges_no_pages(self):
         # Arrange
-        self._create_container_and_page_blob(self.container_name, 'blob1', 1024)
+        self._create_container_and_page_blob(
+            self.container_name, 'blob1', 1024)
 
         # Act
         ranges = self.bc.get_page_ranges(self.container_name, 'blob1')
@@ -1315,10 +1406,13 @@ class BlobServiceTest(AzureTestCase):
 
     def test_get_page_ranges_2_pages(self):
         # Arrange
-        self._create_container_and_page_blob(self.container_name, 'blob1', 2048)
+        self._create_container_and_page_blob(
+            self.container_name, 'blob1', 2048)
         data = 'abcdefghijklmnop' * 32
-        resp1 = self.bc.put_page(self.container_name, 'blob1', data, 'bytes=0-511', 'update')
-        resp2 = self.bc.put_page(self.container_name, 'blob1', data, 'bytes=1024-1535', 'update')
+        resp1 = self.bc.put_page(
+            self.container_name, 'blob1', data, 'bytes=0-511', 'update')
+        resp2 = self.bc.put_page(
+            self.container_name, 'blob1', data, 'bytes=1024-1535', 'update')
 
         # Act
         ranges = self.bc.get_page_ranges(self.container_name, 'blob1')
@@ -1334,10 +1428,13 @@ class BlobServiceTest(AzureTestCase):
 
     def test_get_page_ranges_iter(self):
         # Arrange
-        self._create_container_and_page_blob(self.container_name, 'blob1', 2048)
+        self._create_container_and_page_blob(
+            self.container_name, 'blob1', 2048)
         data = 'abcdefghijklmnop' * 32
-        resp1 = self.bc.put_page(self.container_name, 'blob1', data, 'bytes=0-511', 'update')
-        resp2 = self.bc.put_page(self.container_name, 'blob1', data, 'bytes=1024-1535', 'update')
+        resp1 = self.bc.put_page(
+            self.container_name, 'blob1', data, 'bytes=0-511', 'update')
+        resp2 = self.bc.put_page(
+            self.container_name, 'blob1', data, 'bytes=1024-1535', 'update')
 
         # Act
         ranges = self.bc.get_page_ranges(self.container_name, 'blob1')
@@ -1352,6 +1449,7 @@ class BlobServiceTest(AzureTestCase):
     def test_with_filter(self):
         # Single filter
         called = []
+
         def my_filter(request, next):
             called.append(True)
             self.assertIsInstance(request, HTTPRequest)
@@ -1365,7 +1463,7 @@ class BlobServiceTest(AzureTestCase):
             self.assertIsInstance(request.query, list)
             self.assertIsInstance(request.body, (str, unicode))
             response = next(request)
-                
+
             self.assertIsInstance(response, HTTPResponse)
             self.assertIsInstance(response.body, (str, type(None)))
             self.assertIsInstance(response.headers, list)
@@ -1382,7 +1480,7 @@ class BlobServiceTest(AzureTestCase):
         self.assertTrue(called)
 
         del called[:]
-        
+
         bc.delete_container(self.container_name + '0')
 
         self.assertTrue(called)
@@ -1392,7 +1490,7 @@ class BlobServiceTest(AzureTestCase):
         def filter_a(request, next):
             called.append('a')
             return next(request)
-        
+
         def filter_b(request, next):
             called.append('b')
             return next(request)
@@ -1401,7 +1499,7 @@ class BlobServiceTest(AzureTestCase):
         bc.create_container(self.container_name + '1', None, None, False)
 
         self.assertEqual(called, ['b', 'a'])
-        
+
         bc.delete_container(self.container_name + '1')
 
         self.assertEqual(called, ['b', 'a', 'b', 'a'])
@@ -1419,7 +1517,8 @@ class BlobServiceTest(AzureTestCase):
 
     def test_unicode_get_blob_unicode_name(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, '啊齄丂狛狜', 'hello world')
+        self._create_container_and_block_blob(
+            self.container_name, '啊齄丂狛狜', 'hello world')
 
         # Act
         blob = self.bc.get_blob(self.container_name, '啊齄丂狛狜')
@@ -1430,7 +1529,8 @@ class BlobServiceTest(AzureTestCase):
 
     def test_unicode_get_blob_unicode_data(self):
         # Arrange
-        self._create_container_and_block_blob(self.container_name, 'blob1', u'hello world啊齄丂狛狜')
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', u'hello world啊齄丂狛狜')
 
         # Act
         blob = self.bc.get_blob(self.container_name, 'blob1')
@@ -1444,7 +1544,8 @@ class BlobServiceTest(AzureTestCase):
         base64_data = 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/wABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5/gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp+goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2+v8DBwsPExcbHyMnKy8zNzs/Q0dLT1NXW19jZ2tvc3d7f4OHi4+Tl5ufo6err7O3u7/Dx8vP09fb3+Pn6+/z9/v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4/QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl9gYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXp7fH1+f4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2drb3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9PX29/j5+vv8/f7/AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w=='
         binary_data = base64.b64decode(base64_data)
 
-        self._create_container_and_block_blob(self.container_name, 'blob1', binary_data)
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1', binary_data)
 
         # Act
         blob = self.bc.get_blob(self.container_name, 'blob1')
@@ -1456,7 +1557,8 @@ class BlobServiceTest(AzureTestCase):
     def test_no_sas_private_blob(self):
         # Arrange
         data = 'a private blob cannot be read without a shared access signature'
-        self._create_container_and_block_blob(self.container_name, 'blob1.txt', data)
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1.txt', data)
         res_path = self.container_name + '/blob1.txt'
 
         # Act
@@ -1486,14 +1588,16 @@ class BlobServiceTest(AzureTestCase):
     def test_shared_read_access_blob(self):
         # Arrange
         data = 'shared access signature with read permission on blob'
-        self._create_container_and_block_blob(self.container_name, 'blob1.txt', data)
-        sas = SharedAccessSignature(credentials.getStorageServicesName(), 
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1.txt', data)
+        sas = SharedAccessSignature(credentials.getStorageServicesName(),
                                     credentials.getStorageServicesKey())
         res_path = self.container_name + '/blob1.txt'
         res_type = RESOURCE_BLOB
 
         # Act
-        sas.permission_set = [self._get_permission(sas, res_type, res_path, 'r')]
+        sas.permission_set = [
+            self._get_permission(sas, res_type, res_path, 'r')]
         web_rsrc = self._get_signed_web_resource(sas, res_type, res_path, 'r')
         host = credentials.getStorageServicesName() + BLOB_SERVICE_HOST_BASE
         url = web_rsrc.request_url
@@ -1506,14 +1610,16 @@ class BlobServiceTest(AzureTestCase):
         # Arrange
         data = 'shared access signature with write permission on blob'
         updated_data = 'updated blob data'
-        self._create_container_and_block_blob(self.container_name, 'blob1.txt', data)
-        sas = SharedAccessSignature(credentials.getStorageServicesName(), 
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1.txt', data)
+        sas = SharedAccessSignature(credentials.getStorageServicesName(),
                                     credentials.getStorageServicesKey())
         res_path = self.container_name + '/blob1.txt'
         res_type = RESOURCE_BLOB
 
         # Act
-        sas.permission_set = [self._get_permission(sas, res_type, res_path, 'w')]
+        sas.permission_set = [
+            self._get_permission(sas, res_type, res_path, 'w')]
         web_rsrc = self._get_signed_web_resource(sas, res_type, res_path, 'w')
         host = credentials.getStorageServicesName() + BLOB_SERVICE_HOST_BASE
         url = web_rsrc.request_url
@@ -1526,14 +1632,16 @@ class BlobServiceTest(AzureTestCase):
     def test_shared_delete_access_blob(self):
         # Arrange
         data = 'shared access signature with delete permission on blob'
-        self._create_container_and_block_blob(self.container_name, 'blob1.txt', data)
-        sas = SharedAccessSignature(credentials.getStorageServicesName(), 
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1.txt', data)
+        sas = SharedAccessSignature(credentials.getStorageServicesName(),
                                     credentials.getStorageServicesKey())
         res_path = self.container_name + '/blob1.txt'
         res_type = RESOURCE_BLOB
 
         # Act
-        sas.permission_set = [self._get_permission(sas, res_type, res_path, 'd')]
+        sas.permission_set = [
+            self._get_permission(sas, res_type, res_path, 'd')]
         web_rsrc = self._get_signed_web_resource(sas, res_type, res_path, 'd')
         host = credentials.getStorageServicesName() + BLOB_SERVICE_HOST_BASE
         url = web_rsrc.request_url
@@ -1546,15 +1654,18 @@ class BlobServiceTest(AzureTestCase):
     def test_shared_access_container(self):
         # Arrange
         data = 'shared access signature with read permission on container'
-        self._create_container_and_block_blob(self.container_name, 'blob1.txt', data)
-        sas = SharedAccessSignature(credentials.getStorageServicesName(), 
+        self._create_container_and_block_blob(
+            self.container_name, 'blob1.txt', data)
+        sas = SharedAccessSignature(credentials.getStorageServicesName(),
                                     credentials.getStorageServicesKey())
         res_path = self.container_name
         res_type = RESOURCE_CONTAINER
 
         # Act
-        sas.permission_set = [self._get_permission(sas, res_type, res_path, 'r')]
-        web_rsrc = self._get_signed_web_resource(sas, res_type, res_path + '/blob1.txt', 'r')
+        sas.permission_set = [
+            self._get_permission(sas, res_type, res_path, 'r')]
+        web_rsrc = self._get_signed_web_resource(
+            sas, res_type, res_path + '/blob1.txt', 'r')
         host = credentials.getStorageServicesName() + BLOB_SERVICE_HOST_BASE
         url = web_rsrc.request_url
         respbody = self._get_request(host, url)
