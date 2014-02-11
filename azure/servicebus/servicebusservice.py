@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #--------------------------------------------------------------------------
-import httplib
 import os
-import sys
 import time
 import urllib2
 
@@ -530,7 +528,7 @@ class ServiceBusService:
         request.body = _get_request_body(message.body)
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def peek_lock_subscription_message(
             self, topic_name, subscription_name, timeout='60'):
@@ -597,7 +595,7 @@ class ServiceBusService:
             _str(lock_token) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def read_delete_subscription_message(
             self, topic_name, subscription_name, timeout='60'):
@@ -656,7 +654,7 @@ class ServiceBusService:
             _str(lock_token) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def send_queue_message(self, queue_name, message=None):
         """
@@ -678,7 +676,7 @@ class ServiceBusService:
         request.body = _get_request_body(message.body)
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def peek_lock_queue_message(self, queue_name, timeout='60'):
         """
@@ -733,7 +731,7 @@ class ServiceBusService:
             _str(lock_token) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def read_delete_queue_message(self, queue_name, timeout='60'):
         """
@@ -783,7 +781,7 @@ class ServiceBusService:
             _str(lock_token) + ''
         request.path, request.query = _update_request_uri_query(request)
         request.headers = self._update_service_bus_header(request)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def receive_queue_message(self, queue_name, peek_lock=True, timeout=60):
         """

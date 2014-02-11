@@ -215,7 +215,6 @@ class _BatchClient(_HTTPClient):
                         str(len(batch_request.body)) + '\n\n'
                     request.body += batch_request.body + '\n'
                 else:
-                    find_if_match = False
                     for name, value in batch_request.headers:
                         # If-Match should be already included in
                         # batch_request.headers, but in case it is missing,

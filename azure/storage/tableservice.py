@@ -15,7 +15,6 @@
 from azure import (WindowsAzureError,
                    TABLE_SERVICE_HOST_BASE,
                    DEV_TABLE_HOST,
-                   xml_escape,
                    _convert_class_to_xml,
                    _convert_response_to_feeds,
                    _dont_fail_not_exist,
@@ -400,7 +399,7 @@ class TableService(_StorageClient):
         request.path, request.query = _update_request_uri_query_local_storage(
             request, self.use_local_storage)
         request.headers = _update_storage_table_header(request)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def insert_or_replace_entity(self, table_name, partition_key, row_key, entity, content_type='application/atom+xml'):
         """

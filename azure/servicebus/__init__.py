@@ -30,7 +30,6 @@ from azure import (WindowsAzureData,
                    _ERROR_QUEUE_NOT_FOUND,
                    _ERROR_TOPIC_NOT_FOUND,
                    )
-from azure.http import HTTPError
 
 # default rule name for subscription
 DEFAULT_RULE_NAME = '$Default'

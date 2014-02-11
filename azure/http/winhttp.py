@@ -12,10 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #--------------------------------------------------------------------------
-from ctypes import c_void_p, c_long, c_ulong, c_longlong, c_ulonglong, c_short, c_ushort, c_wchar_p, c_byte, c_size_t
-from ctypes import byref, Structure, Union, POINTER, WINFUNCTYPE, HRESULT, oledll, WinDLL, cast, create_string_buffer
+from ctypes import (c_void_p,
+                    c_long,
+                    c_ulong,
+                    c_longlong,
+                    c_ulonglong,
+                    c_short,
+                    c_ushort,
+                    c_wchar_p,
+                    c_byte,
+                    byref,
+                    Structure,
+                    Union,
+                    POINTER,
+                    WINFUNCTYPE,
+                    HRESULT,
+                    oledll,
+                    WinDLL,)
 import ctypes
-import urllib2
+
 
 #------------------------------------------------------------------------------
 #  Constants that are used in COM operations

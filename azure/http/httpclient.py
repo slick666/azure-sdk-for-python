@@ -12,18 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #--------------------------------------------------------------------------
-import os
-import types
 import base64
-import datetime
-import time
-import hashlib
-import hmac
-import urllib2
 import httplib
-import ast
 import sys
-from xml.dom import minidom
 
 from azure.http import HTTPError, HTTPResponse
 from azure import _USER_AGENT_STRING

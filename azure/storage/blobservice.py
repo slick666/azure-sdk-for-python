@@ -32,7 +32,6 @@ from azure import (WindowsAzureError,
                    _str_or_none,
                    _update_request_uri_query_local_storage,
                    _validate_not_none,
-                   xml_escape,
                    )
 from azure.http import HTTPRequest
 from azure.storage import (Container,

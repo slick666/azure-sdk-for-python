@@ -40,9 +40,6 @@ from azure.servicemanagement import (AffinityGroups,
                                      Subscription,
                                      SubscriptionCertificate,
                                      SubscriptionCertificates,
-                                     _management_error_handler,
-                                     _update_management_header,
-                                     _parse_response_for_async_op,
                                      _XmlSerializer,
                                      )
 from azure.servicemanagement.servicemanagementclient import _ServiceManagementClient
