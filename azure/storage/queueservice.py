@@ -222,7 +222,8 @@ class QueueService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_queue_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+
+        self._perform_request(request)
 
     def put_message(self, queue_name, message_text, visibilitytimeout=None, messagettl=None):
         """
@@ -265,7 +266,7 @@ class QueueService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_queue_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def get_messages(self, queue_name, numofmessages=None, visibilitytimeout=None):
         """
@@ -350,7 +351,7 @@ class QueueService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_queue_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def clear_messages(self, queue_name):
         """
@@ -367,7 +368,7 @@ class QueueService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_queue_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def update_message(self, queue_name, message_id,
                        message_text, popreceipt, visibilitytimeout):
@@ -435,4 +436,5 @@ class QueueService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_queue_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+
+        self._perform_request(request)

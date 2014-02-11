@@ -211,7 +211,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def get_container_acl(self, container_name):
         """
@@ -257,7 +257,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def delete_container(self, container_name, fail_not_exist=False):
         """
@@ -379,7 +379,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def get_blob_service_properties(self, timeout=None):
         """
@@ -463,7 +463,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def put_blob(
             self, container_name, blob_name, blob, x_ms_blob_type, content_encoding=None, content_language=None, content_md5=None, cache_control=None, x_ms_blob_content_type=None, x_ms_blob_content_encoding=None,
@@ -542,7 +542,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def get_blob(self, container_name, blob_name, snapshot=None,
                  x_ms_range=None, x_ms_lease_id=None, x_ms_range_get_content_md5=None):
@@ -639,7 +639,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def lease_blob(self, container_name, blob_name,
                    x_ms_lease_action, x_ms_lease_id=None):
@@ -769,7 +769,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def delete_blob(self, container_name, blob_name, snapshot=None, x_ms_lease_id=None):
         """
@@ -798,7 +798,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def put_block(self, container_name, blob_name, block, blockid, content_md5=None, x_ms_lease_id=None):
         """
@@ -836,7 +836,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def put_block_list(self, container_name, blob_name, block_list, content_md5=None, x_ms_blob_cache_control=None, x_ms_blob_content_type=None, x_ms_blob_content_encoding=None, x_ms_blob_content_language=None, x_ms_blob_content_md5=None, x_ms_meta_name_values=None, x_ms_lease_id=None):
         """
@@ -898,7 +898,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def get_block_list(self, container_name, blob_name, snapshot=None, blocklisttype=None, x_ms_lease_id=None):
         """
@@ -1031,7 +1031,7 @@ class BlobService(_StorageClient):
             request, self.use_local_storage)
         request.headers = _update_storage_blob_header(
             request, self.account_name, self.account_key)
-        response = self._perform_request(request)
+        self._perform_request(request)
 
     def get_page_ranges(self, container_name, blob_name, snapshot=None, range=None, x_ms_range=None, x_ms_lease_id=None):
         """
