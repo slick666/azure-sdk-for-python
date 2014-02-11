@@ -71,13 +71,13 @@ METADATA_NS = 'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata'
 
 class WindowsAzureData(object):
 
-    ''' This is the base of data class.  It is only used to check whether it is instance or not. '''
+    """ This is the base of data class.  It is only used to check whether it is instance or not. """
     pass
 
 
 class WindowsAzureError(Exception):
 
-    ''' WindowsAzure Excpetion base class. '''
+    """ WindowsAzure Excpetion base class. """
 
     def __init__(self, message):
         Exception.__init__(self, message)
@@ -85,8 +85,8 @@ class WindowsAzureError(Exception):
 
 class WindowsAzureConflictError(WindowsAzureError):
 
-    '''Indicates that the resource could not be created because it already
-    exists'''
+    """Indicates that the resource could not be created because it already
+    exists"""
 
     def __init__(self, message):
         self.message = message
@@ -94,8 +94,8 @@ class WindowsAzureConflictError(WindowsAzureError):
 
 class WindowsAzureMissingResourceError(WindowsAzureError):
 
-    '''Indicates that a request for a request for a resource (queue, table, 
-    container, etc...) failed because the specified resource does not exist'''
+    """Indicates that a request for a request for a resource (queue, table, 
+    container, etc...) failed because the specified resource does not exist"""
 
     def __init__(self, message):
         self.message = message
@@ -133,7 +133,7 @@ def _get_readable_id(id_name, id_prefix_to_skip):
 
 
 def _get_entry_properties(xmlstr, include_id, id_prefix_to_skip=None):
-    ''' get properties from entry xml '''
+    """ get properties from entry xml """
     xmldoc = minidom.parseString(xmlstr)
     properties = {}
 
@@ -170,9 +170,9 @@ def _get_child_nodes(node, tagName):
 
 
 def _get_children_from_path(node, *path):
-    '''descends through a hierarchy of nodes returning the list of children
+    """descends through a hierarchy of nodes returning the list of children
     at the inner most level.  Only returns children who share a common parent,
-    not cousins.'''
+    not cousins."""
     cur = node
     for index, child in enumerate(path):
         if isinstance(child, basestring):
@@ -194,16 +194,16 @@ def _get_child_nodesNS(node, ns, tagName):
 
 
 def _create_entry(entry_body):
-    ''' Adds common part of entry to a given entry body and return the whole xml. '''
+    """ Adds common part of entry to a given entry body and return the whole xml. """
     updated_str = datetime.utcnow().isoformat()
     if datetime.utcnow().utcoffset() is None:
         updated_str += '+00:00'
 
-    entry_start = '''<?xml version="1.0" encoding="utf-8" standalone="yes"?>   
+    entry_start = """<?xml version="1.0" encoding="utf-8" standalone="yes"?>   
 <entry xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom" >
 <title /><updated>{updated}</updated><author><name /></author><id />
 <content type="application/xml">
-    {body}</content></entry>'''
+    {body}</content></entry>"""
     return entry_start.format(updated=updated_str, body=entry_body)
 
 
@@ -377,7 +377,7 @@ def _fill_list_of(xmldoc, element_type, xml_element_name):
 
 
 def _fill_scalar_list_of(xmldoc, element_type, parent_xml_element_name, xml_element_name):
-    '''Converts an xml fragment into a list of scalar types.  The parent xml element contains a 
+    """Converts an xml fragment into a list of scalar types.  The parent xml element contains a 
     flat list of xml elements which are converted into the specified scalar type and added to the list.
     Example:
     xmldoc=
@@ -389,7 +389,7 @@ def _fill_scalar_list_of(xmldoc, element_type, parent_xml_element_name, xml_elem
     element_type=str
     parent_xml_element_name='Endpoints'
     xml_element_name='Endpoint'
-    '''
+    """
     xmlelements = _get_child_nodes(xmldoc, parent_xml_element_name)
     if xmlelements:
         xmlelements = _get_child_nodes(xmlelements[0], xml_element_name)
@@ -407,7 +407,7 @@ def _fill_dict(xmldoc, element_name):
 
 
 def _fill_dict_of(xmldoc, parent_xml_element_name, pair_xml_element_name, key_xml_element_name, value_xml_element_name):
-    '''Converts an xml fragment into a dictionary. The parent xml element contains a 
+    """Converts an xml fragment into a dictionary. The parent xml element contains a 
     list of xml elements where each element has a child element for the key, and another for the value.
     Example:
     xmldoc=
@@ -426,7 +426,7 @@ def _fill_dict_of(xmldoc, parent_xml_element_name, pair_xml_element_name, key_xm
     pair_xml_element_name='ExtendedProperty'
     key_xml_element_name='Name'
     value_xml_element_name='Value'
-    '''
+    """
     return_obj = {}
 
     xmlelements = _get_child_nodes(xmldoc, parent_xml_element_name)
@@ -444,8 +444,8 @@ def _fill_dict_of(xmldoc, parent_xml_element_name, pair_xml_element_name, key_xm
 
 
 def _fill_instance_child(xmldoc, element_name, return_type):
-    '''Converts a child of the current dom element to the specified type.  The child name
-    '''
+    """Converts a child of the current dom element to the specified type.  The child name
+    """
     xmlelements = _get_child_nodes(
         xmldoc, _get_serialization_name(element_name))
 
@@ -493,10 +493,10 @@ def _get_node_value(xmlelement, data_type):
 
 
 def _get_request_body(request_body):
-    '''Converts an object into a request body.  If it's None
+    """Converts an object into a request body.  If it's None
     we'll return an empty string, if it's one of our objects it'll
     convert it to XML and return it.  Otherwise we just use the object
-    directly'''
+    directly"""
     if request_body is None:
         return ''
     elif isinstance(request_body, WindowsAzureData):
@@ -563,9 +563,9 @@ def _parse_simple_list(response, type, item_type, list_name):
 
 
 def _parse_response(response, return_type):
-    '''
+    """
     parse the HTTPResponse's body and fill all the data into a class of return_type
-    '''
+    """
     return _parse_response_body_from_xml_text(response.body, return_type)
 
 
@@ -607,9 +607,9 @@ def _fill_data_to_return_object(node, return_obj):
 
 
 def _parse_response_body_from_xml_node(node, return_type):
-    '''
+    """
     parse the xml and fill all the data into a class of return_type
-    '''
+    """
     return_obj = return_type()
     _fill_data_to_return_object(node, return_obj)
 
@@ -617,9 +617,9 @@ def _parse_response_body_from_xml_node(node, return_type):
 
 
 def _parse_response_body_from_xml_text(respbody, return_type):
-    '''
+    """
     parse the xml and fill all the data into a class of return_type
-    '''
+    """
     doc = minidom.parseString(respbody)
     return_obj = return_type()
     for node in _get_child_nodes(doc, return_type.__name__):
@@ -664,7 +664,7 @@ class _scalar_list_of(list):
 
 
 def _update_request_uri_query_local_storage(request, use_local_storage):
-    ''' create correct uri and query for the request '''
+    """ create correct uri and query for the request """
     uri, query = _update_request_uri_query(request)
     if use_local_storage:
         return '/' + DEV_ACCOUNT_NAME + uri, query
@@ -672,10 +672,10 @@ def _update_request_uri_query_local_storage(request, use_local_storage):
 
 
 def _update_request_uri_query(request):
-    '''pulls the query string out of the URI and moves it into 
+    """pulls the query string out of the URI and moves it into 
     the query portion of the request object.  If there are already
     query parameters on the request the parameters in the URI will
-    appear after the existing parameters'''
+    appear after the existing parameters"""
 
     if '?' in request.path:
         request.path, _, query_string = request.path.partition('?')
@@ -701,7 +701,7 @@ def _update_request_uri_query(request):
 
 
 def _dont_fail_on_exist(error):
-    ''' don't throw exception if the resource exists. This is called by create_* APIs with fail_on_exist=False'''
+    """ don't throw exception if the resource exists. This is called by create_* APIs with fail_on_exist=False"""
     if isinstance(error, WindowsAzureConflictError):
         return False
     else:
@@ -709,7 +709,7 @@ def _dont_fail_on_exist(error):
 
 
 def _dont_fail_not_exist(error):
-    ''' don't throw exception if the resource doesn't exist. This is called by create_* APIs with fail_on_exist=False'''
+    """ don't throw exception if the resource doesn't exist. This is called by create_* APIs with fail_on_exist=False"""
     if isinstance(error, WindowsAzureMissingResourceError):
         return False
     else:
@@ -717,7 +717,7 @@ def _dont_fail_not_exist(error):
 
 
 def _general_error_handler(http_error):
-    ''' Simple error handler for azure.'''
+    """ Simple error handler for azure."""
     if http_error.status == 409:
         raise WindowsAzureConflictError(_ERROR_CONFLICT)
     elif http_error.status == 404:
@@ -731,7 +731,7 @@ def _general_error_handler(http_error):
 
 
 def _parse_response_for_dict(response):
-    ''' Extracts name-values from response header. Filter out the standard http headers.'''
+    """ Extracts name-values from response header. Filter out the standard http headers."""
 
     if response is None:
         return None
@@ -747,7 +747,7 @@ def _parse_response_for_dict(response):
 
 
 def _parse_response_for_dict_prefix(response, prefixes):
-    ''' Extracts name-values for names starting with prefix from response header. Filter out the standard http headers.'''
+    """ Extracts name-values for names starting with prefix from response header. Filter out the standard http headers."""
 
     if response is None:
         return None
@@ -765,7 +765,7 @@ def _parse_response_for_dict_prefix(response, prefixes):
 
 
 def _parse_response_for_dict_filter(response, filter):
-    ''' Extracts name-values for names in filter from response header. Filter out the standard http headers.'''
+    """ Extracts name-values for names in filter from response header. Filter out the standard http headers."""
     if response is None:
         return None
     return_dict = {}

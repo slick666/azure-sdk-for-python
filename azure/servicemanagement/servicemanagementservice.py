@@ -55,36 +55,36 @@ class ServiceManagementService(_ServiceManagementClient):
 
     #--Operations for storage accounts -----------------------------------
     def list_storage_accounts(self):
-        '''
+        """
         Lists the storage accounts available under the current subscription.
-        '''
+        """
         return self._perform_get(self._get_storage_service_path(),
                                  StorageServices)
 
     def get_storage_account_properties(self, service_name):
-        '''
+        """
         Returns system properties for the specified storage account.
 
         service_name: Name of the storage service account.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         return self._perform_get(self._get_storage_service_path(service_name),
                                  StorageService)
 
     def get_storage_account_keys(self, service_name):
-        '''
+        """
         Returns the primary and secondary access keys for the specified 
         storage account.
 
         service_name: Name of the storage service account.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         return self._perform_get(
             self._get_storage_service_path(service_name) + '/keys',
             StorageService)
 
     def regenerate_storage_account_keys(self, service_name, key_type):
-        '''
+        """
         Regenerates the primary or secondary access key for the specified 
         storage account.
 
@@ -92,7 +92,7 @@ class ServiceManagementService(_ServiceManagementClient):
         key_type: 
             Specifies which key to regenerate. Valid values are: 
             Primary, Secondary
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('key_type', key_type)
         return self._perform_post(
@@ -103,7 +103,7 @@ class ServiceManagementService(_ServiceManagementClient):
             StorageService)
 
     def create_storage_account(self, service_name, description, label, affinity_group=None, location=None, geo_replication_enabled=True, extended_properties=None):
-        '''
+        """
         Creates a new storage account in Windows Azure.
 
         service_name:
@@ -139,7 +139,7 @@ class ServiceManagementService(_ServiceManagementClient):
             characters, only alphanumeric characters and underscores are valid 
             in the Name, and the name must start with a letter. The value has 
             a maximum length of 255 characters.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('description', description)
         _validate_not_none('label', label)
@@ -155,7 +155,7 @@ class ServiceManagementService(_ServiceManagementClient):
                                   async=True)
 
     def update_storage_account(self, service_name, description=None, label=None, geo_replication_enabled=None, extended_properties=None):
-        '''
+        """
         Updates the label, the description, and enables or disables the 
         geo-replication status for a storage account in Windows Azure.
 
@@ -181,27 +181,27 @@ class ServiceManagementService(_ServiceManagementClient):
             characters, only alphanumeric characters and underscores are valid 
             in the Name, and the name must start with a letter. The value has 
             a maximum length of 255 characters.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         return self._perform_put(self._get_storage_service_path(service_name),
                                  _XmlSerializer.update_storage_service_input_to_xml(description, label, geo_replication_enabled, extended_properties))
 
     def delete_storage_account(self, service_name):
-        '''
+        """
         Deletes the specified storage account from Windows Azure.
 
         service_name: Name of the storage service account.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         return self._perform_delete(self._get_storage_service_path(service_name))
 
     def check_storage_account_name_availability(self, service_name):
-        '''
+        """
         Checks to see if the specified storage account name is available, or 
         if it has already been taken.
 
         service_name: Name of the storage service account.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         return self._perform_get(
             self._get_storage_service_path() +
@@ -211,14 +211,14 @@ class ServiceManagementService(_ServiceManagementClient):
 
     #--Operations for hosted services ------------------------------------
     def list_hosted_services(self):
-        '''
+        """
         Lists the hosted services available under the current subscription.
-        '''
+        """
         return self._perform_get(self._get_hosted_service_path(),
                                  HostedServices)
 
     def get_hosted_service_properties(self, service_name, embed_detail=False):
-        '''
+        """
         Retrieves system properties for the specified hosted service. These 
         properties include the service name and service type; the name of the 
         affinity group to which the service belongs, or its location if it is 
@@ -229,7 +229,7 @@ class ServiceManagementService(_ServiceManagementClient):
         embed_detail:
             When True, the management service returns properties for all 
             deployments of the service, as well as for the service itself. 
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('embed_detail', embed_detail)
         return self._perform_get(
@@ -239,7 +239,7 @@ class ServiceManagementService(_ServiceManagementClient):
             HostedService)
 
     def create_hosted_service(self, service_name, label, description=None, location=None, affinity_group=None, extended_properties=None):
-        '''
+        """
         Creates a new hosted service in Windows Azure.
 
         service_name:
@@ -269,7 +269,7 @@ class ServiceManagementService(_ServiceManagementClient):
             characters, only alphanumeric characters and underscores are valid 
             in the Name, and the name must start with a letter. The value has 
             a maximum length of 255 characters.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('label', label)
         if affinity_group is None and location is None:
@@ -282,7 +282,7 @@ class ServiceManagementService(_ServiceManagementClient):
                                   _XmlSerializer.create_hosted_service_to_xml(service_name, label, description, location, affinity_group, extended_properties))
 
     def update_hosted_service(self, service_name, label=None, description=None, extended_properties=None):
-        '''
+        """
         Updates the label and/or the description for a hosted service in 
         Windows Azure.
 
@@ -304,22 +304,22 @@ class ServiceManagementService(_ServiceManagementClient):
             characters, only alphanumeric characters and underscores are valid 
             in the Name, and the name must start with a letter. The value has 
             a maximum length of 255 characters.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         return self._perform_put(self._get_hosted_service_path(service_name),
                                  _XmlSerializer.update_hosted_service_to_xml(label, description, extended_properties))
 
     def delete_hosted_service(self, service_name):
-        '''
+        """
         Deletes the specified hosted service from Windows Azure.
 
         service_name: Name of the hosted service.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         return self._perform_delete(self._get_hosted_service_path(service_name))
 
     def get_deployment_by_slot(self, service_name, deployment_slot):
-        '''
+        """
         Returns configuration information, status, and system properties for 
         a deployment.
 
@@ -327,7 +327,7 @@ class ServiceManagementService(_ServiceManagementClient):
         deployment_slot:
             The environment to which the hosted service is deployed. Valid 
             values are: staging, production
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_slot', deployment_slot)
         return self._perform_get(
@@ -336,13 +336,13 @@ class ServiceManagementService(_ServiceManagementClient):
             Deployment)
 
     def get_deployment_by_name(self, service_name, deployment_name):
-        '''
+        """
         Returns configuration information, status, and system properties for a 
         deployment.
 
         service_name: Name of the hosted service.
         deployment_name: The name of the deployment.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         return self._perform_get(
@@ -351,7 +351,7 @@ class ServiceManagementService(_ServiceManagementClient):
             Deployment)
 
     def create_deployment(self, service_name, deployment_slot, name, package_url, label, configuration, start_deployment=False, treat_warnings_as_error=False, extended_properties=None):
-        '''
+        """
         Uploads a new service package and creates a new deployment on staging 
         or production.
 
@@ -393,7 +393,7 @@ class ServiceManagementService(_ServiceManagementClient):
             characters, only alphanumeric characters and underscores are valid 
             in the Name, and the name must start with a letter. The value has 
             a maximum length of 255 characters.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_slot', deployment_slot)
         _validate_not_none('name', name)
@@ -408,12 +408,12 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def delete_deployment(self, service_name, deployment_name):
-        '''
+        """
         Deletes the specified deployment.
 
         service_name: Name of the hosted service.
         deployment_name: The name of the deployment.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         return self._perform_delete(
@@ -422,7 +422,7 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def swap_deployment(self, service_name, production, source_deployment):
-        '''
+        """
         Initiates a virtual IP swap between the staging and production 
         deployment environments for a service. If the service is currently 
         running in the staging environment, it will be swapped to the 
@@ -432,7 +432,7 @@ class ServiceManagementService(_ServiceManagementClient):
         service_name: Name of the hosted service.
         production: The name of the production deployment.
         source_deployment: The name of the source deployment.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('production', production)
         _validate_not_none('source_deployment', source_deployment)
@@ -442,7 +442,7 @@ class ServiceManagementService(_ServiceManagementClient):
                                   async=True)
 
     def change_deployment_configuration(self, service_name, deployment_name, configuration, treat_warnings_as_error=False, mode='Auto', extended_properties=None):
-        '''
+        """
         Initiates a change to the deployment configuration.
 
         service_name: Name of the hosted service.
@@ -465,7 +465,7 @@ class ServiceManagementService(_ServiceManagementClient):
             characters, only alphanumeric characters and underscores are valid 
             in the Name, and the name must start with a letter. The value has 
             a maximum length of 255 characters.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('configuration', configuration)
@@ -477,7 +477,7 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def update_deployment_status(self, service_name, deployment_name, status):
-        '''
+        """
         Initiates a change in deployment status.
 
         service_name: Name of the hosted service.
@@ -485,7 +485,7 @@ class ServiceManagementService(_ServiceManagementClient):
         status:
             The change to initiate to the deployment status. Possible values 
             include: Running, Suspended
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('status', status)
@@ -497,7 +497,7 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def upgrade_deployment(self, service_name, deployment_name, mode, package_url, configuration, label, force, role_to_upgrade=None, extended_properties=None):
-        '''
+        """
         Initiates an upgrade.
 
         service_name: Name of the hosted service.
@@ -532,7 +532,7 @@ class ServiceManagementService(_ServiceManagementClient):
             characters, only alphanumeric characters and underscores are valid 
             in the Name, and the name must start with a letter. The value has 
             a maximum length of 255 characters.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('mode', mode)
@@ -548,7 +548,7 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def walk_upgrade_domain(self, service_name, deployment_name, upgrade_domain):
-        '''
+        """
         Specifies the next upgrade domain to be walked during manual in-place 
         upgrade or configuration change.
 
@@ -558,7 +558,7 @@ class ServiceManagementService(_ServiceManagementClient):
             An integer value that identifies the upgrade domain to walk. 
             Upgrade domains are identified with a zero-based index: the first 
             upgrade domain has an ID of 0, the second has an ID of 1, and so on.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('upgrade_domain', upgrade_domain)
@@ -570,7 +570,7 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def rollback_update_or_upgrade(self, service_name, deployment_name, mode, force):
-        '''
+        """
         Cancels an in progress configuration change (update) or upgrade and 
         returns the deployment to its state before the upgrade or 
         configuration change was started.
@@ -587,7 +587,7 @@ class ServiceManagementService(_ServiceManagementClient):
             cause local data to be lost from some role instances. True if the 
             rollback should proceed; otherwise false if the rollback should 
             fail.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('mode', mode)
@@ -600,13 +600,13 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def reboot_role_instance(self, service_name, deployment_name, role_instance_name):
-        '''
+        """
         Requests a reboot of a role instance that is running in a deployment.
 
         service_name: Name of the hosted service.
         deployment_name: The name of the deployment.
         role_instance_name: The name of the role instance.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_instance_name', role_instance_name)
@@ -617,13 +617,13 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def reimage_role_instance(self, service_name, deployment_name, role_instance_name):
-        '''
+        """
         Requests a reimage of a role instance that is running in a deployment.
 
         service_name: Name of the hosted service.
         deployment_name: The name of the deployment.
         role_instance_name: The name of the role instance.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_instance_name', role_instance_name)
@@ -634,12 +634,12 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def check_hosted_service_name_availability(self, service_name):
-        '''
+        """
         Checks to see if the specified hosted service name is available, or if 
         it has already been taken.
 
         service_name: Name of the hosted service.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         return self._perform_get(
             '/' + self.subscription_id +
@@ -649,12 +649,12 @@ class ServiceManagementService(_ServiceManagementClient):
 
     #--Operations for service certificates -------------------------------
     def list_service_certificates(self, service_name):
-        '''
+        """
         Lists all of the service certificates associated with the specified 
         hosted service.
 
         service_name: Name of the hosted service.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         return self._perform_get(
             '/' + self.subscription_id + '/services/hostedservices/' +
@@ -662,14 +662,14 @@ class ServiceManagementService(_ServiceManagementClient):
             Certificates)
 
     def get_service_certificate(self, service_name, thumbalgorithm, thumbprint):
-        '''
+        """
         Returns the public data for the specified X.509 certificate associated 
         with a hosted service.
 
         service_name: Name of the hosted service.
         thumbalgorithm: The algorithm for the certificate's thumbprint.
         thumbprint: The hexadecimal representation of the thumbprint.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('thumbalgorithm', thumbalgorithm)
         _validate_not_none('thumbprint', thumbprint)
@@ -680,7 +680,7 @@ class ServiceManagementService(_ServiceManagementClient):
             Certificate)
 
     def add_service_certificate(self, service_name, data, certificate_format, password):
-        '''
+        """
         Adds a certificate to a hosted service.
 
         service_name: Name of the hosted service.
@@ -688,7 +688,7 @@ class ServiceManagementService(_ServiceManagementClient):
         certificate_format:
             The service certificate format. The only supported value is pfx.
         password: The certificate password.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('data', data)
         _validate_not_none('certificate_format', certificate_format)
@@ -701,14 +701,14 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def delete_service_certificate(self, service_name, thumbalgorithm, thumbprint):
-        '''
+        """
         Deletes a service certificate from the certificate store of a hosted 
         service.
 
         service_name: Name of the hosted service.
         thumbalgorithm: The algorithm for the certificate's thumbprint.
         thumbprint: The hexadecimal representation of the thumbprint.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('thumbalgorithm', thumbalgorithm)
         _validate_not_none('thumbprint', thumbprint)
@@ -720,18 +720,18 @@ class ServiceManagementService(_ServiceManagementClient):
 
     #--Operations for management certificates ----------------------------
     def list_management_certificates(self):
-        '''
+        """
         The List Management Certificates operation lists and returns basic 
         information about all of the management certificates associated with 
         the specified subscription. Management certificates, which are also 
         known as subscription certificates, authenticate clients attempting to 
         connect to resources associated with your Windows Azure subscription.
-        '''
+        """
         return self._perform_get('/' + self.subscription_id + '/certificates',
                                  SubscriptionCertificates)
 
     def get_management_certificate(self, thumbprint):
-        '''
+        """
         The Get Management Certificate operation retrieves information about 
         the management certificate with the specified thumbprint. Management 
         certificates, which are also known as subscription certificates, 
@@ -739,14 +739,14 @@ class ServiceManagementService(_ServiceManagementClient):
         with your Windows Azure subscription.
 
         thumbprint: The thumbprint value of the certificate.
-        '''
+        """
         _validate_not_none('thumbprint', thumbprint)
         return self._perform_get(
             '/' + self.subscription_id + '/certificates/' + _str(thumbprint),
             SubscriptionCertificate)
 
     def add_management_certificate(self, public_key, thumbprint, data):
-        '''
+        """
         The Add Management Certificate operation adds a certificate to the 
         list of management certificates. Management certificates, which are 
         also known as subscription certificates, authenticate clients 
@@ -758,7 +758,7 @@ class ServiceManagementService(_ServiceManagementClient):
         thumbprint:
             The thumb print that uniquely identifies the management certificate.
         data: The certificate?s raw data in base-64 encoded .cer format.
-        '''
+        """
         _validate_not_none('public_key', public_key)
         _validate_not_none('thumbprint', thumbprint)
         _validate_not_none('data', data)
@@ -766,7 +766,7 @@ class ServiceManagementService(_ServiceManagementClient):
                                   _XmlSerializer.subscription_certificate_to_xml(public_key, thumbprint, data))
 
     def delete_management_certificate(self, thumbprint):
-        '''
+        """
         The Delete Management Certificate operation deletes a certificate from 
         the list of management certificates. Management certificates, which 
         are also known as subscription certificates, authenticate clients 
@@ -775,26 +775,26 @@ class ServiceManagementService(_ServiceManagementClient):
         
         thumbprint:
             The thumb print that uniquely identifies the management certificate.
-        '''
+        """
         _validate_not_none('thumbprint', thumbprint)
         return self._perform_delete('/' + self.subscription_id + '/certificates/' + _str(thumbprint))
 
     #--Operations for affinity groups ------------------------------------
     def list_affinity_groups(self):
-        '''
+        """
         Lists the affinity groups associated with the specified subscription.
-        '''
+        """
         return self._perform_get(
             '/' + self.subscription_id + '/affinitygroups',
             AffinityGroups)
 
     def get_affinity_group_properties(self, affinity_group_name):
-        '''
+        """
         Returns the system properties associated with the specified affinity 
         group.
 
         affinity_group_name: The name of the affinity group.
-        '''
+        """
         _validate_not_none('affinity_group_name', affinity_group_name)
         return self._perform_get(
             '/' + self.subscription_id + '/affinitygroups/' +
@@ -802,7 +802,7 @@ class ServiceManagementService(_ServiceManagementClient):
             AffinityGroup)
 
     def create_affinity_group(self, name, label, location, description=None):
-        '''
+        """
         Creates a new affinity group for the specified subscription.
 
         name: A name for the affinity group that is unique to the subscription.
@@ -815,7 +815,7 @@ class ServiceManagementService(_ServiceManagementClient):
         description:
             A description for the affinity group. The description can be up to 
             1024 characters in length.
-        '''
+        """
         _validate_not_none('name', name)
         _validate_not_none('label', label)
         _validate_not_none('location', location)
@@ -824,7 +824,7 @@ class ServiceManagementService(_ServiceManagementClient):
             _XmlSerializer.create_affinity_group_to_xml(name, label, description, location))
 
     def update_affinity_group(self, affinity_group_name, label, description=None):
-        '''
+        """
         Updates the label and/or the description for an affinity group for the 
         specified subscription.
 
@@ -835,7 +835,7 @@ class ServiceManagementService(_ServiceManagementClient):
         description:
             A description for the affinity group. The description can be up to 
             1024 characters in length.
-        '''
+        """
         _validate_not_none('affinity_group_name', affinity_group_name)
         _validate_not_none('label', label)
         return self._perform_put(
@@ -844,32 +844,32 @@ class ServiceManagementService(_ServiceManagementClient):
             _XmlSerializer.update_affinity_group_to_xml(label, description))
 
     def delete_affinity_group(self, affinity_group_name):
-        '''
+        """
         Deletes an affinity group in the specified subscription.
 
         affinity_group_name: The name of the affinity group.
-        '''
+        """
         _validate_not_none('affinity_group_name', affinity_group_name)
         return self._perform_delete('/' + self.subscription_id + '/affinitygroups/' + _str(affinity_group_name))
 
     #--Operations for locations ------------------------------------------
     def list_locations(self):
-        '''
+        """
         Lists all of the data center locations that are valid for your 
         subscription.
-        '''
+        """
         return self._perform_get('/' + self.subscription_id + '/locations',
                                  Locations)
 
     #--Operations for tracking asynchronous requests ---------------------
     def get_operation_status(self, request_id):
-        '''
+        """
         Returns the status of the specified operation. After calling an 
         asynchronous operation, you can call Get Operation Status to determine 
         whether the operation has succeeded, failed, or is still in progress.
         
         request_id: The request ID for the request you wish to track.
-        '''
+        """
         _validate_not_none('request_id', request_id)
         return self._perform_get(
             '/' + self.subscription_id + '/operations/' + _str(request_id),
@@ -877,41 +877,41 @@ class ServiceManagementService(_ServiceManagementClient):
 
     #--Operations for retrieving operating system information ------------
     def list_operating_systems(self):
-        '''
+        """
         Lists the versions of the guest operating system that are currently 
         available in Windows Azure.
-        '''
+        """
         return self._perform_get(
             '/' + self.subscription_id + '/operatingsystems',
             OperatingSystems)
 
     def list_operating_system_families(self):
-        '''
+        """
         Lists the guest operating system families available in Windows Azure, 
         and also lists the operating system versions available for each family.
-        '''
+        """
         return self._perform_get(
             '/' + self.subscription_id + '/operatingsystemfamilies',
             OperatingSystemFamilies)
 
     #--Operations for retrieving subscription history --------------------
     def get_subscription(self):
-        '''
+        """
         Returns account and resource allocation information on the specified 
         subscription.
-        '''
+        """
         return self._perform_get('/' + self.subscription_id + '',
                                  Subscription)
 
     #--Operations for virtual machines -----------------------------------
     def get_role(self, service_name, deployment_name, role_name):
-        '''
+        """
         Retrieves the specified virtual machine.
 
         service_name: The name of the service.
         deployment_name: The name of the deployment.
         role_name: The name of the role.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -920,7 +920,7 @@ class ServiceManagementService(_ServiceManagementClient):
             PersistentVMRole)
 
     def create_virtual_machine_deployment(self, service_name, deployment_name, deployment_slot, label, role_name, system_config, os_virtual_hard_disk, network_config=None, availability_set_name=None, data_virtual_hard_disks=None, role_size=None, role_type='PersistentVMRole', virtual_network_name=None):
-        '''
+        """
         Provisions a virtual machine based on the supplied configuration.
         
         service_name: Name of the hosted service.
@@ -970,7 +970,7 @@ class ServiceManagementService(_ServiceManagementClient):
         virtual_network_name:
             Specifies the name of an existing virtual network to which the 
             deployment will belong.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('deployment_slot', deployment_slot)
@@ -986,7 +986,7 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def add_role(self, service_name, deployment_name, role_name, system_config, os_virtual_hard_disk, network_config=None, availability_set_name=None, data_virtual_hard_disks=None, role_size=None, role_type='PersistentVMRole'):
-        '''
+        """
         Adds a virtual machine to an existing deployment.
 
         service_name: The name of the service.
@@ -1023,7 +1023,7 @@ class ServiceManagementService(_ServiceManagementClient):
         role_type:
             The type of the role for the virtual machine. The only supported 
             value is PersistentVMRole.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1036,7 +1036,7 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def update_role(self, service_name, deployment_name, role_name, os_virtual_hard_disk=None, network_config=None, availability_set_name=None, data_virtual_hard_disks=None, role_size=None, role_type='PersistentVMRole'):
-        '''
+        """
         Updates the specified virtual machine.
 
         service_name: The name of the service.
@@ -1069,7 +1069,7 @@ class ServiceManagementService(_ServiceManagementClient):
         role_type:
             The type of the role for the virtual machine. The only supported 
             value is PersistentVMRole.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1080,13 +1080,13 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def delete_role(self, service_name, deployment_name, role_name):
-        '''
+        """
         Deletes the specified virtual machine.
 
         service_name: The name of the service.
         deployment_name: The name of the deployment.
         role_name: The name of the role.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1095,7 +1095,7 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def capture_role(self, service_name, deployment_name, role_name, post_capture_action, target_image_name, target_image_label, provisioning_configuration=None):
-        '''
+        """
         The Capture Role operation captures a virtual machine image to your 
         image gallery. From the captured image, you can create additional 
         customized virtual machines.
@@ -1112,7 +1112,7 @@ class ServiceManagementService(_ServiceManagementClient):
             Specifies the friendly name of the captured virtual machine. 
         provisioning_configuration:
             Use an instance of WindowsConfigurationSet or LinuxConfigurationSet.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1127,13 +1127,13 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def start_role(self, service_name, deployment_name, role_name):
-        '''
+        """
         Starts the specified virtual machine.
 
         service_name: The name of the service.
         deployment_name: The name of the deployment.
         role_name: The name of the role.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1144,13 +1144,13 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def restart_role(self, service_name, deployment_name, role_name):
-        '''
+        """
         Restarts the specified virtual machine.
 
         service_name: The name of the service.
         deployment_name: The name of the deployment.
         role_name: The name of the role.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1162,13 +1162,13 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def shutdown_role(self, service_name, deployment_name, role_name):
-        '''
+        """
         Shuts down the specified virtual machine.
 
         service_name: The name of the service.
         deployment_name: The name of the deployment.
         role_name: The name of the role.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1181,21 +1181,21 @@ class ServiceManagementService(_ServiceManagementClient):
 
     #--Operations for virtual machine images -----------------------------
     def list_os_images(self):
-        '''
+        """
         Retrieves a list of the OS images from the image repository.
-        '''
+        """
         return self._perform_get(self._get_image_path(),
                                  Images)
 
     def get_os_image(self, image_name):
-        '''
+        """
         Retrieves an OS image from the image repository.
-        '''
+        """
         return self._perform_get(self._get_image_path(image_name),
                                  OSImage)
 
     def add_os_image(self, label, media_link, name, os):
-        '''
+        """
         Adds an OS image that is currently stored in a storage account in your 
         subscription to the image repository.
 
@@ -1212,7 +1212,7 @@ class ServiceManagementService(_ServiceManagementClient):
         os:
             The operating system type of the OS image. Possible values are: 
             Linux, Windows
-        '''
+        """
         _validate_not_none('label', label)
         _validate_not_none('media_link', media_link)
         _validate_not_none('name', name)
@@ -1223,7 +1223,7 @@ class ServiceManagementService(_ServiceManagementClient):
                                   async=True)
 
     def update_os_image(self, image_name, label, media_link, name, os):
-        '''
+        """
         Updates an OS image that in your image repository.
 
         image_name: The name of the image to update.
@@ -1243,7 +1243,7 @@ class ServiceManagementService(_ServiceManagementClient):
         os: 
             The operating system type of the OS image. Possible values are: 
             Linux, Windows
-        '''
+        """
         _validate_not_none('image_name', image_name)
         _validate_not_none('label', label)
         _validate_not_none('media_link', media_link)
@@ -1255,25 +1255,25 @@ class ServiceManagementService(_ServiceManagementClient):
                                  async=True)
 
     def delete_os_image(self, image_name):
-        '''
+        """
         Deletes the specified OS image from your image repository.
 
         image_name: The name of the image.
-        '''
+        """
         _validate_not_none('image_name', image_name)
         return self._perform_delete(self._get_image_path(image_name),
                                     async=True)
 
     #--Operations for virtual machine disks ------------------------------
     def get_data_disk(self, service_name, deployment_name, role_name, lun):
-        '''
+        """
         Retrieves the specified data disk from a virtual machine.
 
         service_name: The name of the service.
         deployment_name: The name of the deployment.
         role_name: The name of the role.
         lun: The Logical Unit Number (LUN) for the disk.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1284,7 +1284,7 @@ class ServiceManagementService(_ServiceManagementClient):
             DataVirtualHardDisk)
 
     def add_data_disk(self, service_name, deployment_name, role_name, lun, host_caching=None, media_link=None, disk_label=None, disk_name=None, logical_disk_size_in_gb=None, source_media_link=None):
-        '''
+        """
         Adds a data disk to a virtual machine.
 
         service_name: The name of the service.
@@ -1322,7 +1322,7 @@ class ServiceManagementService(_ServiceManagementClient):
         source_media_link:
             Specifies the location of a blob in account storage which is 
             mounted as a data disk when the virtual machine is created.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1334,7 +1334,7 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def update_data_disk(self, service_name, deployment_name, role_name, lun, host_caching=None, media_link=None, updated_lun=None, disk_label=None, disk_name=None, logical_disk_size_in_gb=None):
-        '''
+        """
         Updates the specified data disk attached to the specified virtual 
         machine.
 
@@ -1375,7 +1375,7 @@ class ServiceManagementService(_ServiceManagementClient):
             role call by specifying the value for this property. Windows Azure 
             creates the empty disk based on size preference and attaches the 
             newly created disk to the Role.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1388,14 +1388,14 @@ class ServiceManagementService(_ServiceManagementClient):
             async=True)
 
     def delete_data_disk(self, service_name, deployment_name, role_name, lun):
-        '''
+        """
         Removes the specified data disk from a virtual machine.
 
         service_name: The name of the service.
         deployment_name: The name of the deployment.
         role_name: The name of the role.
         lun: The Logical Unit Number (LUN) for the disk.
-        '''
+        """
         _validate_not_none('service_name', service_name)
         _validate_not_none('deployment_name', deployment_name)
         _validate_not_none('role_name', role_name)
@@ -1407,21 +1407,21 @@ class ServiceManagementService(_ServiceManagementClient):
 
     #--Operations for virtual machine disks ------------------------------
     def list_disks(self):
-        '''
+        """
         Retrieves a list of the disks in your image repository.
-        '''
+        """
         return self._perform_get(self._get_disk_path(),
                                  Disks)
 
     def get_disk(self, disk_name):
-        '''
+        """
         Retrieves a disk from your image repository.
-        '''
+        """
         return self._perform_get(self._get_disk_path(disk_name),
                                  Disk)
 
     def add_disk(self, has_operating_system, label, media_link, name, os):
-        '''
+        """
         Adds a disk to the user image repository. The disk can be an OS disk 
         or a data disk.
 
@@ -1439,7 +1439,7 @@ class ServiceManagementService(_ServiceManagementClient):
             Specifies a name for the disk. Windows Azure uses the name to 
             identify the disk when creating virtual machines from the disk.
         os: The OS type of the disk. Possible values are: Linux, Windows
-        '''
+        """
         _validate_not_none('has_operating_system', has_operating_system)
         _validate_not_none('label', label)
         _validate_not_none('media_link', media_link)
@@ -1449,7 +1449,7 @@ class ServiceManagementService(_ServiceManagementClient):
                                   _XmlSerializer.disk_to_xml(has_operating_system, label, media_link, name, os))
 
     def update_disk(self, disk_name, has_operating_system, label, media_link, name, os):
-        '''
+        """
         Updates an existing disk in your image repository.
 
         disk_name: The name of the disk to update.
@@ -1467,7 +1467,7 @@ class ServiceManagementService(_ServiceManagementClient):
             Specifies a name for the disk. Windows Azure uses the name to 
             identify the disk when creating virtual machines from the disk.
         os: The OS type of the disk. Possible values are: Linux, Windows
-        '''
+        """
         _validate_not_none('disk_name', disk_name)
         _validate_not_none('has_operating_system', has_operating_system)
         _validate_not_none('label', label)
@@ -1478,12 +1478,12 @@ class ServiceManagementService(_ServiceManagementClient):
                                  _XmlSerializer.disk_to_xml(has_operating_system, label, media_link, name, os))
 
     def delete_disk(self, disk_name):
-        '''
+        """
         Deletes the specified data or operating system disk from your image 
         repository.
 
         disk_name: The name of the disk to delete.
-        '''
+        """
         _validate_not_none('disk_name', disk_name)
         return self._perform_delete(self._get_disk_path(disk_name))
 

@@ -57,12 +57,12 @@ class _ServiceManagementClient(object):
         self._filter = self._httpclient.perform_request
 
     def with_filter(self, filter):
-        '''Returns a new service which will process requests with the
+        """Returns a new service which will process requests with the
         specified filter.  Filtering operations can include logging, automatic
         retrying, etc...  The filter is a lambda which receives the HTTPRequest
         and another lambda.  The filter can perform any pre-processing on the
         request, pass it off to the next lambda, and then perform any post-processing
-        on the response.'''
+        on the response."""
         res = ServiceManagementService(self.subscription_id, self.cert_file)
         old_filter = self._filter
 
@@ -73,14 +73,14 @@ class _ServiceManagementClient(object):
         return res
 
     def set_proxy(self, host, port, user=None, password=None):
-        '''
+        """
         Sets the proxy server host and port for the HTTP CONNECT Tunnelling.
 
         host: Address of the proxy. Ex: '192.168.0.100'
         port: Port of the proxy. Ex: 6000
         user: User for proxy authorization.
         password: Password for proxy authorization.
-        '''
+        """
         self._httpclient.set_proxy(host, port, user, password)
 
     #--Helper functions --------------------------------------------------

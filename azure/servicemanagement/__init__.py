@@ -572,7 +572,7 @@ class ConfigurationSetInputEndpoints(WindowsAzureData):
 
 class ConfigurationSetInputEndpoint(WindowsAzureData):
 
-    '''
+    """
     Initializes a network configuration input endpoint.
 
     name: Specifies the name for the external endpoint.
@@ -581,7 +581,7 @@ class ConfigurationSetInputEndpoint(WindowsAzureData):
     local_port: Specifies the internal port on which the virtual machine is listening to serve the endpoint.
     load_balanced_endpoint_set_name: Specifies a name for a set of load-balanced endpoints. Specifying this element for a given endpoint adds it to the set. If you are setting an endpoint to use to connect to the virtual machine via the Remote Desktop, do not set this property.
     enable_direct_server_return: Specifies whether direct server return load balancing is enabled. 
-    '''
+    """
 
     def __init__(self, name=u'', protocol=u'', port=u'', local_port=u'', load_balanced_endpoint_set_name=u'', enable_direct_server_return=False):
         self.enable_direct_server_return = enable_direct_server_return
@@ -639,13 +639,13 @@ class StoredCertificateSettings(WindowsAzureData):
 
 class CertificateSetting(WindowsAzureData):
 
-    '''
+    """
     Initializes a certificate setting.
 
     thumbprint: Specifies the thumbprint of the certificate to be provisioned. The thumbprint must specify an existing service certificate.
     store_name: Specifies the name of the certificate store from which retrieve certificate. 
     store_location: Specifies the target certificate store location on the virtual machine. The only supported value is LocalMachine.
-    '''
+    """
 
     def __init__(self, thumbprint=u'', store_name=u'', store_location=u''):
         self.thumbprint = thumbprint
@@ -789,7 +789,7 @@ class ServiceBusNamespace(WindowsAzureData):
 
 
 def _update_management_header(request):
-    ''' Add additional headers for management. '''
+    """ Add additional headers for management. """
 
     if request.method in ['PUT', 'POST', 'MERGE', 'DELETE']:
         request.headers.append(('Content-Length', str(len(request.body))))
@@ -810,7 +810,7 @@ def _update_management_header(request):
 
 
 def _parse_response_for_async_op(response):
-    ''' Extracts request id from response header. '''
+    """ Extracts request id from response header. """
 
     if response is None:
         return None
@@ -825,7 +825,7 @@ def _parse_response_for_async_op(response):
 
 
 def _management_error_handler(http_error):
-    ''' Simple error handler for management service. Will add more specific cases '''
+    """ Simple error handler for management service. Will add more specific cases """
     return _general_error_handler(http_error)
 
 
@@ -1227,11 +1227,11 @@ class _XmlSerializer(object):
 
     @staticmethod
     def data_to_xml(data):
-        '''Creates an xml fragment from the specified data.
+        """Creates an xml fragment from the specified data.
            data: Array of tuples, where first: xml element name
                                         second: xml element text
                                         third: conversion function
-        '''
+        """
         xml = ''
         for element in data:
             name = element[0]
@@ -1251,7 +1251,7 @@ class _XmlSerializer(object):
 
     @staticmethod
     def doc_from_xml(document_element_name, inner_xml):
-        '''Wraps the specified xml in an xml root element with default azure namespaces'''
+        """Wraps the specified xml in an xml root element with default azure namespaces"""
         xml = ''.join(['<', document_element_name,
                       ' xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/windowsazure">'])
         xml += inner_xml
@@ -1287,7 +1287,7 @@ class _ServiceBusManagementXmlSerializer(object):
 
     @staticmethod
     def namespace_to_xml(name, region):
-        '''Converts a service bus namespace description to xml
+        """Converts a service bus namespace description to xml
 
         The xml format:
         <?xml version="1.0" encoding="utf-8" standalone="yes"?>
@@ -1298,7 +1298,7 @@ class _ServiceBusManagementXmlSerializer(object):
                 </NamespaceDescription>
             </content>
         </entry>
-        '''
+        """
         body = '<NamespaceDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">'
         body += ''.join(['<Region>', region, '</Region>'])
         body += '</NamespaceDescription>'
@@ -1307,7 +1307,7 @@ class _ServiceBusManagementXmlSerializer(object):
 
     @staticmethod
     def xml_to_namespace(xmlstr):
-        '''Converts xml response to service bus namespace
+        """Converts xml response to service bus namespace
 
         The xml format for namespace:
           <entry>
@@ -1329,7 +1329,7 @@ class _ServiceBusManagementXmlSerializer(object):
               </NamespaceDescription>
             </content>
           </entry>
-        '''
+        """
         xmldoc = minidom.parseString(xmlstr)
         namespace = ServiceBusNamespace()
 
@@ -1358,7 +1358,7 @@ class _ServiceBusManagementXmlSerializer(object):
 
     @staticmethod
     def xml_to_region(xmlstr):
-        '''Converts xml response to service bus region
+        """Converts xml response to service bus region
 
         The xml format for region:
           <entry>
@@ -1372,7 +1372,7 @@ class _ServiceBusManagementXmlSerializer(object):
               </RegionCodeDescription>
             </content>
           </entry>
-          '''
+          """
         xmldoc = minidom.parseString(xmlstr)
         region = ServiceBusRegion()
 
@@ -1388,7 +1388,7 @@ class _ServiceBusManagementXmlSerializer(object):
 
     @staticmethod
     def xml_to_namespace_availability(xmlstr):
-        '''Converts xml response to service bus namespace availability
+        """Converts xml response to service bus namespace availability
 
         The xml format:
         <?xml version="1.0" encoding="utf-8"?>
@@ -1402,7 +1402,7 @@ class _ServiceBusManagementXmlSerializer(object):
                 </NamespaceAvailability>
             </content>
         </entry>
-        '''
+        """
         xmldoc = minidom.parseString(xmlstr)
         availability = AvailabilityResponse()
 

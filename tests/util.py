@@ -24,9 +24,9 @@ from exceptions import EnvironmentError
 
 class Credentials(object):
 
-    '''
+    """
     Azure credentials needed to run Azure client tests.
-    '''
+    """
 
     def __init__(self):
         credentialsFilename = "windowsazurecredentials.json"
@@ -83,14 +83,14 @@ credentials = Credentials()
 
 
 def getUniqueTestRunID():
-    '''
+    """
     Returns a unique identifier for this particular test run so 
     parallel test runs using the same Azure keys do not interfere
     with one another.
 
     TODO:
     - not really unique now; just machine specific
-    '''
+    """
     from os import environ
     if environ.has_key("COMPUTERNAME"):
         ret_val = environ["COMPUTERNAME"]
@@ -107,11 +107,11 @@ def getUniqueTestRunID():
 
 
 def getUniqueNameBasedOnCurrentTime(base_name):
-    '''
+    """
     Returns a unique identifier for this particular test run so 
     parallel test runs using the same Azure keys do not interfere
     with one another.
-    '''
+    """
     cur_time = str(time.time())
     for bad in ["-", "_", " ", "."]:
         cur_time = cur_time.replace(bad, "")

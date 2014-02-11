@@ -42,7 +42,7 @@ X_MS_VERSION = '2011-08-18'
 
 class EnumResultsBase:
 
-    ''' base class for EnumResults. '''
+    """ base class for EnumResults. """
 
     def __init__(self):
         self.prefix = u''
@@ -53,7 +53,7 @@ class EnumResultsBase:
 
 class ContainerEnumResults(EnumResultsBase):
 
-    ''' Blob Container list. '''
+    """ Blob Container list. """
 
     def __init__(self):
         EnumResultsBase.__init__(self)
@@ -71,7 +71,7 @@ class ContainerEnumResults(EnumResultsBase):
 
 class Container(WindowsAzureData):
 
-    ''' Blob container class. '''
+    """ Blob container class. """
 
     def __init__(self):
         self.name = u''
@@ -82,7 +82,7 @@ class Container(WindowsAzureData):
 
 class Properties(WindowsAzureData):
 
-    ''' Blob container's properties class. '''
+    """ Blob container's properties class. """
 
     def __init__(self):
         self.last_modified = u''
@@ -91,7 +91,7 @@ class Properties(WindowsAzureData):
 
 class RetentionPolicy(WindowsAzureData):
 
-    ''' RetentionPolicy in service properties. '''
+    """ RetentionPolicy in service properties. """
 
     def __init__(self):
         self.enabled = False
@@ -102,7 +102,7 @@ class RetentionPolicy(WindowsAzureData):
         return int(self.__dict__['days'])
 
     def set_days(self, value):
-        ''' set default days if days is set to empty. '''
+        """ set default days if days is set to empty. """
         self.__dict__['days'] = value
 
     days = property(fget=get_days, fset=set_days)
@@ -110,7 +110,7 @@ class RetentionPolicy(WindowsAzureData):
 
 class Logging(WindowsAzureData):
 
-    ''' Logging class in service properties. '''
+    """ Logging class in service properties. """
 
     def __init__(self):
         self.version = u'1.0'
@@ -122,7 +122,7 @@ class Logging(WindowsAzureData):
 
 class Metrics(WindowsAzureData):
 
-    ''' Metrics class in service properties. '''
+    """ Metrics class in service properties. """
 
     def __init__(self):
         self.version = u'1.0'
@@ -133,7 +133,7 @@ class Metrics(WindowsAzureData):
 
 class StorageServiceProperties(WindowsAzureData):
 
-    ''' Storage Service Propeties class. '''
+    """ Storage Service Propeties class. """
 
     def __init__(self):
         self.logging = Logging()
@@ -142,7 +142,7 @@ class StorageServiceProperties(WindowsAzureData):
 
 class AccessPolicy(WindowsAzureData):
 
-    ''' Access Policy class in service properties. '''
+    """ Access Policy class in service properties. """
 
     def __init__(self, start=u'', expiry=u'', permission='u'):
         self.start = start
@@ -152,7 +152,7 @@ class AccessPolicy(WindowsAzureData):
 
 class SignedIdentifier(WindowsAzureData):
 
-    ''' Signed Identifier class for service properties. '''
+    """ Signed Identifier class for service properties. """
 
     def __init__(self):
         self.id = u''
@@ -161,7 +161,7 @@ class SignedIdentifier(WindowsAzureData):
 
 class SignedIdentifiers(WindowsAzureData):
 
-    ''' SignedIdentifier list. '''
+    """ SignedIdentifier list. """
 
     def __init__(self):
         self.signed_identifiers = _list_of(SignedIdentifier)
@@ -178,7 +178,7 @@ class SignedIdentifiers(WindowsAzureData):
 
 class BlobEnumResults(EnumResultsBase):
 
-    ''' Blob list.'''
+    """ Blob list."""
 
     def __init__(self):
         EnumResultsBase.__init__(self)
@@ -207,7 +207,7 @@ class BlobResult(str):
 
 class Blob(WindowsAzureData):
 
-    ''' Blob class. '''
+    """ Blob class. """
 
     def __init__(self):
         self.name = u''
@@ -219,7 +219,7 @@ class Blob(WindowsAzureData):
 
 class BlobProperties(WindowsAzureData):
 
-    ''' Blob Properties '''
+    """ Blob Properties """
 
     def __init__(self):
         self.last_modified = u''
@@ -236,7 +236,7 @@ class BlobProperties(WindowsAzureData):
 
 class BlobPrefix(WindowsAzureData):
 
-    ''' BlobPrefix in Blob. '''
+    """ BlobPrefix in Blob. """
 
     def __init__(self):
         self.name = ''
@@ -244,7 +244,7 @@ class BlobPrefix(WindowsAzureData):
 
 class BlobBlock(WindowsAzureData):
 
-    ''' BlobBlock class '''
+    """ BlobBlock class """
 
     def __init__(self, id=None, size=None):
         self.id = id
@@ -253,7 +253,7 @@ class BlobBlock(WindowsAzureData):
 
 class BlobBlockList(WindowsAzureData):
 
-    ''' BlobBlockList class '''
+    """ BlobBlockList class """
 
     def __init__(self):
         self.committed_blocks = []
@@ -262,7 +262,7 @@ class BlobBlockList(WindowsAzureData):
 
 class PageRange(WindowsAzureData):
 
-    ''' Page Range for page blob. '''
+    """ Page Range for page blob. """
 
     def __init__(self):
         self.start = 0
@@ -271,7 +271,7 @@ class PageRange(WindowsAzureData):
 
 class PageList:
 
-    ''' Page list for page blob. '''
+    """ Page list for page blob. """
 
     def __init__(self):
         self.page_ranges = _list_of(PageRange)
@@ -288,7 +288,7 @@ class PageList:
 
 class QueueEnumResults(EnumResultsBase):
 
-    ''' Queue list'''
+    """ Queue list"""
 
     def __init__(self):
         EnumResultsBase.__init__(self)
@@ -306,7 +306,7 @@ class QueueEnumResults(EnumResultsBase):
 
 class Queue(WindowsAzureData):
 
-    ''' Queue class '''
+    """ Queue class """
 
     def __init__(self):
         self.name = u''
@@ -316,7 +316,7 @@ class Queue(WindowsAzureData):
 
 class QueueMessagesList(WindowsAzureData):
 
-    ''' Queue message list. '''
+    """ Queue message list. """
 
     def __init__(self):
         self.queue_messages = _list_of(QueueMessage)
@@ -333,7 +333,7 @@ class QueueMessagesList(WindowsAzureData):
 
 class QueueMessage(WindowsAzureData):
 
-    ''' Queue message class. '''
+    """ Queue message class. """
 
     def __init__(self):
         self.message_id = u''
@@ -347,13 +347,13 @@ class QueueMessage(WindowsAzureData):
 
 class Entity(WindowsAzureData):
 
-    ''' Entity class. The attributes of entity will be created dynamically. '''
+    """ Entity class. The attributes of entity will be created dynamically. """
     pass
 
 
 class EntityProperty(WindowsAzureData):
 
-    ''' Entity property. contains type and value.  '''
+    """ Entity property. contains type and value.  """
 
     def __init__(self, type=None, value=None):
         self.type = type
@@ -362,7 +362,7 @@ class EntityProperty(WindowsAzureData):
 
 class Table(WindowsAzureData):
 
-    ''' Only for intellicens and telling user the return type. '''
+    """ Only for intellicens and telling user the return type. """
     pass
 
 
@@ -390,7 +390,7 @@ def _parse_blob_enum_results_list(response):
 
 
 def _update_storage_header(request):
-    ''' add addtional headers for storage request. '''
+    """ add addtional headers for storage request. """
 
     # if it is PUT, POST, MERGE, DELETE, need to add content-lengt to header.
     if request.method in ['PUT', 'POST', 'MERGE', 'DELETE']:
@@ -410,7 +410,7 @@ def _update_storage_header(request):
 
 
 def _update_storage_blob_header(request, account_name, account_key):
-    ''' add additional headers for storage blob request. '''
+    """ add additional headers for storage blob request. """
 
     request = _update_storage_header(request)
     current_time = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
@@ -424,12 +424,12 @@ def _update_storage_blob_header(request, account_name, account_key):
 
 
 def _update_storage_queue_header(request, account_name, account_key):
-    ''' add additional headers for storage queue request. '''
+    """ add additional headers for storage queue request. """
     return _update_storage_blob_header(request, account_name, account_key)
 
 
 def _update_storage_table_header(request):
-    ''' add additional headers for storage table request. '''
+    """ add additional headers for storage table request. """
 
     request = _update_storage_header(request)
     for name, value in request.headers:
@@ -446,10 +446,10 @@ def _update_storage_table_header(request):
 
 
 def _sign_storage_blob_request(request, account_name, account_key):
-    '''
+    """
     Returns the signed string for blob request which is used to set Authorization header.
     This is also used to sign queue request.
-    '''
+    """
 
     uri_path = request.path.split('?')[0]
 
@@ -614,7 +614,7 @@ _PYTHON_TO_ENTITY_CONVERSIONS = {
 
 
 def _convert_entity_to_xml(source):
-    ''' Converts an entity object to xml to send.
+    """ Converts an entity object to xml to send.
 
     The entity format is:
     <entry xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom">
@@ -640,7 +640,7 @@ def _convert_entity_to_xml(source):
         </m:properties>
       </content>
     </entry>
-    '''
+    """
 
     # construct the entity body included in <m:properties> and </m:properties>
     entity_body = '<m:properties>{properties}</m:properties>'
@@ -681,23 +681,23 @@ def _convert_entity_to_xml(source):
 
 
 def _convert_table_to_xml(table_name):
-    '''
+    """
     Create xml to send for a given table name. Since xml format for table is
     the same as entity and the only difference is that table has only one
     property 'TableName', so we just call _convert_entity_to_xml.
 
     table_name: the name of the table
-    '''
+    """
     return _convert_entity_to_xml({'TableName': table_name})
 
 
 def _convert_block_list_to_xml(block_id_list):
-    '''
+    """
     Convert a block list to xml to send.
 
     block_id_list: a str list containing the block ids that are used in put_block_list.
     Only get block from latest blocks.
-    '''
+    """
     if block_id_list is None:
         return ''
     xml = '<?xml version="1.0" encoding="utf-8"?><BlockList>'
@@ -713,9 +713,9 @@ def _create_blob_result(response):
 
 
 def _convert_response_to_block_list(response):
-    '''
+    """
     Converts xml response to block list class.
-    '''
+    """
     blob_block_list = BlobBlockList()
 
     xmldoc = minidom.parseString(response.body)
@@ -752,7 +752,7 @@ def _convert_response_to_entity(response):
 
 
 def _convert_xml_to_entity(xmlstr):
-    ''' Convert xml response to entity.
+    """ Convert xml response to entity.
 
     The format of entity:
     <entry xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom">
@@ -778,7 +778,7 @@ def _convert_xml_to_entity(xmlstr):
         </m:properties>
       </content>
     </entry>
-    '''
+    """
     xmldoc = minidom.parseString(xmlstr)
 
     xml_properties = None
@@ -841,9 +841,9 @@ def _set_entity_attr(entity, name, value):
 
 
 def _convert_xml_to_table(xmlstr):
-    ''' Converts the xml response to table class
+    """ Converts the xml response to table class
     Simply call convert_xml_to_entity and extract the table name, and add updated and author info
-    '''
+    """
     table = Table()
     entity = _convert_xml_to_entity(xmlstr)
     setattr(table, 'name', entity.TableName)
@@ -853,7 +853,7 @@ def _convert_xml_to_table(xmlstr):
 
 
 def _storage_error_handler(http_error):
-    ''' Simple error handler for storage service. Will add more specific cases '''
+    """ Simple error handler for storage service. Will add more specific cases """
     return _general_error_handler(http_error)
 
 # make these available just from storage.

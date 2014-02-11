@@ -68,17 +68,17 @@ class TableServiceTest(AzureTestCase):
 
     #--Helpers-----------------------------------------------------------------
     def _create_table(self, table_name):
-        '''
+        """
         Creates a table with the specified name.
-        '''
+        """
         self.tc.create_table(table_name, True)
 
     def _create_table_with_default_entities(self, table_name, entity_count):
-        '''
+        """
         Creates a table with the specified name and adds entities with the 
         default set of values. PartitionKey is set to 'MyPartition' and RowKey 
         is set to a unique counter value starting at 1 (as a string).
-        '''
+        """
         entities = []
         self._create_table(table_name)
         for i in range(1, entity_count + 1):
@@ -87,10 +87,10 @@ class TableServiceTest(AzureTestCase):
         return entities
 
     def _create_default_entity_class(self, partition, row):
-        '''
+        """
         Creates a class-based entity with fixed values, using all
         of the supported data types.
-        '''
+        """
         # TODO: Edm.Binary and null
         entity = Entity()
         entity.PartitionKey = partition
@@ -111,10 +111,10 @@ class TableServiceTest(AzureTestCase):
         return entity
 
     def _create_default_entity_dict(self, partition, row):
-        '''
+        """
         Creates a dictionary-based entity with fixed values, using all
         of the supported data types.
-        '''
+        """
         # TODO: Edm.Binary and null
         return {'PartitionKey': partition,
                 'RowKey': row,
@@ -132,12 +132,12 @@ class TableServiceTest(AzureTestCase):
                 'clsid': EntityProperty('Edm.Guid', 'c9da6455-213d-42c9-9a79-3e9149a57833')}
 
     def _create_updated_entity_dict(self, partition, row):
-        '''
+        """
         Creates a dictionary-based entity with fixed values, with a
         different set of values than the default entity. It
         adds fields, changes field values, changes field types,
         and removes fields when compared to the default entity.
-        '''
+        """
         return {'PartitionKey': partition,
                 'RowKey': row,
                 'age': 'abc',
@@ -146,9 +146,9 @@ class TableServiceTest(AzureTestCase):
                 'birthday': datetime(1991, 10, 04)}
 
     def _assert_default_entity(self, entity):
-        '''
+        """
         Asserts that the entity passed in matches the default entity.
-        '''
+        """
         self.assertEquals(entity.age, 39)
         self.assertEquals(entity.sex, 'male')
         self.assertEquals(entity.married, True)
@@ -165,9 +165,9 @@ class TableServiceTest(AzureTestCase):
                           'c9da6455-213d-42c9-9a79-3e9149a57833')
 
     def _assert_updated_entity(self, entity):
-        '''
+        """
         Asserts that the entity passed in matches the updated entity.
-        '''
+        """
         self.assertEquals(entity.age, 'abc')
         self.assertEquals(entity.sex, 'female')
         self.assertFalse(hasattr(entity, "married"))
@@ -182,10 +182,10 @@ class TableServiceTest(AzureTestCase):
         self.assertFalse(hasattr(entity, "clsid"))
 
     def _assert_merged_entity(self, entity):
-        '''
+        """
         Asserts that the entity passed in matches the default entity 
         merged with the updated entity.
-        '''
+        """
         self.assertEquals(entity.age, 'abc')
         self.assertEquals(entity.sex, 'female')
         self.assertEquals(entity.sign, 'aquarius')
@@ -1103,7 +1103,7 @@ class TableServiceTest(AzureTestCase):
         self.tc.cancel_batch()
 
     def test_unicode_property_value(self):
-        ''' regression test for github issue #57'''
+        """ regression test for github issue #57"""
         # Act
         self._create_table(self.table_name)
         self.tc.insert_entity(

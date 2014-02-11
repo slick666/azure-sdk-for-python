@@ -52,12 +52,12 @@ from azure.storage.storageclient import _StorageClient
 
 class BlobService(_StorageClient):
 
-    '''
+    """
     This is the main class managing Blob resources.
-    '''
+    """
 
     def __init__(self, account_name=None, account_key=None, protocol='https', host_base=BLOB_SERVICE_HOST_BASE, dev_host=DEV_BLOB_HOST):
-        '''
+        """
         account_name: your storage account name, required for all operations.
         account_key: your storage account key, required for all operations.
         protocol: Optional. Protocol. Defaults to http.
@@ -65,11 +65,11 @@ class BlobService(_StorageClient):
             Optional. Live host base url. Defaults to Azure url. Override this 
             for on-premise.
         dev_host: Optional. Dev host url. Defaults to localhost. 
-        '''
+        """
         return super(BlobService, self).__init__(account_name, account_key, protocol, host_base, dev_host)
 
     def list_containers(self, prefix=None, marker=None, maxresults=None, include=None):
-        '''
+        """
         The List Containers operation returns a list of the containers under 
         the specified account.
         
@@ -85,7 +85,7 @@ class BlobService(_StorageClient):
             Optional. Include this parameter to specify that the container's 
             metadata be returned as part of the response body. set this 
             parameter to string 'metadata' to get container's metadata.
-        '''
+        """
         request = HTTPRequest()
         request.method = 'GET'
         request.host = self._get_host()
@@ -105,7 +105,7 @@ class BlobService(_StorageClient):
         return _parse_enum_results_list(response, ContainerEnumResults, "Containers", Container)
 
     def create_container(self, container_name, x_ms_meta_name_values=None, x_ms_blob_public_access=None, fail_on_exist=False):
-        '''
+        """
         Creates a new container under the specified account. If the container 
         with the same name already exists, the operation fails.
         
@@ -117,7 +117,7 @@ class BlobService(_StorageClient):
             Optional. Possible values include: container, blob
         fail_on_exist:
             specify whether to throw an exception when the container exists.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         request = HTTPRequest()
         request.method = 'PUT'
@@ -143,12 +143,12 @@ class BlobService(_StorageClient):
             return True
 
     def get_container_properties(self, container_name):
-        '''
+        """
         Returns all user-defined metadata and system properties for the 
         specified container.
 
         container_name: Name of existing container.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         request = HTTPRequest()
         request.method = 'GET'
@@ -163,12 +163,12 @@ class BlobService(_StorageClient):
         return _parse_response_for_dict(response)
 
     def get_container_metadata(self, container_name):
-        '''
+        """
         Returns all user-defined metadata for the specified container. The 
         metadata will be in returned dictionary['x-ms-meta-(name)'].
 
         container_name: Name of existing container.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         request = HTTPRequest()
         request.method = 'GET'
@@ -184,14 +184,14 @@ class BlobService(_StorageClient):
         return _parse_response_for_dict_prefix(response, prefixes=['x-ms-meta'])
 
     def set_container_metadata(self, container_name, x_ms_meta_name_values=None):
-        '''
+        """
         Sets one or more user-defined name-value pairs for the specified 
         container.
         
         container_name: Name of existing container.
         x_ms_meta_name_values:
             A dict containing name, value for metadata. Example: {'category':'test'}
-        '''
+        """
         _validate_not_none('container_name', container_name)
         request = HTTPRequest()
         request.method = 'PUT'
@@ -206,11 +206,11 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def get_container_acl(self, container_name):
-        '''
+        """
         Gets the permissions for the specified container.
 
         container_name: Name of existing container.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         request = HTTPRequest()
         request.method = 'GET'
@@ -226,14 +226,14 @@ class BlobService(_StorageClient):
         return _parse_response(response, SignedIdentifiers)
 
     def set_container_acl(self, container_name, signed_identifiers=None, x_ms_blob_public_access=None):
-        '''
+        """
         Sets the permissions for the specified container.
         
         container_name: Name of existing container.
         signed_identifiers: SignedIdentifers instance
         x_ms_blob_public_access:
             Optional. Possible values include: container, blob 
-        '''
+        """
         _validate_not_none('container_name', container_name)
         request = HTTPRequest()
         request.method = 'PUT'
@@ -251,13 +251,13 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def delete_container(self, container_name, fail_not_exist=False):
-        '''
+        """
         Marks the specified container for deletion.
         
         container_name: Name of container to delete.
         fail_not_exist: 
             Specify whether to throw an exception when the container doesn't exist.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         request = HTTPRequest()
         request.method = 'DELETE'
@@ -279,7 +279,7 @@ class BlobService(_StorageClient):
             return True
 
     def list_blobs(self, container_name, prefix=None, marker=None, maxresults=None, include=None, delimiter=None):
-        '''
+        """
         Returns the list of blobs under the specified container.
 
         container_name: Name of existing container.
@@ -323,7 +323,7 @@ class BlobService(_StorageClient):
             placeholder for all blobs whose names begin with the same 
             substring up to the appearance of the delimiter character. The 
             delimiter may be a single character or a string.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         request = HTTPRequest()
         request.method = 'GET'
@@ -346,7 +346,7 @@ class BlobService(_StorageClient):
         return _parse_blob_enum_results_list(response)
 
     def set_blob_service_properties(self, storage_service_properties, timeout=None):
-        '''
+        """
         Sets the properties of a storage account's Blob service, including 
         Windows Azure Storage Analytics. You can also use this operation to 
         set the default request version for all incoming requests that do not 
@@ -354,7 +354,7 @@ class BlobService(_StorageClient):
         
         storage_service_properties: a StorageServiceProperties object.
         timeout: Optional. The timeout parameter is expressed in seconds.
-        '''
+        """
         _validate_not_none('storage_service_properties',
                            storage_service_properties)
         request = HTTPRequest()
@@ -371,12 +371,12 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def get_blob_service_properties(self, timeout=None):
-        '''
+        """
         Gets the properties of a storage account's Blob service, including 
         Windows Azure Storage Analytics.
         
         timeout: Optional. The timeout parameter is expressed in seconds.
-        '''
+        """
         request = HTTPRequest()
         request.method = 'GET'
         request.host = self._get_host()
@@ -391,14 +391,14 @@ class BlobService(_StorageClient):
         return _parse_response(response, StorageServiceProperties)
 
     def get_blob_properties(self, container_name, blob_name, x_ms_lease_id=None):
-        '''
+        """
         Returns all user-defined metadata, standard HTTP properties, and 
         system properties for the blob.
         
         container_name: Name of existing container.
         blob_name: Name of existing blob.
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         request = HTTPRequest()
@@ -415,7 +415,7 @@ class BlobService(_StorageClient):
         return _parse_response_for_dict(response)
 
     def set_blob_properties(self, container_name, blob_name, x_ms_blob_cache_control=None, x_ms_blob_content_type=None, x_ms_blob_content_md5=None, x_ms_blob_content_encoding=None, x_ms_blob_content_language=None, x_ms_lease_id=None):
-        '''
+        """
         Sets system properties on the blob.
         
         container_name: Name of existing container.
@@ -427,7 +427,7 @@ class BlobService(_StorageClient):
         x_ms_blob_content_encoding: Optional. Sets the blob's content encoding.
         x_ms_blob_content_language: Optional. Sets the blob's content language.
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         request = HTTPRequest()
@@ -452,7 +452,7 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def put_blob(self, container_name, blob_name, blob, x_ms_blob_type, content_encoding=None, content_language=None, content_md5=None, cache_control=None, x_ms_blob_content_type=None, x_ms_blob_content_encoding=None, x_ms_blob_content_language=None, x_ms_blob_content_md5=None, x_ms_blob_cache_control=None, x_ms_meta_name_values=None, x_ms_lease_id=None, x_ms_blob_content_length=None, x_ms_blob_sequence_number=None):
-        '''
+        """
         Creates a new block blob or page blob, or updates the content of an 
         existing block blob. 
         
@@ -492,7 +492,7 @@ class BlobService(_StorageClient):
             user-controlled value that you can use to track requests. The 
             value of the sequence number must be between 0 and 2^63 - 1. The 
             default value is 0.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         _validate_not_none('blob', blob)
@@ -529,7 +529,7 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def get_blob(self, container_name, blob_name, snapshot=None, x_ms_range=None, x_ms_lease_id=None, x_ms_range_get_content_md5=None):
-        '''
+        """
         Reads or downloads a blob from the system, including its metadata and 
         properties. 
         
@@ -545,7 +545,7 @@ class BlobService(_StorageClient):
             Optional. When this header is set to true and specified together 
             with the Range header, the service returns the MD5 hash for the 
             range, as long as the range is less than or equal to 4 MB in size.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         request = HTTPRequest()
@@ -568,7 +568,7 @@ class BlobService(_StorageClient):
         return _create_blob_result(response)
 
     def get_blob_metadata(self, container_name, blob_name, snapshot=None, x_ms_lease_id=None):
-        '''
+        """
         Returns all user-defined metadata for the specified blob or snapshot.
         
         container_name: Name of existing container.
@@ -577,7 +577,7 @@ class BlobService(_StorageClient):
             Optional. The snapshot parameter is an opaque DateTime value that, 
             when present, specifies the blob snapshot to retrieve. 
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         request = HTTPRequest()
@@ -596,7 +596,7 @@ class BlobService(_StorageClient):
         return _parse_response_for_dict_prefix(response, prefixes=['x-ms-meta'])
 
     def set_blob_metadata(self, container_name, blob_name, x_ms_meta_name_values=None, x_ms_lease_id=None):
-        '''
+        """
         Sets user-defined metadata for the specified blob as one or more 
         name-value pairs.
         
@@ -604,7 +604,7 @@ class BlobService(_StorageClient):
         blob_name: Name of existing blob.
         x_ms_meta_name_values: Dict containing name and value pairs.
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         request = HTTPRequest()
@@ -623,14 +623,14 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def lease_blob(self, container_name, blob_name, x_ms_lease_action, x_ms_lease_id=None):
-        '''
+        """
         Establishes and manages a one-minute lock on a blob for write operations.
         
         container_name: Name of existing container.
         blob_name: Name of existing blob.
         x_ms_lease_action: Required. Possible values: acquire|renew|release|break
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         _validate_not_none('x_ms_lease_action', x_ms_lease_action)
@@ -652,7 +652,7 @@ class BlobService(_StorageClient):
         return _parse_response_for_dict_filter(response, filter=['x-ms-lease-id'])
 
     def snapshot_blob(self, container_name, blob_name, x_ms_meta_name_values=None, if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None, x_ms_lease_id=None):
-        '''
+        """
         Creates a read-only snapshot of a blob.
         
         container_name: Name of existing container.
@@ -665,7 +665,7 @@ class BlobService(_StorageClient):
             value specified. 
         if_none_match: Optional. An ETag value
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         request = HTTPRequest()
@@ -690,7 +690,7 @@ class BlobService(_StorageClient):
         return _parse_response_for_dict_filter(response, filter=['x-ms-snapshot', 'etag', 'last-modified'])
 
     def copy_blob(self, container_name, blob_name, x_ms_copy_source, x_ms_meta_name_values=None, x_ms_source_if_modified_since=None, x_ms_source_if_unmodified_since=None, x_ms_source_if_match=None, x_ms_source_if_none_match=None, if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None, x_ms_lease_id=None, x_ms_source_lease_id=None):
-        '''
+        """
         Copies a blob to a destination within the storage account. 
         
         container_name: Name of existing container.
@@ -720,7 +720,7 @@ class BlobService(_StorageClient):
         x_ms_source_lease_id:
             Optional. Specify this to perform the Copy Blob operation only if 
             the lease ID given matches the active lease ID of the source blob.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         _validate_not_none('x_ms_copy_source', x_ms_copy_source)
@@ -752,7 +752,7 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def delete_blob(self, container_name, blob_name, snapshot=None, x_ms_lease_id=None):
-        '''
+        """
         Marks the specified blob or snapshot for deletion. The blob is later 
         deleted during garbage collection.
         
@@ -765,7 +765,7 @@ class BlobService(_StorageClient):
             Optional. The snapshot parameter is an opaque DateTime value that, 
             when present, specifies the blob snapshot to delete.
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         request = HTTPRequest()
@@ -781,7 +781,7 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def put_block(self, container_name, blob_name, block, blockid, content_md5=None, x_ms_lease_id=None):
-        '''
+        """
         Creates a new block to be committed as part of a blob.
         
         container_name: Name of existing container.
@@ -796,7 +796,7 @@ class BlobService(_StorageClient):
             header is specified, the storage service checks the hash that has 
             arrived with the one that was sent.
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         _validate_not_none('block', block)
@@ -819,7 +819,7 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def put_block_list(self, container_name, blob_name, block_list, content_md5=None, x_ms_blob_cache_control=None, x_ms_blob_content_type=None, x_ms_blob_content_encoding=None, x_ms_blob_content_language=None, x_ms_blob_content_md5=None, x_ms_meta_name_values=None, x_ms_lease_id=None):
-        '''
+        """
         Writes a blob by specifying the list of block IDs that make up the 
         blob. In order to be written as part of a blob, a block must have been 
         successfully written to the server in a prior Put Block (REST API) 
@@ -851,7 +851,7 @@ class BlobService(_StorageClient):
             validated when each was uploaded.
         x_ms_meta_name_values: Optional. Dict containing name and value pairs.
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         _validate_not_none('block_list', block_list)
@@ -881,7 +881,7 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def get_block_list(self, container_name, blob_name, snapshot=None, blocklisttype=None, x_ms_lease_id=None):
-        '''
+        """
         Retrieves the list of blocks that have been uploaded as part of a 
         block blob.
         
@@ -894,7 +894,7 @@ class BlobService(_StorageClient):
             of uncommitted blocks, or both lists together. Valid values are:
             committed, uncommitted, or all.
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         request = HTTPRequest()
@@ -916,7 +916,7 @@ class BlobService(_StorageClient):
         return _convert_response_to_block_list(response)
 
     def put_page(self, container_name, blob_name, page, x_ms_range, x_ms_page_write, timeout=None, content_md5=None, x_ms_lease_id=None, x_ms_if_sequence_number_lte=None, x_ms_if_sequence_number_lt=None, x_ms_if_sequence_number_eq=None, if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None):
-        '''
+        """
         Writes a range of pages to a page blob.
         
         container_name: Name of existing container.
@@ -978,7 +978,7 @@ class BlobService(_StorageClient):
             header to write the page only if the blob's ETag value does not 
             match the value specified. If the values are identical, the Blob 
             service fails.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         _validate_not_none('page', page)
@@ -1014,7 +1014,7 @@ class BlobService(_StorageClient):
         response = self._perform_request(request)
 
     def get_page_ranges(self, container_name, blob_name, snapshot=None, range=None, x_ms_range=None, x_ms_lease_id=None):
-        '''
+        """
         Retrieves the page ranges for a blob.
         
         container_name: Name of existing container.
@@ -1034,7 +1034,7 @@ class BlobService(_StorageClient):
             512 and the end offset must be a modulus of 512-1. Examples of 
             valid byte ranges are 0-511, 512-1023, etc.
         x_ms_lease_id: Required if the blob has an active lease.
-        '''
+        """
         _validate_not_none('container_name', container_name)
         _validate_not_none('blob_name', blob_name)
         request = HTTPRequest()

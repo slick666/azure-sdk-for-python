@@ -34,12 +34,12 @@ EMULATED = 'EMULATED'
 
 class _StorageClient(object):
 
-    '''
+    """
     This is the base class for BlobManager, TableManager and QueueManager.
-    '''
+    """
 
     def __init__(self, account_name=None, account_key=None, protocol='https', host_base='', dev_host=''):
-        '''
+        """
         account_name: your storage account name, required for all operations.
         account_key: your storage account key, required for all operations.
         protocol: Optional. Protocol. Defaults to http.
@@ -47,7 +47,7 @@ class _StorageClient(object):
             Optional. Live host base url. Defaults to Azure url. Override this 
             for on-premise.
         dev_host: Optional. Dev host url. Defaults to localhost. 
-        '''
+        """
         if account_name is not None:
             self.account_name = account_name.encode('ascii', 'ignore')
         else:
@@ -99,14 +99,14 @@ class _StorageClient(object):
         self._filter = self._perform_request_worker
 
     def with_filter(self, filter):
-        '''
+        """
         Returns a new service which will process requests with the specified 
         filter.  Filtering operations can include logging, automatic retrying, 
         etc...  The filter is a lambda which receives the HTTPRequest and 
         another lambda.  The filter can perform any pre-processing on the
         request, pass it off to the next lambda, and then perform any 
         post-processing on the response.
-        '''
+        """
         res = type(self)(self.account_name, self.account_key, self.protocol)
         old_filter = self._filter
 
@@ -117,14 +117,14 @@ class _StorageClient(object):
         return res
 
     def set_proxy(self, host, port, user=None, password=None):
-        '''
+        """
         Sets the proxy server host and port for the HTTP CONNECT Tunnelling.
 
         host: Address of the proxy. Ex: '192.168.0.100'
         port: Port of the proxy. Ex: 6000
         user: User for proxy authorization.
         password: Password for proxy authorization.
-        '''
+        """
         self._httpclient.set_proxy(host, port, user, password)
 
     def _get_host(self):
@@ -137,10 +137,10 @@ class _StorageClient(object):
         return self._httpclient.perform_request(request)
 
     def _perform_request(self, request):
-        '''
+        """
         Sends the request and return response. Catches HTTPError and hand it 
         to error handler
-        '''
+        """
         try:
             if self._batchclient is not None:
                 return self._batchclient.insert_request_to_batch(request)

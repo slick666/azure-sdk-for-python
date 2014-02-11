@@ -25,10 +25,10 @@ _DATASERVICES_NS = 'http://schemas.microsoft.com/ado/2007/08/dataservices'
 
 class _BatchClient(_HTTPClient):
 
-    '''
+    """
     This is the class that is used for batch operation for storage table service. 
     It only supports one changeset.
-    '''
+    """
 
     def __init__(self, service_instance, account_key, account_name, protocol='http'):
         _HTTPClient.__init__(self, service_instance, account_name=account_name,
@@ -40,12 +40,12 @@ class _BatchClient(_HTTPClient):
         self.batch_row_keys = []
 
     def get_request_table(self, request):
-        '''
+        """
         Extracts table name from request.uri. The request.uri has either "/mytable(...)" 
         or "/mytable" format.
 
         request: the request to insert, update or delete entity
-        '''
+        """
         if '(' in request.path:
             pos = request.path.find('(')
             return request.path[1:pos]
@@ -53,13 +53,13 @@ class _BatchClient(_HTTPClient):
             return request.path[1:]
 
     def get_request_partition_key(self, request):
-        '''
+        """
         Extracts PartitionKey from request.body if it is a POST request or from request.path if 
         it is not a POST request. Only insert operation request is a POST request and the 
         PartitionKey is in the request body.
 
         request: the request to insert, update or delete entity
-        '''
+        """
         if request.method == 'POST':
             doc = minidom.parseString(request.body)
             part_key = _get_children_from_path(
@@ -76,13 +76,13 @@ class _BatchClient(_HTTPClient):
             return uri[pos1 + len('PartitionKey=\''):pos2]
 
     def get_request_row_key(self, request):
-        '''
+        """
         Extracts RowKey from request.body if it is a POST request or from request.path if 
         it is not a POST request. Only insert operation request is a POST request and the 
         Rowkey is in the request body.
 
         request: the request to insert, update or delete entity
-        '''
+        """
         if request.method == 'POST':
             doc = minidom.parseString(request.body)
             row_key = _get_children_from_path(
@@ -100,12 +100,12 @@ class _BatchClient(_HTTPClient):
             return row_key
 
     def validate_request_table(self, request):
-        '''
+        """
         Validates that all requests have the same table name. Set the table name if it is 
         the first request for the batch operation.
 
         request: the request to insert, update or delete entity
-        '''
+        """
         if self.batch_table:
             if self.get_request_table(request) != self.batch_table:
                 raise WindowsAzureError(azure._ERROR_INCORRECT_TABLE_IN_BATCH)
@@ -113,12 +113,12 @@ class _BatchClient(_HTTPClient):
             self.batch_table = self.get_request_table(request)
 
     def validate_request_partition_key(self, request):
-        '''
+        """
         Validates that all requests have the same PartitiionKey. Set the PartitionKey if it is 
         the first request for the batch operation.
 
         request: the request to insert, update or delete entity
-        '''
+        """
         if self.batch_partition_key:
             if self.get_request_partition_key(request) != self.batch_partition_key:
                 raise WindowsAzureError(
@@ -127,11 +127,11 @@ class _BatchClient(_HTTPClient):
             self.batch_partition_key = self.get_request_partition_key(request)
 
     def validate_request_row_key(self, request):
-        '''
+        """
         Validates that all requests have the different RowKey and adds RowKey to existing RowKey list.
 
         request: the request to insert, update or delete entity
-        '''
+        """
         if self.batch_row_keys:
             if self.get_request_row_key(request) in self.batch_row_keys:
                 raise WindowsAzureError(
@@ -140,7 +140,7 @@ class _BatchClient(_HTTPClient):
             self.batch_row_keys.append(self.get_request_row_key(request))
 
     def begin_batch(self):
-        '''
+        """
         Starts the batch operation. Intializes the batch variables
         
         is_batch: batch operation flag.
@@ -148,7 +148,7 @@ class _BatchClient(_HTTPClient):
         batch_partition_key: the PartitionKey of the batch requests.
         batch_row_keys: the RowKey list of adding requests.
         batch_requests: the list of the requests.
-        '''
+        """
         self.is_batch = True
         self.batch_table = ''
         self.batch_partition_key = ''
@@ -156,24 +156,24 @@ class _BatchClient(_HTTPClient):
         self.batch_requests = []
 
     def insert_request_to_batch(self, request):
-        ''' 
+        """ 
         Adds request to batch operation.
                 
         request: the request to insert, update or delete entity
-        '''
+        """
         self.validate_request_table(request)
         self.validate_request_partition_key(request)
         self.validate_request_row_key(request)
         self.batch_requests.append(request)
 
     def commit_batch(self):
-        ''' Resets batch flag and commits the batch requests. '''
+        """ Resets batch flag and commits the batch requests. """
         if self.is_batch:
             self.is_batch = False
             self.commit_batch_requests()
 
     def commit_batch_requests(self):
-        ''' Commits the batch requests. '''
+        """ Commits the batch requests. """
 
         batch_boundary = 'batch_a2e9d677-b28b-435e-a89e-87e6a768a431'
         changeset_boundary = 'changeset_8128b620-b4bb-458c-a177-0959fb14c977'
@@ -245,5 +245,5 @@ class _BatchClient(_HTTPClient):
             return resp
 
     def cancel_batch(self):
-        ''' Resets the batch flag. '''
+        """ Resets the batch flag. """
         self.is_batch = False

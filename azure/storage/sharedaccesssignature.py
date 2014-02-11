@@ -35,14 +35,14 @@ SHARED_ACCESS_PERMISSION = 'permission'
 
 class WebResource:
 
-    ''' 
+    """ 
     Class that stands for the resource to get the share access signature
 
     path: the resource path.
     properties: dict of name and values. Contains 2 item: resource type and 
             permission
     request_url: the url of the webresource include all the queries.
-    '''
+    """
 
     def __init__(self, path=None, request_url=None, properties={}):
         self.path = path
@@ -52,14 +52,14 @@ class WebResource:
 
 class Permission:
 
-    ''' 
+    """ 
     Permission class. Contains the path and query_string for the path.
 
     path: the resource path
     query_string: dict of name, values. Contains SIGNED_START, SIGNED_EXPIRY
             SIGNED_RESOURCE, SIGNED_PERMISSION, SIGNED_IDENTIFIER, 
             SIGNED_SIGNATURE name values.
-    '''
+    """
 
     def __init__(self, path=None, query_string=None):
         self.path = path
@@ -68,7 +68,7 @@ class Permission:
 
 class SharedAccessPolicy:
 
-    ''' SharedAccessPolicy class. '''
+    """ SharedAccessPolicy class. """
 
     def __init__(self, access_policy, signed_identifier=None):
         self.id = signed_identifier
@@ -77,13 +77,13 @@ class SharedAccessPolicy:
 
 class SharedAccessSignature:
 
-    ''' 
+    """ 
     The main class used to do the signing and generating the signature. 
     
     account_name: the storage account name used to generate shared access signature
     account_key: the access key to genenerate share access signature
     permission_set: the permission cache used to signed the request url.
-    '''
+    """
 
     def __init__(self, account_name, account_key, permission_set=None):
         self.account_name = account_name
@@ -91,13 +91,13 @@ class SharedAccessSignature:
         self.permission_set = permission_set
 
     def generate_signed_query_string(self, path, resource_type, shared_access_policy):
-        ''' 
+        """ 
         Generates the query string for path, resource type and shared access policy. 
 
         path: the resource
         resource_type: could be blob or container
         shared_access_policy: shared access policy
-        '''
+        """
 
         query_string = {}
         if shared_access_policy.access_policy.start:
@@ -117,7 +117,7 @@ class SharedAccessSignature:
         return query_string
 
     def sign_request(self, web_resource):
-        ''' sign request to generate request_url with sharedaccesssignature info for web_resource.'''
+        """ sign request to generate request_url with sharedaccesssignature info for web_resource."""
 
         if self.permission_set:
             for shared_access_signature in self.permission_set:
@@ -137,7 +137,7 @@ class SharedAccessSignature:
         return web_resource
 
     def _convert_query_string(self, query_string):
-        ''' Converts query string to str. The order of name, values is very import and can't be wrong.'''
+        """ Converts query string to str. The order of name, values is very import and can't be wrong."""
 
         convert_str = ''
         if query_string.has_key(SIGNED_START):
@@ -157,7 +157,7 @@ class SharedAccessSignature:
         return convert_str
 
     def _generate_signature(self, path, resource_type, shared_access_policy):
-        ''' Generates signature for a given path, resource_type and shared access policy. '''
+        """ Generates signature for a given path, resource_type and shared access policy. """
 
         def get_value_to_append(value, no_new_line=False):
             return_value = ''
@@ -183,7 +183,7 @@ class SharedAccessSignature:
         return self._sign(string_to_sign)
 
     def _permission_matches_request(self, shared_access_signature, web_resource, resource_type, required_permission):
-        ''' Check whether requested permission matches given shared_access_signature, web_resource and resource type. '''
+        """ Check whether requested permission matches given shared_access_signature, web_resource and resource type. """
 
         required_resource_type = resource_type
         if required_resource_type == RESOURCE_BLOB:
@@ -198,7 +198,7 @@ class SharedAccessSignature:
         return web_resource.path.find(shared_access_signature.path) != -1
 
     def _sign(self, string_to_sign):
-        ''' use HMAC-SHA256 to sign the string and convert it as base64 encoded string. '''
+        """ use HMAC-SHA256 to sign the string and convert it as base64 encoded string. """
 
         decode_account_key = base64.b64decode(self.account_key)
         signed_hmac_sha256 = hmac.HMAC(

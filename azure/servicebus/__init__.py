@@ -47,7 +47,7 @@ XML_SCHEMA_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
 
 class Queue(WindowsAzureData):
 
-    ''' Queue class corresponding to Queue Description: http://msdn.microsoft.com/en-us/library/windowsazure/hh780773'''
+    """ Queue class corresponding to Queue Description: http://msdn.microsoft.com/en-us/library/windowsazure/hh780773"""
 
     def __init__(self,
                  lock_duration=None,
@@ -77,7 +77,7 @@ class Queue(WindowsAzureData):
 
 class Topic(WindowsAzureData):
 
-    ''' Topic class corresponding to Topic Description: http://msdn.microsoft.com/en-us/library/windowsazure/hh780749. '''
+    """ Topic class corresponding to Topic Description: http://msdn.microsoft.com/en-us/library/windowsazure/hh780749. """
 
     def __init__(self,
                  default_message_time_to_live=None,
@@ -108,7 +108,7 @@ class Topic(WindowsAzureData):
 
 class Subscription(WindowsAzureData):
 
-    ''' Subscription class corresponding to Subscription Description: http://msdn.microsoft.com/en-us/library/windowsazure/hh780763. '''
+    """ Subscription class corresponding to Subscription Description: http://msdn.microsoft.com/en-us/library/windowsazure/hh780763. """
 
     def __init__(self,
                  lock_duration=None,
@@ -132,7 +132,7 @@ class Subscription(WindowsAzureData):
 
 class Rule(WindowsAzureData):
 
-    ''' Rule class corresponding to Rule Description: http://msdn.microsoft.com/en-us/library/windowsazure/hh780753. '''
+    """ Rule class corresponding to Rule Description: http://msdn.microsoft.com/en-us/library/windowsazure/hh780753. """
 
     def __init__(self, filter_type=None, filter_expression=None, action_type=None, action_expression=None):
         self.filter_type = filter_type
@@ -143,7 +143,7 @@ class Rule(WindowsAzureData):
 
 class Message(WindowsAzureData):
 
-    ''' Message class that used in send message/get mesage apis. '''
+    """ Message class that used in send message/get mesage apis. """
 
     def __init__(
             self, body=None, service_bus_service=None, location=None, custom_properties=None,
@@ -177,7 +177,7 @@ class Message(WindowsAzureData):
                 self._queue_name = location[pos1 + 1:pos]
 
     def delete(self):
-        ''' Deletes itself if find queue name or topic name and subscription name. '''
+        """ Deletes itself if find queue name or topic name and subscription name. """
         if self._queue_name:
             self.service_bus_service.delete_queue_message(
                 self._queue_name, self.broker_properties['SequenceNumber'], self.broker_properties['LockToken'])
@@ -188,7 +188,7 @@ class Message(WindowsAzureData):
             raise WindowsAzureError(_ERROR_MESSAGE_NOT_PEEK_LOCKED_ON_DELETE)
 
     def unlock(self):
-        ''' Unlocks itself if find queue name or topic name and subscription name. '''
+        """ Unlocks itself if find queue name or topic name and subscription name. """
         if self._queue_name:
             self.service_bus_service.unlock_queue_message(
                 self._queue_name, self.broker_properties['SequenceNumber'], self.broker_properties['LockToken'])
@@ -199,7 +199,7 @@ class Message(WindowsAzureData):
             raise WindowsAzureError(_ERROR_MESSAGE_NOT_PEEK_LOCKED_ON_UNLOCK)
 
     def add_headers(self, request):
-        ''' add addtional headers to request for message request.'''
+        """ add addtional headers to request for message request."""
 
         # Adds custom properties
         if self.custom_properties:
@@ -227,11 +227,11 @@ class Message(WindowsAzureData):
 
 
 def _create_message(response, service_instance):
-    ''' Create message from response. 
+    """ Create message from response. 
     
     response: response from service bus cloud server.
     service_instance: the service bus client.
-    '''
+    """
     respbody = response.body
     custom_properties = {}
     broker_properties = None
@@ -282,7 +282,7 @@ def _convert_response_to_rule(response):
 
 
 def _convert_xml_to_rule(xmlstr):
-    ''' Converts response xml to rule object.  
+    """ Converts response xml to rule object.  
 
     The format of xml for rule:
     <entry xmlns='http://www.w3.org/2005/Atom'>  
@@ -297,7 +297,7 @@ def _convert_xml_to_rule(xmlstr):
     </RuleDescription>
     </content>
     </entry>
-    '''
+    """
     xmldoc = minidom.parseString(xmlstr)
     rule = Rule()
 
@@ -340,7 +340,7 @@ def _parse_bool(value):
 
 
 def _convert_xml_to_queue(xmlstr):
-    ''' Converts xml response to queue object.
+    """ Converts xml response to queue object.
     
     The format of xml response for queue:
     <QueueDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\">
@@ -352,7 +352,7 @@ def _convert_xml_to_queue(xmlstr):
     ...
     </QueueDescription>
 
-    '''
+    """
     xmldoc = minidom.parseString(xmlstr)
     queue = Queue()
 
@@ -426,7 +426,7 @@ def _convert_response_to_topic(response):
 
 
 def _convert_xml_to_topic(xmlstr):
-    '''Converts xml response to topic
+    """Converts xml response to topic
 
     The xml format for topic:
     <entry xmlns='http://www.w3.org/2005/Atom'>  
@@ -440,7 +440,7 @@ def _convert_xml_to_topic(xmlstr):
     </TopicDescription>  
     </content>
     </entry>
-    '''
+    """
     xmldoc = minidom.parseString(xmlstr)
     topic = Topic()
 
@@ -493,7 +493,7 @@ def _convert_response_to_subscription(response):
 
 
 def _convert_xml_to_subscription(xmlstr):
-    '''Converts xml response to subscription
+    """Converts xml response to subscription
 
     The xml format for subscription:
     <entry xmlns='http://www.w3.org/2005/Atom'>  
@@ -506,7 +506,7 @@ def _convert_xml_to_subscription(xmlstr):
     </SubscriptionDescription>  
     </content>
     </entry>
-    '''
+    """
     xmldoc = minidom.parseString(xmlstr)
     subscription = Subscription()
 
@@ -549,12 +549,12 @@ def _convert_xml_to_subscription(xmlstr):
 
 
 def _convert_subscription_to_xml(subscription):
-    ''' 
+    """ 
     Converts a subscription object to xml to send.  The order of each field of subscription 
     in xml is very important so we cann't simple call convert_class_to_xml. 
 
     subscription: the subsciption object to be converted.
-    '''
+    """
 
     subscription_body = '<SubscriptionDescription xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">'
     if subscription:
@@ -588,12 +588,12 @@ def _convert_subscription_to_xml(subscription):
 
 
 def _convert_rule_to_xml(rule):
-    ''' 
+    """ 
     Converts a rule object to xml to send.  The order of each field of rule 
     in xml is very important so we cann't simple call convert_class_to_xml. 
 
     rule: the rule object to be converted.
-    '''
+    """
     rule_body = '<RuleDescription xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">'
     if rule:
         if rule.filter_type:
@@ -621,12 +621,12 @@ def _convert_rule_to_xml(rule):
 
 
 def _convert_topic_to_xml(topic):
-    ''' 
+    """ 
     Converts a topic object to xml to send.  The order of each field of topic 
     in xml is very important so we cann't simple call convert_class_to_xml. 
 
     topic: the topic object to be converted.
-    '''
+    """
 
     topic_body = '<TopicDescription xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">'
     if topic:
@@ -654,12 +654,12 @@ def _convert_topic_to_xml(topic):
 
 
 def _convert_queue_to_xml(queue):
-    ''' 
+    """ 
     Converts a queue object to xml to send.  The order of each field of queue 
     in xml is very important so we cann't simple call convert_class_to_xml. 
 
     queue: the queue object to be converted.
-    '''
+    """
     queue_body = '<QueueDescription xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">'
     if queue:
         if queue.lock_duration:
@@ -701,7 +701,7 @@ def _convert_queue_to_xml(queue):
 
 
 def _service_bus_error_handler(http_error):
-    ''' Simple error handler for service bus service. Will add more specific cases '''
+    """ Simple error handler for service bus service. Will add more specific cases """
     return _general_error_handler(http_error)
 
 from azure.servicebus.servicebusservice import ServiceBusService

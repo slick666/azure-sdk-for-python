@@ -44,12 +44,12 @@ from azure.storage.storageclient import _StorageClient
 
 class QueueService(_StorageClient):
 
-    '''
+    """
     This is the main class managing queue resources.
-    '''
+    """
 
     def __init__(self, account_name=None, account_key=None, protocol='https', host_base=QUEUE_SERVICE_HOST_BASE, dev_host=DEV_QUEUE_HOST):
-        '''
+        """
         account_name: your storage account name, required for all operations.
         account_key: your storage account key, required for all operations.
         protocol: Optional. Protocol. Defaults to http.
@@ -57,16 +57,16 @@ class QueueService(_StorageClient):
             Optional. Live host base url. Defaults to Azure url. Override this 
             for on-premise.
         dev_host: Optional. Dev host url. Defaults to localhost. 
-        '''
+        """
         return super(QueueService, self).__init__(account_name, account_key, protocol, host_base, dev_host)
 
     def get_queue_service_properties(self, timeout=None):
-        '''
+        """
         Gets the properties of a storage account's Queue Service, including 
         Windows Azure Storage Analytics.
         
         timeout: Optional. The timeout parameter is expressed in seconds.
-        '''
+        """
         request = HTTPRequest()
         request.method = 'GET'
         request.host = self._get_host()
@@ -81,7 +81,7 @@ class QueueService(_StorageClient):
         return _parse_response(response, StorageServiceProperties)
 
     def list_queues(self, prefix=None, marker=None, maxresults=None, include=None):
-        '''
+        """
         Lists all of the queues in a given storage account.
 
         prefix:
@@ -100,7 +100,7 @@ class QueueService(_StorageClient):
         include: 
             Optional. Include this parameter to specify that the container's 
             metadata be returned as part of the response body. 
-        '''
+        """
         request = HTTPRequest()
         request.method = 'GET'
         request.host = self._get_host()
@@ -120,7 +120,7 @@ class QueueService(_StorageClient):
         return _parse_enum_results_list(response, QueueEnumResults, "Queues", Queue)
 
     def create_queue(self, queue_name, x_ms_meta_name_values=None, fail_on_exist=False):
-        '''
+        """
         Creates a queue under the given account.
         
         queue_name: name of the queue.
@@ -128,7 +128,7 @@ class QueueService(_StorageClient):
             Optional. A dict containing name-value pairs to associate with the 
             queue as metadata.
         fail_on_exist: Specify whether throw exception when queue exists.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         request = HTTPRequest()
         request.method = 'PUT'
@@ -155,13 +155,13 @@ class QueueService(_StorageClient):
             return True
 
     def delete_queue(self, queue_name, fail_not_exist=False):
-        '''
+        """
         Permanently deletes the specified queue.
         
         queue_name: Name of the queue.
         fail_not_exist:
             Specify whether throw exception when queue doesn't exist.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         request = HTTPRequest()
         request.method = 'DELETE'
@@ -183,12 +183,12 @@ class QueueService(_StorageClient):
             return True
 
     def get_queue_metadata(self, queue_name):
-        '''
+        """
         Retrieves user-defined metadata and queue properties on the specified 
         queue. Metadata is associated with the queue as name-values pairs.
         
         queue_name: Name of the queue.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         request = HTTPRequest()
         request.method = 'GET'
@@ -203,7 +203,7 @@ class QueueService(_StorageClient):
         return _parse_response_for_dict_prefix(response, prefixes=['x-ms-meta', 'x-ms-approximate-messages-count'])
 
     def set_queue_metadata(self, queue_name, x_ms_meta_name_values=None):
-        '''
+        """
         Sets user-defined metadata on the specified queue. Metadata is 
         associated with the queue as name-value pairs.
         
@@ -211,7 +211,7 @@ class QueueService(_StorageClient):
         x_ms_meta_name_values:
             Optional. A dict containing name-value pairs to associate with the 
             queue as metadata.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         request = HTTPRequest()
         request.method = 'PUT'
@@ -225,7 +225,7 @@ class QueueService(_StorageClient):
         response = self._perform_request(request)
 
     def put_message(self, queue_name, message_text, visibilitytimeout=None, messagettl=None):
-        '''
+        """
         Adds a new message to the back of the message queue. A visibility 
         timeout can also be specified to make the message invisible until the 
         visibility timeout expires. A message must be in a format that can be 
@@ -246,7 +246,7 @@ class QueueService(_StorageClient):
             Optional. Specifies the time-to-live interval for the message, in 
             seconds. The maximum time-to-live allowed is 7 days. If this 
             parameter is omitted, the default time-to-live is 7 days.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         _validate_not_none('message_text', message_text)
         request = HTTPRequest()
@@ -268,7 +268,7 @@ class QueueService(_StorageClient):
         response = self._perform_request(request)
 
     def get_messages(self, queue_name, numofmessages=None, visibilitytimeout=None):
-        '''
+        """
         Retrieves one or more messages from the front of the queue.
         
         queue_name: Name of the queue.
@@ -284,7 +284,7 @@ class QueueService(_StorageClient):
             on REST protocol versions prior to version 2011-08-18. The 
             visibility timeout of a message can be set to a value later than 
             the expiry time.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         request = HTTPRequest()
         request.method = 'GET'
@@ -303,7 +303,7 @@ class QueueService(_StorageClient):
         return _parse_response(response, QueueMessagesList)
 
     def peek_messages(self, queue_name, numofmessages=None):
-        '''
+        """
         Retrieves one or more messages from the front of the queue, but does not alter 
         the visibility of the message. 
         
@@ -312,7 +312,7 @@ class QueueService(_StorageClient):
             Optional. A nonzero integer value that specifies the number of 
             messages to peek from the queue, up to a maximum of 32. By default, 
             a single message is peeked from the queue with this operation.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         request = HTTPRequest()
         request.method = 'GET'
@@ -328,7 +328,7 @@ class QueueService(_StorageClient):
         return _parse_response(response, QueueMessagesList)
 
     def delete_message(self, queue_name, message_id, popreceipt):
-        '''
+        """
         Deletes the specified message.
         
         queue_name: Name of the queue.
@@ -336,7 +336,7 @@ class QueueService(_StorageClient):
         popreceipt:
             Required. A valid pop receipt value returned from an earlier call 
             to the Get Messages or Update Message operation.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         _validate_not_none('message_id', message_id)
         _validate_not_none('popreceipt', popreceipt)
@@ -353,11 +353,11 @@ class QueueService(_StorageClient):
         response = self._perform_request(request)
 
     def clear_messages(self, queue_name):
-        '''
+        """
         Deletes all messages from the specified queue.
         
         queue_name: Name of the queue.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         request = HTTPRequest()
         request.method = 'DELETE'
@@ -370,7 +370,7 @@ class QueueService(_StorageClient):
         response = self._perform_request(request)
 
     def update_message(self, queue_name, message_id, message_text, popreceipt, visibilitytimeout):
-        '''
+        """
         Updates the visibility timeout of a message. You can also use this 
         operation to update the contents of a message. 
         
@@ -386,7 +386,7 @@ class QueueService(_StorageClient):
             to 0, and cannot be larger than 7 days. The visibility timeout of a 
             message cannot be set to a value later than the expiry time. A 
             message can be updated until it has been deleted or has expired.
-        '''
+        """
         _validate_not_none('queue_name', queue_name)
         _validate_not_none('message_id', message_id)
         _validate_not_none('message_text', message_text)
@@ -414,13 +414,13 @@ class QueueService(_StorageClient):
         return _parse_response_for_dict_filter(response, filter=['x-ms-popreceipt', 'x-ms-time-next-visible'])
 
     def set_queue_service_properties(self, storage_service_properties, timeout=None):
-        '''
+        """
         Sets the properties of a storage account's Queue service, including Windows Azure 
         Storage Analytics.
         
         storage_service_properties: StorageServiceProperties object.
         timeout: Optional. The timeout parameter is expressed in seconds.
-        '''
+        """
         _validate_not_none('storage_service_properties',
                            storage_service_properties)
         request = HTTPRequest()

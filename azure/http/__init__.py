@@ -18,11 +18,11 @@ HTTP_RESPONSE_NO_CONTENT = 204
 
 class HTTPError(Exception):
 
-    ''' HTTP Exception when response status code >= 300 '''
+    """ HTTP Exception when response status code >= 300 """
 
     def __init__(self, status, message, respheader, respbody):
-        '''Creates a new HTTPError with the specified status, message, 
-        response headers and body'''
+        """Creates a new HTTPError with the specified status, message, 
+        response headers and body"""
         self.message = message
         self.status = status
         self.respheader = respheader
@@ -49,7 +49,7 @@ class HTTPResponse(object):
 
 class HTTPRequest:
 
-    '''Represents an HTTP Request.  An HTTP Request consists of the following attributes:
+    """Represents an HTTP Request.  An HTTP Request consists of the following attributes:
     
     host: the host name to connect to
     method: the method to use to connect (string such as GET, POST, PUT, etc...)
@@ -58,7 +58,7 @@ class HTTPRequest:
     headers: header values specified as (name, value) pairs
     body: the body of the request.
     protocol_override: specify to use this protocol instead of the global one stored in _HTTPClient.
-    '''
+    """
 
     def __init__(self):
         self.host = ''

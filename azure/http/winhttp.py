@@ -83,7 +83,7 @@ _SafeArrayGetUBound.argtypes = [c_void_p, c_ulong, POINTER(c_long)]
 
 class BSTR(c_wchar_p):
 
-    ''' BSTR class in python. '''
+    """ BSTR class in python. """
 
     def __init__(self, value):
         super(BSTR, self).__init__(_SysAllocString(value))
@@ -94,11 +94,11 @@ class BSTR(c_wchar_p):
 
 class VARIANT(Structure):
 
-    ''' 
+    """ 
     VARIANT structure in python. Does not match the definition in 
     MSDN exactly & it is only mapping the used fields.  Field names are also 
     slighty different.
-    '''
+    """
 
     class _tagData(Union):
 
@@ -180,7 +180,7 @@ _VariantClear.argtypes = [POINTER(VARIANT)]
 
 class GUID(Structure):
 
-    ''' GUID structure in python. '''
+    """ GUID structure in python. """
 
     _fields_ = [("data1", c_ulong),
                 ("data2", c_ushort),
@@ -194,10 +194,10 @@ class GUID(Structure):
 
 class _WinHttpRequest(c_void_p):
 
-    ''' 
+    """ 
     Maps the Com API to Python class functions. Not all methods in IWinHttpWebRequest 
     are mapped - only the methods we use.
-    '''
+    """
     _AddRef = WINFUNCTYPE(c_long)(1, 'AddRef')
     _Release = WINFUNCTYPE(c_long)(2, 'Release')
     _SetProxy = WINFUNCTYPE(
@@ -227,12 +227,12 @@ class _WinHttpRequest(c_void_p):
         HRESULT, BSTR)(24, 'SetClientCertificate')
 
     def open(self, method, url):
-        ''' 
+        """ 
         Opens the request.
         
         method: the request VERB 'GET', 'POST', etc.
         url: the url to connect
-        '''
+        """
         _WinHttpRequest._SetTimeouts(self, 0, 65000, 65000, 65000)
 
         flag = VARIANT.create_bool_false()
@@ -241,14 +241,14 @@ class _WinHttpRequest(c_void_p):
         _WinHttpRequest._Open(self, _method, _url, flag)
 
     def set_request_header(self, name, value):
-        ''' Sets the request header. '''
+        """ Sets the request header. """
 
         _name = BSTR(name)
         _value = BSTR(value)
         _WinHttpRequest._SetRequestHeader(self, _name, _value)
 
     def get_all_response_headers(self):
-        ''' Gets back all response headers. '''
+        """ Gets back all response headers. """
 
         bstr_headers = c_void_p()
         _WinHttpRequest._GetAllResponseHeaders(self, byref(bstr_headers))
@@ -258,7 +258,7 @@ class _WinHttpRequest(c_void_p):
         return headers
 
     def send(self, request=None):
-        ''' Sends the request body. '''
+        """ Sends the request body. """
 
         # Sends VT_EMPTY if it is GET, HEAD request.
         if request is None:
@@ -269,14 +269,14 @@ class _WinHttpRequest(c_void_p):
             _WinHttpRequest._Send(self, _request)
 
     def status(self):
-        ''' Gets status of response. '''
+        """ Gets status of response. """
 
         status = c_long()
         _WinHttpRequest._Status(self, byref(status))
         return int(status.value)
 
     def status_text(self):
-        ''' Gets status text of response. '''
+        """ Gets status text of response. """
 
         bstr_status_text = c_void_p()
         _WinHttpRequest._StatusText(self, byref(bstr_status_text))
@@ -286,10 +286,10 @@ class _WinHttpRequest(c_void_p):
         return status_text
 
     def response_body(self):
-        ''' 
+        """ 
         Gets response body as a SAFEARRAY and converts the SAFEARRAY to str.  If it is an xml 
         file, it always contains 3 characters before <?xml, so we remove them. 
-        '''
+        """
         var_respbody = VARIANT()
         _WinHttpRequest._ResponseBody(self, byref(var_respbody))
         if var_respbody.is_safearray_of_bytes():
@@ -301,12 +301,12 @@ class _WinHttpRequest(c_void_p):
             return ''
 
     def set_client_certificate(self, certificate):
-        '''Sets client certificate for the request. '''
+        """Sets client certificate for the request. """
         _certificate = BSTR(certificate)
         _WinHttpRequest._SetClientCertificate(self, _certificate)
 
     def set_tunnel(self, host, port):
-        ''' Sets up the host and the port for the HTTP CONNECT Tunnelling.'''
+        """ Sets up the host and the port for the HTTP CONNECT Tunnelling."""
         url = host
         if port:
             url = url + u':' + port
@@ -328,7 +328,7 @@ class _WinHttpRequest(c_void_p):
 
 class _Response:
 
-    ''' Response class corresponding to the response returned from httplib HTTPConnection. '''
+    """ Response class corresponding to the response returned from httplib HTTPConnection. """
 
     def __init__(self, _status, _status_text, _length, _headers, _respbody):
         self.status = _status
@@ -338,20 +338,20 @@ class _Response:
         self.respbody = _respbody
 
     def getheaders(self):
-        '''Returns response headers.'''
+        """Returns response headers."""
         return self.headers
 
     def read(self, _length):
-        '''Returns resonse body. '''
+        """Returns resonse body. """
         return self.respbody[:_length]
 
 
 class _HTTPConnection:
 
-    ''' Class corresponding to httplib HTTPConnection class. '''
+    """ Class corresponding to httplib HTTPConnection class. """
 
     def __init__(self, host, cert_file=None, key_file=None, protocol='http'):
-        ''' initialize the IWinHttpWebRequest Com Object.'''
+        """ initialize the IWinHttpWebRequest Com Object."""
         self.host = unicode(host)
         self.cert_file = cert_file
         self._httprequest = _WinHttpRequest()
@@ -363,7 +363,7 @@ class _HTTPConnection:
                           byref(self._httprequest))
 
     def set_tunnel(self, host, port=None, headers=None):
-        ''' Sets up the host and the port for the HTTP CONNECT Tunnelling. '''
+        """ Sets up the host and the port for the HTTP CONNECT Tunnelling. """
         self._httprequest.set_tunnel(unicode(host), unicode(str(port)))
 
     def set_proxy_credentials(self, user, password):
@@ -371,7 +371,7 @@ class _HTTPConnection:
             unicode(user), unicode(password))
 
     def putrequest(self, method, uri):
-        ''' Connects to host and sends the request. '''
+        """ Connects to host and sends the request. """
 
         protocol = unicode(self.protocol + '://')
         url = protocol + self.host + unicode(uri)
@@ -382,23 +382,23 @@ class _HTTPConnection:
             self._httprequest.set_client_certificate(unicode(self.cert_file))
 
     def putheader(self, name, value):
-        ''' Sends the headers of request. '''
+        """ Sends the headers of request. """
         self._httprequest.set_request_header(str(name).decode('utf-8'),
                                              str(value).decode('utf-8'))
 
     def endheaders(self):
-        ''' No operation. Exists only to provide the same interface of httplib HTTPConnection.'''
+        """ No operation. Exists only to provide the same interface of httplib HTTPConnection."""
         pass
 
     def send(self, request_body):
-        ''' Sends request body. '''
+        """ Sends request body. """
         if not request_body:
             self._httprequest.send()
         else:
             self._httprequest.send(request_body)
 
     def getresponse(self):
-        ''' Gets the response and generates the _Response object'''
+        """ Gets the response and generates the _Response object"""
         status = self._httprequest.status()
         status_text = self._httprequest.status_text()
 
