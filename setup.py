@@ -37,13 +37,15 @@ setup(name='azure',
       author_email='ptvshelp@microsoft.com',
       url='https://github.com/WindowsAzure/azure-sdk-for-python',
       classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'License :: OSI Approved :: Apache Software License'],
-      packages=['azure',
-                'azure.http',
-                'azure.servicebus',
-                'azure.storage',
-                'azure.servicemanagement']
-     )
+          'Development Status :: 5 - Production/Stable',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 2.7',
+          'License :: OSI Approved :: Apache Software License'
+      ],
+      packages=[
+          'azure',
+          'azure.http',
+          'azure.servicebus',
+          'azure.storage',
+          'azure.servicemanagement'
+      ])
