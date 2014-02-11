@@ -26,11 +26,12 @@ _DATASERVICES_NS = 'http://schemas.microsoft.com/ado/2007/08/dataservices'
 class _BatchClient(_HTTPClient):
 
     """
-    This is the class that is used for batch operation for storage table service. 
+    This is the class that is used for batch operation for storage table service.
     It only supports one changeset.
     """
 
-    def __init__(self, service_instance, account_key, account_name, protocol='http'):
+    def __init__(self, service_instance, account_key,
+                 account_name, protocol='http'):
         _HTTPClient.__init__(self, service_instance, account_name=account_name,
                              account_key=account_key, protocol=protocol)
         self.is_batch = False
@@ -41,7 +42,7 @@ class _BatchClient(_HTTPClient):
 
     def get_request_table(self, request):
         """
-        Extracts table name from request.uri. The request.uri has either "/mytable(...)" 
+        Extracts table name from request.uri. The request.uri has either "/mytable(...)"
         or "/mytable" format.
 
         request: the request to insert, update or delete entity
@@ -54,8 +55,8 @@ class _BatchClient(_HTTPClient):
 
     def get_request_partition_key(self, request):
         """
-        Extracts PartitionKey from request.body if it is a POST request or from request.path if 
-        it is not a POST request. Only insert operation request is a POST request and the 
+        Extracts PartitionKey from request.body if it is a POST request or from request.path if
+        it is not a POST request. Only insert operation request is a POST request and the
         PartitionKey is in the request body.
 
         request: the request to insert, update or delete entity
@@ -77,8 +78,8 @@ class _BatchClient(_HTTPClient):
 
     def get_request_row_key(self, request):
         """
-        Extracts RowKey from request.body if it is a POST request or from request.path if 
-        it is not a POST request. Only insert operation request is a POST request and the 
+        Extracts RowKey from request.body if it is a POST request or from request.path if
+        it is not a POST request. Only insert operation request is a POST request and the
         Rowkey is in the request body.
 
         request: the request to insert, update or delete entity
@@ -101,7 +102,7 @@ class _BatchClient(_HTTPClient):
 
     def validate_request_table(self, request):
         """
-        Validates that all requests have the same table name. Set the table name if it is 
+        Validates that all requests have the same table name. Set the table name if it is
         the first request for the batch operation.
 
         request: the request to insert, update or delete entity
@@ -114,7 +115,7 @@ class _BatchClient(_HTTPClient):
 
     def validate_request_partition_key(self, request):
         """
-        Validates that all requests have the same PartitiionKey. Set the PartitionKey if it is 
+        Validates that all requests have the same PartitiionKey. Set the PartitionKey if it is
         the first request for the batch operation.
 
         request: the request to insert, update or delete entity
@@ -142,7 +143,7 @@ class _BatchClient(_HTTPClient):
     def begin_batch(self):
         """
         Starts the batch operation. Intializes the batch variables
-        
+
         is_batch: batch operation flag.
         batch_table: the table name of the batch operation
         batch_partition_key: the PartitionKey of the batch requests.
@@ -156,9 +157,9 @@ class _BatchClient(_HTTPClient):
         self.batch_requests = []
 
     def insert_request_to_batch(self, request):
-        """ 
+        """
         Adds request to batch operation.
-                
+
         request: the request to insert, update or delete entity
         """
         self.validate_request_table(request)

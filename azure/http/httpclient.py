@@ -31,13 +31,14 @@ from azure import _USER_AGENT_STRING
 
 class _HTTPClient:
 
-    """ 
+    """
     Takes the request and sends it to cloud service and returns the response.
     """
 
-    def __init__(self, service_instance, cert_file=None, account_name=None, account_key=None, service_namespace=None, issuer=None, protocol='https'):
+    def __init__(self, service_instance, cert_file=None, account_name=None,
+                 account_key=None, service_namespace=None, issuer=None, protocol='https'):
         """
-        service_instance: service client instance. 
+        service_instance: service client instance.
         cert_file: certificate file name/location. This is only used in hosted service management.
         account_name: the storage account.
         account_key: the storage account access key for storage services or servicebus access key for service bus service.

@@ -81,7 +81,7 @@ class ServiceBusManagementService(_ServiceManagementClient):
 
     def check_namespace_availability(self, name):
         """
-        Checks to see if the specified service bus namespace is available, or 
+        Checks to see if the specified service bus namespace is available, or
         if it has already been taken.
 
         name: Name of the service bus namespace to validate.

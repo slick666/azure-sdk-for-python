@@ -134,7 +134,8 @@ class Rule(WindowsAzureData):
 
     """ Rule class corresponding to Rule Description: http://msdn.microsoft.com/en-us/library/windowsazure/hh780753. """
 
-    def __init__(self, filter_type=None, filter_expression=None, action_type=None, action_expression=None):
+    def __init__(self, filter_type=None, filter_expression=None,
+                 action_type=None, action_expression=None):
         self.filter_type = filter_type
         self.filter_expression = filter_expression
         self.action_type = action_type
@@ -227,8 +228,8 @@ class Message(WindowsAzureData):
 
 
 def _create_message(response, service_instance):
-    """ Create message from response. 
-    
+    """ Create message from response.
+
     response: response from service bus cloud server.
     service_instance: the service bus client.
     """
@@ -265,7 +266,7 @@ def _create_message(response, service_instance):
                 else:
                     custom_properties[name] = float(value)
 
-    if message_type == None:
+    if message_type is None:
         message = Message(
             respbody, service_instance, message_location, custom_properties,
             'application/atom+xml;type=entry;charset=utf-8', broker_properties)
@@ -282,11 +283,11 @@ def _convert_response_to_rule(response):
 
 
 def _convert_xml_to_rule(xmlstr):
-    """ Converts response xml to rule object.  
+    """ Converts response xml to rule object.
 
     The format of xml for rule:
-    <entry xmlns='http://www.w3.org/2005/Atom'>  
-    <content type='application/xml'>    
+    <entry xmlns='http://www.w3.org/2005/Atom'>
+    <content type='application/xml'>
     <RuleDescription xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
      <Filter i:type="SqlFilterExpression">
       <SqlExpression>MyProperty='XYZ'</SqlExpression>
@@ -341,7 +342,7 @@ def _parse_bool(value):
 
 def _convert_xml_to_queue(xmlstr):
     """ Converts xml response to queue object.
-    
+
     The format of xml response for queue:
     <QueueDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\">
     <MaxSizeInBytes>10000</MaxSizeInBytes>
@@ -429,15 +430,15 @@ def _convert_xml_to_topic(xmlstr):
     """Converts xml response to topic
 
     The xml format for topic:
-    <entry xmlns='http://www.w3.org/2005/Atom'>  
-    <content type='application/xml'>    
+    <entry xmlns='http://www.w3.org/2005/Atom'>
+    <content type='application/xml'>
     <TopicDescription xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
        <DefaultMessageTimeToLive>P10675199DT2H48M5.4775807S</DefaultMessageTimeToLive>
        <MaxSizeInMegabytes>1024</MaxSizeInMegabytes>
        <RequiresDuplicateDetection>false</RequiresDuplicateDetection>
        <DuplicateDetectionHistoryTimeWindow>P7D</DuplicateDetectionHistoryTimeWindow>
        <DeadLetteringOnFilterEvaluationExceptions>true</DeadLetteringOnFilterEvaluationExceptions>
-    </TopicDescription>  
+    </TopicDescription>
     </content>
     </entry>
     """
@@ -496,14 +497,14 @@ def _convert_xml_to_subscription(xmlstr):
     """Converts xml response to subscription
 
     The xml format for subscription:
-    <entry xmlns='http://www.w3.org/2005/Atom'>  
-    <content type='application/xml'>    
+    <entry xmlns='http://www.w3.org/2005/Atom'>
+    <content type='application/xml'>
     <SubscriptionDescription xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
        <LockDuration>PT5M</LockDuration>
        <RequiresSession>false</RequiresSession>
        <DefaultMessageTimeToLive>P10675199DT2H48M5.4775807S</DefaultMessageTimeToLive>
        <DeadLetteringOnMessageExpiration>false</DeadLetteringOnMessageExpiration>   <DeadLetteringOnFilterEvaluationExceptions>true</DeadLetteringOnFilterEvaluationExceptions>
-    </SubscriptionDescription>  
+    </SubscriptionDescription>
     </content>
     </entry>
     """
@@ -549,9 +550,9 @@ def _convert_xml_to_subscription(xmlstr):
 
 
 def _convert_subscription_to_xml(subscription):
-    """ 
-    Converts a subscription object to xml to send.  The order of each field of subscription 
-    in xml is very important so we cann't simple call convert_class_to_xml. 
+    """
+    Converts a subscription object to xml to send.  The order of each field of subscription
+    in xml is very important so we cann't simple call convert_class_to_xml.
 
     subscription: the subsciption object to be converted.
     """
@@ -588,9 +589,9 @@ def _convert_subscription_to_xml(subscription):
 
 
 def _convert_rule_to_xml(rule):
-    """ 
-    Converts a rule object to xml to send.  The order of each field of rule 
-    in xml is very important so we cann't simple call convert_class_to_xml. 
+    """
+    Converts a rule object to xml to send.  The order of each field of rule
+    in xml is very important so we cann't simple call convert_class_to_xml.
 
     rule: the rule object to be converted.
     """
@@ -621,9 +622,9 @@ def _convert_rule_to_xml(rule):
 
 
 def _convert_topic_to_xml(topic):
-    """ 
-    Converts a topic object to xml to send.  The order of each field of topic 
-    in xml is very important so we cann't simple call convert_class_to_xml. 
+    """
+    Converts a topic object to xml to send.  The order of each field of topic
+    in xml is very important so we cann't simple call convert_class_to_xml.
 
     topic: the topic object to be converted.
     """
@@ -654,9 +655,9 @@ def _convert_topic_to_xml(topic):
 
 
 def _convert_queue_to_xml(queue):
-    """ 
-    Converts a queue object to xml to send.  The order of each field of queue 
-    in xml is very important so we cann't simple call convert_class_to_xml. 
+    """
+    Converts a queue object to xml to send.  The order of each field of queue
+    in xml is very important so we cann't simple call convert_class_to_xml.
 
     queue: the queue object to be converted.
     """

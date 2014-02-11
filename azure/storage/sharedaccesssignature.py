@@ -35,11 +35,11 @@ SHARED_ACCESS_PERMISSION = 'permission'
 
 class WebResource:
 
-    """ 
+    """
     Class that stands for the resource to get the share access signature
 
     path: the resource path.
-    properties: dict of name and values. Contains 2 item: resource type and 
+    properties: dict of name and values. Contains 2 item: resource type and
             permission
     request_url: the url of the webresource include all the queries.
     """
@@ -52,12 +52,12 @@ class WebResource:
 
 class Permission:
 
-    """ 
+    """
     Permission class. Contains the path and query_string for the path.
 
     path: the resource path
     query_string: dict of name, values. Contains SIGNED_START, SIGNED_EXPIRY
-            SIGNED_RESOURCE, SIGNED_PERMISSION, SIGNED_IDENTIFIER, 
+            SIGNED_RESOURCE, SIGNED_PERMISSION, SIGNED_IDENTIFIER,
             SIGNED_SIGNATURE name values.
     """
 
@@ -77,9 +77,9 @@ class SharedAccessPolicy:
 
 class SharedAccessSignature:
 
-    """ 
-    The main class used to do the signing and generating the signature. 
-    
+    """
+    The main class used to do the signing and generating the signature.
+
     account_name: the storage account name used to generate shared access signature
     account_key: the access key to genenerate share access signature
     permission_set: the permission cache used to signed the request url.
@@ -137,27 +137,29 @@ class SharedAccessSignature:
         return web_resource
 
     def _convert_query_string(self, query_string):
-        """ Converts query string to str. The order of name, values is very import and can't be wrong."""
+        """ Converts query string to str. The order of name, values is very
+        import and can't be wrong."""
 
         convert_str = ''
-        if query_string.has_key(SIGNED_START):
-            convert_str += SIGNED_START + '=' + \
-                query_string[SIGNED_START] + '&'
+        if SIGNED_START in query_string:
+            convert_str += (SIGNED_START + '=' +
+                            query_string[SIGNED_START] + '&')
         convert_str += SIGNED_EXPIRY + '=' + query_string[SIGNED_EXPIRY] + '&'
-        convert_str += SIGNED_PERMISSION + '=' + \
-            query_string[SIGNED_PERMISSION] + '&'
-        convert_str += SIGNED_RESOURCE + '=' + \
-            query_string[SIGNED_RESOURCE] + '&'
+        convert_str += (SIGNED_PERMISSION + '=' +
+                        query_string[SIGNED_PERMISSION] + '&')
+        convert_str += (SIGNED_RESOURCE + '=' +
+                        query_string[SIGNED_RESOURCE] + '&')
 
-        if query_string.has_key(SIGNED_IDENTIFIER):
+        if SIGNED_IDENTIFIER in query_string:
             convert_str += SIGNED_IDENTIFIER + '=' + \
                 query_string[SIGNED_IDENTIFIER] + '&'
-        convert_str += SIGNED_SIGNATURE + '=' + \
-            urllib2.quote(query_string[SIGNED_SIGNATURE]) + '&'
+        convert_str += (SIGNED_SIGNATURE + '=' +
+                        urllib2.quote(query_string[SIGNED_SIGNATURE]) + '&')
         return convert_str
 
     def _generate_signature(self, path, resource_type, shared_access_policy):
-        """ Generates signature for a given path, resource_type and shared access policy. """
+        """ Generates signature for a given path, resource_type and shared
+        access policy. """
 
         def get_value_to_append(value, no_new_line=False):
             return_value = ''

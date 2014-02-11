@@ -59,7 +59,8 @@ _tokens = {}
 
 class ServiceBusService:
 
-    def __init__(self, service_namespace=None, account_key=None, issuer=None, x_ms_version='2011-06-01', host_base=SERVICE_BUS_HOST_BASE):
+    def __init__(self, service_namespace=None, account_key=None, issuer=None,
+                 x_ms_version='2011-06-01', host_base=SERVICE_BUS_HOST_BASE):
         # x_ms_version is not used, but the parameter is kept for backwards
         # compatibility
         self.requestid = None
@@ -71,13 +72,13 @@ class ServiceBusService:
         # get service namespace, account key and issuer. If they are set when constructing, then use them.
         # else find them from environment variables.
         if not service_namespace:
-            if os.environ.has_key(AZURE_SERVICEBUS_NAMESPACE):
+            if AZURE_SERVICEBUS_NAMESPACE in os.environ:
                 self.service_namespace = os.environ[AZURE_SERVICEBUS_NAMESPACE]
         if not account_key:
-            if os.environ.has_key(AZURE_SERVICEBUS_ACCESS_KEY):
+            if AZURE_SERVICEBUS_ACCESS_KEY in os.environ:
                 self.account_key = os.environ[AZURE_SERVICEBUS_ACCESS_KEY]
         if not issuer:
-            if os.environ.has_key(AZURE_SERVICEBUS_ISSUER):
+            if AZURE_SERVICEBUS_ISSUER in os.environ:
                 self.issuer = os.environ[AZURE_SERVICEBUS_ISSUER]
 
         if not self.service_namespace or not self.account_key or not self.issuer:
@@ -90,11 +91,11 @@ class ServiceBusService:
 
     def with_filter(self, filter):
         """
-        Returns a new service which will process requests with the specified 
-        filter.  Filtering operations can include logging, automatic retrying, 
-        etc...  The filter is a lambda which receives the HTTPRequest and 
+        Returns a new service which will process requests with the specified
+        filter.  Filtering operations can include logging, automatic retrying,
+        etc...  The filter is a lambda which receives the HTTPRequest and
         another lambda.  The filter can perform any pre-processing on the
-        request, pass it off to the next lambda, and then perform any 
+        request, pass it off to the next lambda, and then perform any
         post-processing on the response.
         """
         res = ServiceBusService(self.service_namespace, self.account_key,
@@ -120,11 +121,11 @@ class ServiceBusService:
 
     def create_queue(self, queue_name, queue=None, fail_on_exist=False):
         """
-        Creates a new queue. Once created, this queue's resource manifest is 
-        immutable. 
-        
+        Creates a new queue. Once created, this queue's resource manifest is
+        immutable.
+
         queue_name: Name of the queue to create.
-        queue: Queue object to create. 
+        queue: Queue object to create.
         fail_on_exist:
             Specify whether to throw an exception when the queue exists.
         """
@@ -149,9 +150,9 @@ class ServiceBusService:
 
     def delete_queue(self, queue_name, fail_not_exist=False):
         """
-        Deletes an existing queue. This operation will also remove all 
+        Deletes an existing queue. This operation will also remove all
         associated state including messages in the queue.
-        
+
         queue_name: Name of the queue to delete.
         fail_not_exist:
             Specify whether to throw an exception if the queue doesn't exist.
@@ -177,7 +178,7 @@ class ServiceBusService:
     def get_queue(self, queue_name):
         """
         Retrieves an existing queue.
-        
+
         queue_name: Name of the queue.
         """
         _validate_not_none('queue_name', queue_name)
@@ -207,9 +208,9 @@ class ServiceBusService:
 
     def create_topic(self, topic_name, topic=None, fail_on_exist=False):
         """
-        Creates a new topic. Once created, this topic resource manifest is 
-        immutable. 
-        
+        Creates a new topic. Once created, this topic resource manifest is
+        immutable.
+
         topic_name: Name of the topic to create.
         topic: Topic object to create.
         fail_on_exist:
@@ -236,9 +237,9 @@ class ServiceBusService:
 
     def delete_topic(self, topic_name, fail_not_exist=False):
         """
-        Deletes an existing topic. This operation will also remove all 
+        Deletes an existing topic. This operation will also remove all
         associated state including associated subscriptions.
-        
+
         topic_name: Name of the topic to delete.
         fail_not_exist:
             Specify whether throw exception when topic doesn't exist.
@@ -264,7 +265,7 @@ class ServiceBusService:
     def get_topic(self, topic_name):
         """
         Retrieves the description for the specified topic.
-        
+
         topic_name: Name of the topic.
         """
         _validate_not_none('topic_name', topic_name)
@@ -292,11 +293,12 @@ class ServiceBusService:
 
         return _convert_response_to_feeds(response, _convert_xml_to_topic)
 
-    def create_rule(self, topic_name, subscription_name, rule_name, rule=None, fail_on_exist=False):
+    def create_rule(self, topic_name, subscription_name,
+                    rule_name, rule=None, fail_on_exist=False):
         """
-        Creates a new rule. Once created, this rule's resource manifest is 
+        Creates a new rule. Once created, this rule's resource manifest is
         immutable.
-        
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         rule_name: Name of the rule.
@@ -326,14 +328,15 @@ class ServiceBusService:
             self._perform_request(request)
             return True
 
-    def delete_rule(self, topic_name, subscription_name, rule_name, fail_not_exist=False):
+    def delete_rule(self, topic_name, subscription_name,
+                    rule_name, fail_not_exist=False):
         """
         Deletes an existing rule.
-        
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         rule_name:
-            Name of the rule to delete.  DEFAULT_RULE_NAME=$Default. 
+            Name of the rule to delete.  DEFAULT_RULE_NAME=$Default.
             Use DEFAULT_RULE_NAME to delete default rule for the subscription.
         fail_not_exist:
             Specify whether throw exception when rule doesn't exist.
@@ -362,8 +365,8 @@ class ServiceBusService:
 
     def get_rule(self, topic_name, subscription_name, rule_name):
         """
-        Retrieves the description for the specified rule. 
-        
+        Retrieves the description for the specified rule.
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         rule_name: Name of the rule.
@@ -385,8 +388,8 @@ class ServiceBusService:
 
     def list_rules(self, topic_name, subscription_name):
         """
-        Retrieves the rules that exist under the specified subscription. 
-        
+        Retrieves the rules that exist under the specified subscription.
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         """
@@ -404,11 +407,12 @@ class ServiceBusService:
 
         return _convert_response_to_feeds(response, _convert_xml_to_rule)
 
-    def create_subscription(self, topic_name, subscription_name, subscription=None, fail_on_exist=False):
+    def create_subscription(
+            self, topic_name, subscription_name, subscription=None, fail_on_exist=False):
         """
-        Creates a new subscription. Once created, this subscription resource 
-        manifest is immutable. 
-        
+        Creates a new subscription. Once created, this subscription resource
+        manifest is immutable.
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         fail_on_exist:
@@ -436,14 +440,15 @@ class ServiceBusService:
             self._perform_request(request)
             return True
 
-    def delete_subscription(self, topic_name, subscription_name, fail_not_exist=False):
+    def delete_subscription(
+            self, topic_name, subscription_name, fail_not_exist=False):
         """
         Deletes an existing subscription.
-        
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription to delete.
         fail_not_exist:
-            Specify whether to throw an exception when the subscription 
+            Specify whether to throw an exception when the subscription
             doesn't exist.
         """
         _validate_not_none('topic_name', topic_name)
@@ -469,7 +474,7 @@ class ServiceBusService:
     def get_subscription(self, topic_name, subscription_name):
         """
         Gets an existing subscription.
-        
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         """
@@ -488,8 +493,8 @@ class ServiceBusService:
 
     def list_subscriptions(self, topic_name):
         """
-        Retrieves the subscriptions in the specified topic. 
-        
+        Retrieves the subscriptions in the specified topic.
+
         topic_name: Name of the topic.
         """
         _validate_not_none('topic_name', topic_name)
@@ -501,16 +506,18 @@ class ServiceBusService:
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
 
-        return _convert_response_to_feeds(response, _convert_xml_to_subscription)
+        return (
+            _convert_response_to_feeds(response, _convert_xml_to_subscription)
+        )
 
     def send_topic_message(self, topic_name, message=None):
         """
-        Enqueues a message into the specified topic. The limit to the number 
-        of messages which may be present in the topic is governed by the 
-        message size in MaxTopicSizeInBytes. If this message causes the topic 
-        to exceed its quota, a quota exceeded error is returned and the 
+        Enqueues a message into the specified topic. The limit to the number
+        of messages which may be present in the topic is governed by the
+        message size in MaxTopicSizeInBytes. If this message causes the topic
+        to exceed its quota, a quota exceeded error is returned and the
         message will be rejected.
-        
+
         topic_name: Name of the topic.
         message: Message object containing message body and properties.
         """
@@ -525,21 +532,22 @@ class ServiceBusService:
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
 
-    def peek_lock_subscription_message(self, topic_name, subscription_name, timeout='60'):
+    def peek_lock_subscription_message(
+            self, topic_name, subscription_name, timeout='60'):
         """
-        This operation is used to atomically retrieve and lock a message for 
-        processing. The message is guaranteed not to be delivered to other 
-        receivers during the lock duration period specified in buffer 
-        description. Once the lock expires, the message will be available to 
-        other receivers (on the same subscription only) during the lock 
-        duration period specified in the topic description. Once the lock 
-        expires, the message will be available to other receivers. In order to 
-        complete processing of the message, the receiver should issue a delete 
-        command with the lock ID received from this operation. To abandon 
-        processing of the message and unlock it for other receivers, an Unlock 
-        Message command should be issued, or the lock duration period can 
+        This operation is used to atomically retrieve and lock a message for
+        processing. The message is guaranteed not to be delivered to other
+        receivers during the lock duration period specified in buffer
+        description. Once the lock expires, the message will be available to
+        other receivers (on the same subscription only) during the lock
+        duration period specified in the topic description. Once the lock
+        expires, the message will be available to other receivers. In order to
+        complete processing of the message, the receiver should issue a delete
+        command with the lock ID received from this operation. To abandon
+        processing of the message and unlock it for other receivers, an Unlock
+        Message command should be issued, or the lock duration period can
         expire.
-        
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         timeout: Optional. The timeout parameter is expressed in seconds.
@@ -559,20 +567,21 @@ class ServiceBusService:
 
         return _create_message(response, self)
 
-    def unlock_subscription_message(self, topic_name, subscription_name, sequence_number, lock_token):
+    def unlock_subscription_message(
+            self, topic_name, subscription_name, sequence_number, lock_token):
         """
-        Unlock a message for processing by other receivers on a given 
-        subscription. This operation deletes the lock object, causing the 
-        message to be unlocked. A message must have first been locked by a 
+        Unlock a message for processing by other receivers on a given
+        subscription. This operation deletes the lock object, causing the
+        message to be unlocked. A message must have first been locked by a
         receiver before this operation is called.
-        
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         sequence_number:
-            The sequence number of the message to be unlocked as returned in 
+            The sequence number of the message to be unlocked as returned in
             BrokerProperties['SequenceNumber'] by the Peek Message operation.
         lock_token:
-            The ID of the lock as returned by the Peek Message operation in 
+            The ID of the lock as returned by the Peek Message operation in
             BrokerProperties['LockToken']
         """
         _validate_not_none('topic_name', topic_name)
@@ -590,13 +599,14 @@ class ServiceBusService:
         request.headers = self._update_service_bus_header(request)
         response = self._perform_request(request)
 
-    def read_delete_subscription_message(self, topic_name, subscription_name, timeout='60'):
+    def read_delete_subscription_message(
+            self, topic_name, subscription_name, timeout='60'):
         """
-        Read and delete a message from a subscription as an atomic operation. 
-        This operation should be used when a best-effort guarantee is 
-        sufficient for an application; that is, using this operation it is 
+        Read and delete a message from a subscription as an atomic operation.
+        This operation should be used when a best-effort guarantee is
+        sufficient for an application; that is, using this operation it is
         possible for messages to be lost if processing fails.
-        
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         timeout: Optional. The timeout parameter is expressed in seconds.
@@ -616,20 +626,21 @@ class ServiceBusService:
 
         return _create_message(response, self)
 
-    def delete_subscription_message(self, topic_name, subscription_name, sequence_number, lock_token):
+    def delete_subscription_message(
+            self, topic_name, subscription_name, sequence_number, lock_token):
         """
-        Completes processing on a locked message and delete it from the 
-        subscription. This operation should only be called after processing a 
-        previously locked message is successful to maintain At-Least-Once 
+        Completes processing on a locked message and delete it from the
+        subscription. This operation should only be called after processing a
+        previously locked message is successful to maintain At-Least-Once
         delivery assurances.
-        
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         sequence_number:
-            The sequence number of the message to be deleted as returned in 
+            The sequence number of the message to be deleted as returned in
             BrokerProperties['SequenceNumber'] by the Peek Message operation.
         lock_token:
-            The ID of the lock as returned by the Peek Message operation in 
+            The ID of the lock as returned by the Peek Message operation in
             BrokerProperties['LockToken']
         """
         _validate_not_none('topic_name', topic_name)
@@ -649,12 +660,12 @@ class ServiceBusService:
 
     def send_queue_message(self, queue_name, message=None):
         """
-        Sends a message into the specified queue. The limit to the number of 
-        messages which may be present in the topic is governed by the message 
-        size the MaxTopicSizeInMegaBytes. If this message will cause the queue 
-        to exceed its quota, a quota exceeded error is returned and the 
+        Sends a message into the specified queue. The limit to the number of
+        messages which may be present in the topic is governed by the message
+        size the MaxTopicSizeInMegaBytes. If this message will cause the queue
+        to exceed its quota, a quota exceeded error is returned and the
         message will be rejected.
-        
+
         queue_name: Name of the queue.
         message: Message object containing message body and properties.
         """
@@ -671,16 +682,16 @@ class ServiceBusService:
 
     def peek_lock_queue_message(self, queue_name, timeout='60'):
         """
-        Automically retrieves and locks a message from a queue for processing. 
-        The message is guaranteed not to be delivered to other receivers (on 
-        the same subscription only) during the lock duration period specified 
-        in the queue description. Once the lock expires, the message will be 
-        available to other receivers. In order to complete processing of the 
-        message, the receiver should issue a delete command with the lock ID 
-        received from this operation. To abandon processing of the message and 
-        unlock it for other receivers, an Unlock Message command should be 
+        Automically retrieves and locks a message from a queue for processing.
+        The message is guaranteed not to be delivered to other receivers (on
+        the same subscription only) during the lock duration period specified
+        in the queue description. Once the lock expires, the message will be
+        available to other receivers. In order to complete processing of the
+        message, the receiver should issue a delete command with the lock ID
+        received from this operation. To abandon processing of the message and
+        unlock it for other receivers, an Unlock Message command should be
         issued, or the lock duration period can expire.
-        
+
         queue_name: Name of the queue.
         timeout: Optional. The timeout parameter is expressed in seconds.
         """
@@ -698,17 +709,17 @@ class ServiceBusService:
 
     def unlock_queue_message(self, queue_name, sequence_number, lock_token):
         """
-        Unlocks a message for processing by other receivers on a given 
-        subscription. This operation deletes the lock object, causing the 
-        message to be unlocked. A message must have first been locked by a 
+        Unlocks a message for processing by other receivers on a given
+        subscription. This operation deletes the lock object, causing the
+        message to be unlocked. A message must have first been locked by a
         receiver before this operation is called.
-        
+
         queue_name: Name of the queue.
         sequence_number:
-            The sequence number of the message to be unlocked as returned in 
+            The sequence number of the message to be unlocked as returned in
             BrokerProperties['SequenceNumber'] by the Peek Message operation.
         lock_token:
-            The ID of the lock as returned by the Peek Message operation in 
+            The ID of the lock as returned by the Peek Message operation in
             BrokerProperties['LockToken']
         """
         _validate_not_none('queue_name', queue_name)
@@ -726,11 +737,11 @@ class ServiceBusService:
 
     def read_delete_queue_message(self, queue_name, timeout='60'):
         """
-        Reads and deletes a message from a queue as an atomic operation. This 
-        operation should be used when a best-effort guarantee is sufficient 
-        for an application; that is, using this operation it is possible for 
+        Reads and deletes a message from a queue as an atomic operation. This
+        operation should be used when a best-effort guarantee is sufficient
+        for an application; that is, using this operation it is possible for
         messages to be lost if processing fails.
-        
+
         queue_name: Name of the queue.
         timeout: Optional. The timeout parameter is expressed in seconds.
         """
@@ -748,17 +759,17 @@ class ServiceBusService:
 
     def delete_queue_message(self, queue_name, sequence_number, lock_token):
         """
-        Completes processing on a locked message and delete it from the queue. 
-        This operation should only be called after processing a previously 
-        locked message is successful to maintain At-Least-Once delivery 
+        Completes processing on a locked message and delete it from the queue.
+        This operation should only be called after processing a previously
+        locked message is successful to maintain At-Least-Once delivery
         assurances.
-        
+
         queue_name: Name of the queue.
         sequence_number:
-            The sequence number of the message to be deleted as returned in 
+            The sequence number of the message to be deleted as returned in
             BrokerProperties['SequenceNumber'] by the Peek Message operation.
         lock_token:
-            The ID of the lock as returned by the Peek Message operation in 
+            The ID of the lock as returned by the Peek Message operation in
             BrokerProperties['LockToken']
         """
         _validate_not_none('queue_name', queue_name)
@@ -777,10 +788,10 @@ class ServiceBusService:
     def receive_queue_message(self, queue_name, peek_lock=True, timeout=60):
         """
         Receive a message from a queue for processing.
-        
+
         queue_name: Name of the queue.
         peek_lock:
-            Optional. True to retrieve and lock the message. False to read and 
+            Optional. True to retrieve and lock the message. False to read and
             delete the message. Default is True (lock).
         timeout: Optional. The timeout parameter is expressed in seconds.
         """
@@ -789,21 +800,32 @@ class ServiceBusService:
         else:
             return self.read_delete_queue_message(queue_name, timeout)
 
-    def receive_subscription_message(self, topic_name, subscription_name, peek_lock=True, timeout=60):
+    def receive_subscription_message(
+            self, topic_name, subscription_name, peek_lock=True, timeout=60):
         """
         Receive a message from a subscription for processing.
-        
+
         topic_name: Name of the topic.
         subscription_name: Name of the subscription.
         peek_lock:
-            Optional. True to retrieve and lock the message. False to read and 
+            Optional. True to retrieve and lock the message. False to read and
             delete the message. Default is True (lock).
         timeout: Optional. The timeout parameter is expressed in seconds.
         """
         if peek_lock:
-            return self.peek_lock_subscription_message(topic_name, subscription_name, timeout)
+            return (
+                self.peek_lock_subscription_message(
+                    topic_name,
+                    subscription_name,
+                    timeout)
+            )
         else:
-            return self.read_delete_subscription_message(topic_name, subscription_name, timeout)
+            return (
+                self.read_delete_subscription_message(
+                    topic_name,
+                    subscription_name,
+                    timeout)
+            )
 
     def _get_host(self):
         return self.service_namespace + self.host_base
@@ -840,7 +862,10 @@ class ServiceBusService:
     def _sign_service_bus_request(self, request):
         """ return the signed string with token. """
 
-        return 'WRAP access_token="' + self._get_token(request.host, request.path) + '"'
+        return (
+            'WRAP access_token="' +
+            self._get_token(request.host, request.path) + '"'
+        )
 
     def _token_is_expired(self, token):
         """ Check if token expires or not. """
@@ -854,9 +879,9 @@ class ServiceBusService:
         return (token_expire_time - time_now) < 30
 
     def _get_token(self, host, path):
-        """ 
-        Returns token for the request. 
-    
+        """
+        Returns token for the request.
+
         host: the service bus service request.
         path: the service bus service request.
         """
@@ -864,7 +889,7 @@ class ServiceBusService:
 
         # Check whether has unexpired cache, return cached token if it is still
         # usable.
-        if _tokens.has_key(wrap_scope):
+        if wrap_scope in _tokens:
             token = _tokens[wrap_scope]
             if not self._token_is_expired(token):
                 return token

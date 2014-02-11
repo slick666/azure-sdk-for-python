@@ -483,8 +483,7 @@ def _sign_storage_blob_request(request, account_name, account_key):
     string_to_sign += '/' + account_name + uri_path
 
     # get query string to sign if it is not table service
-    query_to_sign = request.query
-    query_to_sign.sort()
+    query_to_sign = sorted(request.query)
 
     current_name = ''
     for name, value in query_to_sign:

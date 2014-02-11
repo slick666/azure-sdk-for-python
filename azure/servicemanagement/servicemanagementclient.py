@@ -33,18 +33,19 @@ from azure.servicemanagement import (_management_error_handler,
 
 class _ServiceManagementClient(object):
 
-    def __init__(self, subscription_id=None, cert_file=None, host=MANAGEMENT_HOST):
+    def __init__(self, subscription_id=None,
+                 cert_file=None, host=MANAGEMENT_HOST):
         self.requestid = None
         self.subscription_id = subscription_id
         self.cert_file = cert_file
         self.host = host
 
         if not self.cert_file:
-            if os.environ.has_key(AZURE_MANAGEMENT_CERTFILE):
+            if AZURE_MANAGEMENT_CERTFILE in os.environ:
                 self.cert_file = os.environ[AZURE_MANAGEMENT_CERTFILE]
 
         if not self.subscription_id:
-            if os.environ.has_key(AZURE_MANAGEMENT_SUBSCRIPTIONID):
+            if AZURE_MANAGEMENT_SUBSCRIPTIONID in os.environ:
                 self.subscription_id = os.environ[
                     AZURE_MANAGEMENT_SUBSCRIPTIONID]
 

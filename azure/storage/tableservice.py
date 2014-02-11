@@ -98,7 +98,7 @@ class TableService(_StorageClient):
         """
         Sets the properties of a storage account's Table Service, including
         Windows Azure Storage Analytics.
-        
+
         storage_service_properties: StorageServiceProperties object.
         """
         _validate_not_none('storage_service_properties',
@@ -119,7 +119,7 @@ class TableService(_StorageClient):
     def query_tables(self, table_name=None, top=None, next_table_name=None):
         """
         Returns a list of tables under the specified account.
-        
+
         table_name: Optional.  The specific table to query.
         top: Optional. Maximum number of tables to return.
         next_table_name:
@@ -148,7 +148,7 @@ class TableService(_StorageClient):
     def create_table(self, table, fail_on_exist=False):
         """
         Creates a new table in the storage account.
-        
+
         table:
             Name of the table to create. Table name may contain only
             alphanumeric characters and cannot begin with a numeric character.
@@ -203,7 +203,7 @@ class TableService(_StorageClient):
     def get_entity(self, table_name, partition_key, row_key, select=''):
         """
         Get an entity in a table; includes the $select options.
-        
+
         partition_key: PartitionKey of the entity.
         row_key: RowKey of the entity.
         select: Property names to select.
@@ -229,7 +229,7 @@ class TableService(_StorageClient):
     def query_entities(self, table_name, filter=None, select=None, top=None, next_partition_key=None, next_row_key=None):
         """
         Get entities in a table; includes the $filter and $select options.
-        
+
         table_name: Table to query.
         filter:
             Optional. Filter as described at
@@ -265,7 +265,7 @@ class TableService(_StorageClient):
     def insert_entity(self, table_name, entity, content_type='application/atom+xml'):
         """
         Inserts a new entity into a table.
-        
+
         table_name: Table name.
         entity:
             Required. The entity object to insert. Could be a dict format or
@@ -292,7 +292,7 @@ class TableService(_StorageClient):
         """
         Updates an existing entity in a table. The Update Entity operation
         replaces the entire entity and can be used to remove properties.
-        
+
         table_name: Table name.
         partition_key: PartitionKey of the entity.
         row_key: RowKey of the entity.
@@ -333,7 +333,7 @@ class TableService(_StorageClient):
         Updates an existing entity by updating the entity's properties. This
         operation does not replace the existing entity as the Update Entity
         operation does.
-        
+
         table_name: Table name.
         partition_key: PartitionKey of the entity.
         row_key: RowKey of the entity.
@@ -372,7 +372,7 @@ class TableService(_StorageClient):
     def delete_entity(self, table_name, partition_key, row_key, content_type='application/atom+xml', if_match='*'):
         """
         Deletes an existing entity in a table.
-        
+
         table_name: Table name.
         partition_key: PartitionKey of the entity.
         row_key: RowKey of the entity.
@@ -407,7 +407,7 @@ class TableService(_StorageClient):
         Replaces an existing entity or inserts a new entity if it does not
         exist in the table. Because this operation can insert or update an
         entity, it is also known as an "upsert" operation.
-        
+
         table_name: Table name.
         partition_key: PartitionKey of the entity.
         row_key: RowKey of the entity.
@@ -436,12 +436,13 @@ class TableService(_StorageClient):
 
         return _parse_response_for_dict_filter(response, filter=['etag'])
 
-    def insert_or_merge_entity(self, table_name, partition_key, row_key, entity, content_type='application/atom+xml'):
+    def insert_or_merge_entity(self, table_name, partition_key,
+                               row_key, entity, content_type='application/atom+xml'):
         """
         Merges an existing entity or inserts a new entity if it does not exist
         in the table. Because this operation can insert or update an entity,
         it is also known as an "upsert" operation.
-        
+
         table_name: Table name.
         partition_key: PartitionKey of the entity.
         row_key: RowKey of the entity.

@@ -94,9 +94,9 @@ class BSTR(c_wchar_p):
 
 class VARIANT(Structure):
 
-    """ 
-    VARIANT structure in python. Does not match the definition in 
-    MSDN exactly & it is only mapping the used fields.  Field names are also 
+    """
+    VARIANT structure in python. Does not match the definition in
+    MSDN exactly & it is only mapping the used fields.  Field names are also
     slighty different.
     """
 
@@ -194,8 +194,8 @@ class GUID(Structure):
 
 class _WinHttpRequest(c_void_p):
 
-    """ 
-    Maps the Com API to Python class functions. Not all methods in IWinHttpWebRequest 
+    """
+    Maps the Com API to Python class functions. Not all methods in IWinHttpWebRequest
     are mapped - only the methods we use.
     """
     _AddRef = WINFUNCTYPE(c_long)(1, 'AddRef')
@@ -227,9 +227,9 @@ class _WinHttpRequest(c_void_p):
         HRESULT, BSTR)(24, 'SetClientCertificate')
 
     def open(self, method, url):
-        """ 
+        """
         Opens the request.
-        
+
         method: the request VERB 'GET', 'POST', etc.
         url: the url to connect
         """
@@ -286,9 +286,9 @@ class _WinHttpRequest(c_void_p):
         return status_text
 
     def response_body(self):
-        """ 
-        Gets response body as a SAFEARRAY and converts the SAFEARRAY to str.  If it is an xml 
-        file, it always contains 3 characters before <?xml, so we remove them. 
+        """
+        Gets response body as a SAFEARRAY and converts the SAFEARRAY to str.  If it is an xml
+        file, it always contains 3 characters before <?xml, so we remove them.
         """
         var_respbody = VARIANT()
         _WinHttpRequest._ResponseBody(self, byref(var_respbody))

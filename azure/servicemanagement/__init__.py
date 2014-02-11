@@ -580,10 +580,11 @@ class ConfigurationSetInputEndpoint(WindowsAzureData):
     port: Specifies the external port to use for the endpoint.
     local_port: Specifies the internal port on which the virtual machine is listening to serve the endpoint.
     load_balanced_endpoint_set_name: Specifies a name for a set of load-balanced endpoints. Specifying this element for a given endpoint adds it to the set. If you are setting an endpoint to use to connect to the virtual machine via the Remote Desktop, do not set this property.
-    enable_direct_server_return: Specifies whether direct server return load balancing is enabled. 
+    enable_direct_server_return: Specifies whether direct server return load balancing is enabled.
     """
 
-    def __init__(self, name=u'', protocol=u'', port=u'', local_port=u'', load_balanced_endpoint_set_name=u'', enable_direct_server_return=False):
+    def __init__(self, name=u'', protocol=u'', port=u'', local_port=u'',
+                 load_balanced_endpoint_set_name=u'', enable_direct_server_return=False):
         self.enable_direct_server_return = enable_direct_server_return
         self.load_balanced_endpoint_set_name = load_balanced_endpoint_set_name
         self.local_port = local_port
@@ -595,7 +596,8 @@ class ConfigurationSetInputEndpoint(WindowsAzureData):
 
 class WindowsConfigurationSet(WindowsAzureData):
 
-    def __init__(self, computer_name=None, admin_password=None, reset_password_on_first_logon=None, enable_automatic_updates=None, time_zone=None):
+    def __init__(self, computer_name=None, admin_password=None,
+                 reset_password_on_first_logon=None, enable_automatic_updates=None, time_zone=None):
         self.configuration_set_type = u'WindowsProvisioningConfiguration'
         self.computer_name = computer_name
         self.admin_password = admin_password
@@ -643,7 +645,7 @@ class CertificateSetting(WindowsAzureData):
     Initializes a certificate setting.
 
     thumbprint: Specifies the thumbprint of the certificate to be provisioned. The thumbprint must specify an existing service certificate.
-    store_name: Specifies the name of the certificate store from which retrieve certificate. 
+    store_name: Specifies the name of the certificate store from which retrieve certificate.
     store_location: Specifies the target certificate store location on the virtual machine. The only supported value is LocalMachine.
     """
 
@@ -655,7 +657,8 @@ class CertificateSetting(WindowsAzureData):
 
 class LinuxConfigurationSet(WindowsAzureData):
 
-    def __init__(self, host_name=None, user_name=None, user_password=None, disable_ssh_password_authentication=None):
+    def __init__(self, host_name=None, user_name=None,
+                 user_password=None, disable_ssh_password_authentication=None):
         self.configuration_set_type = u'LinuxProvisioningConfiguration'
         self.host_name = host_name
         self.user_name = user_name
@@ -751,7 +754,8 @@ class DataVirtualHardDisk(WindowsAzureData):
 
 class OSVirtualHardDisk(WindowsAzureData):
 
-    def __init__(self, source_image_name=None, media_link=None, host_caching=None, disk_label=None, disk_name=None):
+    def __init__(self, source_image_name=None, media_link=None,
+                 host_caching=None, disk_label=None, disk_name=None):
         self.source_image_name = source_image_name
         self.media_link = media_link
         self.host_caching = host_caching
@@ -836,7 +840,8 @@ def _lower(text):
 class _XmlSerializer(object):
 
     @staticmethod
-    def create_storage_service_input_to_xml(service_name, description, label, affinity_group, location, geo_replication_enabled, extended_properties):
+    def create_storage_service_input_to_xml(
+            service_name, description, label, affinity_group, location, geo_replication_enabled, extended_properties):
         return _XmlSerializer.doc_from_data('CreateStorageServiceInput',
                                             [('ServiceName', service_name),
                                              ('Description', description),
@@ -848,7 +853,8 @@ class _XmlSerializer(object):
                                             extended_properties)
 
     @staticmethod
-    def update_storage_service_input_to_xml(description, label, geo_replication_enabled, extended_properties):
+    def update_storage_service_input_to_xml(
+            description, label, geo_replication_enabled, extended_properties):
         return _XmlSerializer.doc_from_data('UpdateStorageServiceInput',
                                             [('Description', description),
                                              ('Label', label,
@@ -869,7 +875,8 @@ class _XmlSerializer(object):
                                             extended_properties)
 
     @staticmethod
-    def create_hosted_service_to_xml(service_name, label, description, location, affinity_group, extended_properties):
+    def create_hosted_service_to_xml(
+            service_name, label, description, location, affinity_group, extended_properties):
         return _XmlSerializer.doc_from_data('CreateHostedService',
                                             [('ServiceName', service_name),
                                              ('Label', label,
@@ -880,7 +887,8 @@ class _XmlSerializer(object):
                                             extended_properties)
 
     @staticmethod
-    def create_deployment_to_xml(name, package_url, label, configuration, start_deployment, treat_warnings_as_error, extended_properties):
+    def create_deployment_to_xml(name, package_url, label, configuration,
+                                 start_deployment, treat_warnings_as_error, extended_properties):
         return _XmlSerializer.doc_from_data('CreateDeployment',
                                             [('Name', name),
                                              ('PackageUrl', package_url),
@@ -904,7 +912,8 @@ class _XmlSerializer(object):
                                             [('Status', status)])
 
     @staticmethod
-    def change_deployment_to_xml(configuration, treat_warnings_as_error, mode, extended_properties):
+    def change_deployment_to_xml(
+            configuration, treat_warnings_as_error, mode, extended_properties):
         return _XmlSerializer.doc_from_data('ChangeConfiguration',
                                             [('Configuration', configuration),
                                              ('TreatWarningsAsError',
@@ -913,7 +922,9 @@ class _XmlSerializer(object):
                                             extended_properties)
 
     @staticmethod
-    def upgrade_deployment_to_xml(mode, package_url, configuration, label, role_to_upgrade, force, extended_properties):
+    def upgrade_deployment_to_xml(
+            mode, package_url, configuration, label, role_to_upgrade,
+            force, extended_properties):
         return _XmlSerializer.doc_from_data('UpgradeDeployment',
                                             [('Mode', mode),
                                              ('PackageUrl', package_url),
@@ -976,7 +987,8 @@ class _XmlSerializer(object):
                                              ('OS', os)])
 
     @staticmethod
-    def data_virtual_hard_disk_to_xml(host_caching, disk_label, disk_name, lun, logical_disk_size_in_gb, media_link, source_media_link):
+    def data_virtual_hard_disk_to_xml(
+            host_caching, disk_label, disk_name, lun, logical_disk_size_in_gb, media_link, source_media_link):
         return _XmlSerializer.doc_from_data('DataVirtualHardDisk',
                                             [('HostCaching', host_caching),
                                              ('DiskLabel', disk_label),
@@ -1119,7 +1131,14 @@ class _XmlSerializer(object):
         return xml
 
     @staticmethod
-    def role_to_xml(availability_set_name, data_virtual_hard_disks, network_configuration_set, os_virtual_hard_disk, role_name, role_size, role_type, system_configuration_set):
+    def role_to_xml(availability_set_name,
+                    data_virtual_hard_disks,
+                    network_configuration_set,
+                    os_virtual_hard_disk,
+                    role_name,
+                    role_size,
+                    role_type,
+                    system_configuration_set):
         xml = _XmlSerializer.data_to_xml([('RoleName', role_name),
                                           ('RoleType', role_type)])
 
@@ -1177,21 +1196,37 @@ class _XmlSerializer(object):
         return xml
 
     @staticmethod
-    def add_role_to_xml(role_name, system_configuration_set, os_virtual_hard_disk, role_type, network_configuration_set, availability_set_name, data_virtual_hard_disks, role_size):
+    def add_role_to_xml(role_name,
+                        system_configuration_set,
+                        os_virtual_hard_disk,
+                        role_type,
+                        network_configuration_set,
+                        availability_set_name,
+                        data_virtual_hard_disks,
+                        role_size):
         xml = _XmlSerializer.role_to_xml(
             availability_set_name, data_virtual_hard_disks, network_configuration_set,
             os_virtual_hard_disk, role_name, role_size, role_type, system_configuration_set)
         return _XmlSerializer.doc_from_xml('PersistentVMRole', xml)
 
     @staticmethod
-    def update_role_to_xml(role_name, os_virtual_hard_disk, role_type, network_configuration_set, availability_set_name, data_virtual_hard_disks, role_size):
+    def update_role_to_xml(role_name,
+						   os_virtual_hard_disk,
+                           role_type,
+                           network_configuration_set,
+                           availability_set_name,
+                           data_virtual_hard_disks,
+                           role_size):
         xml = _XmlSerializer.role_to_xml(
             availability_set_name, data_virtual_hard_disks,
             network_configuration_set, os_virtual_hard_disk, role_name, role_size, role_type, None)
         return _XmlSerializer.doc_from_xml('PersistentVMRole', xml)
 
     @staticmethod
-    def capture_role_to_xml(post_capture_action, target_image_name, target_image_label, provisioning_configuration):
+    def capture_role_to_xml(post_capture_action,
+                            target_image_name,
+                            target_image_label,
+                            provisioning_configuration):
         xml = _XmlSerializer.data_to_xml(
             [('OperationType', 'CaptureRoleOperation'),
              ('PostCaptureAction', post_capture_action)])
@@ -1208,7 +1243,18 @@ class _XmlSerializer(object):
         return _XmlSerializer.doc_from_xml('CaptureRoleOperation', xml)
 
     @staticmethod
-    def virtual_machine_deployment_to_xml(deployment_name, deployment_slot, label, role_name, system_configuration_set, os_virtual_hard_disk, role_type, network_configuration_set, availability_set_name, data_virtual_hard_disks, role_size, virtual_network_name):
+    def virtual_machine_deployment_to_xml(
+            deployment_name,
+            deployment_slot,
+            label, role_name,
+            system_configuration_set,
+            os_virtual_hard_disk,
+            role_type,
+            network_configuration_set,
+            availability_set_name,
+            data_virtual_hard_disks,
+            role_size,
+            virtual_network_name):
         xml = _XmlSerializer.data_to_xml([('Name', deployment_name),
                                           ('DeploymentSlot', deployment_slot),
                                           ('Label', label, base64.b64encode)])

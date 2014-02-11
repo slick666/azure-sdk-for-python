@@ -43,10 +43,10 @@ class _StorageClient(object):
         account_name: your storage account name, required for all operations.
         account_key: your storage account key, required for all operations.
         protocol: Optional. Protocol. Defaults to http.
-        host_base: 
-            Optional. Live host base url. Defaults to Azure url. Override this 
+        host_base:
+            Optional. Live host base url. Defaults to Azure url. Override this
             for on-premise.
-        dev_host: Optional. Dev host url. Defaults to localhost. 
+        dev_host: Optional. Dev host url. Defaults to localhost.
         """
         if account_name is not None:
             self.account_name = account_name.encode('ascii', 'ignore')
@@ -67,7 +67,7 @@ class _StorageClient(object):
         self.use_local_storage = False
 
         # check whether it is run in emulator.
-        if os.environ.has_key(EMULATED):
+        if EMULATED in os.environ:
             if os.environ[EMULATED].lower() == 'false':
                 self.is_emulated = False
             else:
@@ -85,9 +85,9 @@ class _StorageClient(object):
                 self.account_key = DEV_ACCOUNT_KEY
                 self.use_local_storage = True
             else:
-                if os.environ.has_key(AZURE_STORAGE_ACCOUNT):
+                if AZURE_STORAGE_ACCOUNT in os.environ:
                     self.account_name = os.environ[AZURE_STORAGE_ACCOUNT]
-                if os.environ.has_key(AZURE_STORAGE_ACCESS_KEY):
+                if AZURE_STORAGE_ACCESS_KEY in os.environ:
                     self.account_key = os.environ[AZURE_STORAGE_ACCESS_KEY]
 
         if not self.account_name or not self.account_key:
@@ -100,11 +100,11 @@ class _StorageClient(object):
 
     def with_filter(self, filter):
         """
-        Returns a new service which will process requests with the specified 
-        filter.  Filtering operations can include logging, automatic retrying, 
-        etc...  The filter is a lambda which receives the HTTPRequest and 
+        Returns a new service which will process requests with the specified
+        filter.  Filtering operations can include logging, automatic retrying,
+        etc...  The filter is a lambda which receives the HTTPRequest and
         another lambda.  The filter can perform any pre-processing on the
-        request, pass it off to the next lambda, and then perform any 
+        request, pass it off to the next lambda, and then perform any
         post-processing on the response.
         """
         res = type(self)(self.account_name, self.account_key, self.protocol)
@@ -138,7 +138,7 @@ class _StorageClient(object):
 
     def _perform_request(self, request):
         """
-        Sends the request and return response. Catches HTTPError and hand it 
+        Sends the request and return response. Catches HTTPError and hand it
         to error handler
         """
         try:

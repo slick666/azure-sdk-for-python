@@ -20,8 +20,8 @@ from azure.storage.queueservice import QueueService
 class CloudStorageAccount:
 
     """
-    Provides a factory for creating the blob, queue, and table services 
-    with a common account name and account key.  Users can either use the 
+    Provides a factory for creating the blob, queue, and table services
+    with a common account name and account key.  Users can either use the
     factory or can construct the appropriate service directly.
     """
 

@@ -94,7 +94,7 @@ class WindowsAzureConflictError(WindowsAzureError):
 
 class WindowsAzureMissingResourceError(WindowsAzureError):
 
-    """Indicates that a request for a request for a resource (queue, table, 
+    """Indicates that a request for a request for a resource (queue, table,
     container, etc...) failed because the specified resource does not exist"""
 
     def __init__(self, message):
@@ -199,7 +199,7 @@ def _create_entry(entry_body):
     if datetime.utcnow().utcoffset() is None:
         updated_str += '+00:00'
 
-    entry_start = """<?xml version="1.0" encoding="utf-8" standalone="yes"?>   
+    entry_start = """<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <entry xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom" >
 <title /><updated>{updated}</updated><author><name /></author><id />
 <content type="application/xml">
@@ -373,11 +373,15 @@ def _validate_not_none(param_name, param):
 
 def _fill_list_of(xmldoc, element_type, xml_element_name):
     xmlelements = _get_child_nodes(xmldoc, xml_element_name)
-    return [_parse_response_body_from_xml_node(xmlelement, element_type) for xmlelement in xmlelements]
+    return (
+        [_parse_response_body_from_xml_node(xmlelement, element_type)
+         for xmlelement in xmlelements]
+    )
 
 
-def _fill_scalar_list_of(xmldoc, element_type, parent_xml_element_name, xml_element_name):
-    """Converts an xml fragment into a list of scalar types.  The parent xml element contains a 
+def _fill_scalar_list_of(xmldoc, element_type,
+                         parent_xml_element_name, xml_element_name):
+    """Converts an xml fragment into a list of scalar types.  The parent xml element contains a
     flat list of xml elements which are converted into the specified scalar type and added to the list.
     Example:
     xmldoc=
@@ -393,7 +397,10 @@ def _fill_scalar_list_of(xmldoc, element_type, parent_xml_element_name, xml_elem
     xmlelements = _get_child_nodes(xmldoc, parent_xml_element_name)
     if xmlelements:
         xmlelements = _get_child_nodes(xmlelements[0], xml_element_name)
-        return [_get_node_value(xmlelement, element_type) for xmlelement in xmlelements]
+        return (
+            [_get_node_value(xmlelement, element_type)
+             for xmlelement in xmlelements]
+        )
 
 
 def _fill_dict(xmldoc, element_name):
@@ -406,8 +413,9 @@ def _fill_dict(xmldoc, element_name):
         return return_obj
 
 
-def _fill_dict_of(xmldoc, parent_xml_element_name, pair_xml_element_name, key_xml_element_name, value_xml_element_name):
-    """Converts an xml fragment into a dictionary. The parent xml element contains a 
+def _fill_dict_of(xmldoc, parent_xml_element_name, pair_xml_element_name,
+                  key_xml_element_name, value_xml_element_name):
+    """Converts an xml fragment into a dictionary. The parent xml element contains a
     list of xml elements where each element has a child element for the key, and another for the value.
     Example:
     xmldoc=
@@ -476,7 +484,7 @@ def _fill_data_minidom(xmldoc, element_name, data_member):
         return value
     elif isinstance(data_member, datetime):
         return _to_datetime(value)
-    elif type(data_member) is types.BooleanType:
+    elif isinstance(data_member, types.BooleanType):
         return value.lower() != 'false'
     else:
         return type(data_member)(value)
@@ -633,7 +641,8 @@ class _dict_of(dict):
     """a dict which carries with it the xml element names for key,val.
     Used for deserializaion and construction of the lists"""
 
-    def __init__(self, pair_xml_element_name, key_xml_element_name, value_xml_element_name):
+    def __init__(self, pair_xml_element_name,
+                 key_xml_element_name, value_xml_element_name):
         self.pair_xml_element_name = pair_xml_element_name
         self.key_xml_element_name = key_xml_element_name
         self.value_xml_element_name = value_xml_element_name
@@ -654,7 +663,7 @@ class _list_of(list):
 
 class _scalar_list_of(list):
 
-    """a list of scalar types which carries with it the type that's 
+    """a list of scalar types which carries with it the type that's
     expected to go in it along with its xml element name.
     Used for deserializaion and construction of the lists"""
 
@@ -672,7 +681,7 @@ def _update_request_uri_query_local_storage(request, use_local_storage):
 
 
 def _update_request_uri_query(request):
-    """pulls the query string out of the URI and moves it into 
+    """pulls the query string out of the URI and moves it into
     the query portion of the request object.  If there are already
     query parameters on the request the parameters in the URI will
     appear after the existing parameters"""
